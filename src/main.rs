@@ -3,7 +3,48 @@ use std::rc::Rc;
 use parse_market::ParseMarket as parse;
 use market_sol::SOLMarket as sol;
 use bfb::bfb_market::Bfb as bfb;
+use unitn_market_2022::good::good::Good;
+use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
+use unitn_market_2022::subscribe_each_other;
+
+///the struct for the trader agent
+struct Trader {
+    name: String,
+    _money: f32,
+    _goods: Vec<Good>,
+    sol: Rc<RefCell<dyn Market>>,
+    bfb: Rc<RefCell<dyn Market>>,
+    parse: Rc<RefCell<dyn Market>>
+}
+
+///initialize the goods for the trader
+///
+/// **Andrea Ballarini**
+fn initgoods(eur:f32,usd:f32,yen:f32,yuan:f32)->Vec<Good>{
+    let mut goods:Vec<Good>=Vec::new();
+    goods.push(Good::new(GoodKind::EUR,eur));
+    goods.push(Good::new(GoodKind::USD,usd));
+    goods.push(Good::new(GoodKind::YEN,yen));
+    goods.push(Good::new(GoodKind::YUAN,yuan));
+    goods
+}
+
+impl Trader {
+    ///the constructor for the trader agent
+    ///
+    /// **Andrea Ballarini**
+    fn new(name: String, money: f32, sol: Rc<RefCell<dyn Market>>, bfb: Rc<RefCell<dyn Market>>, parse: Rc<RefCell<dyn Market>>) -> Self {
+        Trader {
+            name,
+            _money: money,
+            _goods:initgoods(money,0.0,0.0,0.0),
+            sol,
+            bfb,
+            parse
+        }
+    }
+}
 
 /// the initialization function randomly generated the initial quantity in the markets
 ///
@@ -28,7 +69,7 @@ fn init_with_quantity(eur: f32, yen: f32, usd: f32, yuan: f32) -> (Rc<RefCell<dy
 /// **Andrea Ballarini**
 fn print_values(market: &Rc<RefCell<dyn Market>>) {
 
-    let market = market.borrow_mut();
+    let market = market.borrow();
     let goods = market.get_goods();
 
     //print the values in good labels
@@ -37,11 +78,151 @@ fn print_values(market: &Rc<RefCell<dyn Market>>) {
     }
 }
 
+///print the values in a specific good label kind
+///
+/// **Andrea Ballarini**
+fn print_good_kind(market: &Rc<RefCell<dyn Market>>, kind: GoodKind) {
+
+    let market = market.borrow();
+    let goods = market.get_goods();
+
+    //print the values in good labels
+    for i in 0..goods.len() {
+        if goods[i].good_kind == kind {
+            println!("{:?}",goods[i]);
+        }
+    }
+}
+
+///testing the buy function for a specific GoodKind and the fluctuation prices in markets
+///
+/// **Andrea Ballarini**
+fn test_buy_kind(kind: GoodKind, trader: &mut Trader) {
+    //try the changes after buying all sol
+    let mut count = 0;
+    println!("\t\tAfter Buying All SOL");
+    loop {
+        if count == 150{
+            break;
+        }
+        //buy from SOL
+        let sol_price = match trader.sol.borrow().get_buy_price(kind,10.0){
+            Ok(price) => price,
+            Err(_) => break,
+        };
+        let token = match (*trader.sol).borrow_mut().lock_buy(kind, 10.0, sol_price, trader.name.clone()){
+            Ok(token) => token,
+            Err(_) => break,
+        };
+        let _ = (*trader.sol).borrow_mut().buy(token,&mut Good::new(GoodKind::EUR, sol_price));
+        print_good_kind(&trader.sol, kind);
+        count += 1;
+    }
+
+    //try the changes after buying all PARSE
+    println!("\t\tAfter Buying All PARSE");
+    loop {
+        //buy from PARSE
+        let parse_price = match trader.parse.borrow().get_buy_price(kind, 10.0) {
+            Ok(price) => price,
+            Err(_) => break,
+        };
+        let token = match (*trader.parse).borrow_mut().lock_buy(kind, 10.0, parse_price, trader.name.clone()){
+            Ok(token) => token,
+            Err(_) => break,
+        };
+        let _ = (*trader.parse).borrow_mut().buy(token,&mut Good::new(GoodKind::EUR, parse_price));
+        print_good_kind(&trader.parse, kind);
+    }
+
+    //try the changes after buying all BFB
+    println!("\t\tAfter Buying All BFB");
+    loop {
+        //buy from BFB
+        let bfb_price = match trader.bfb.borrow().get_buy_price(kind, 10.0) {
+            Ok(price) => price,
+            Err(_) => break,
+        };
+        let token = match (*trader.bfb).borrow_mut().lock_buy(kind, 10.0, bfb_price, trader.name.clone()){
+            Ok(token) => token,
+            Err(_) => break,
+        };
+        let _ = (*trader.bfb).borrow_mut().buy(token,&mut Good::new(GoodKind::EUR, bfb_price));
+        print_good_kind(&trader.bfb, kind);
+    }
+}
+
+///testing the sell function for a specific GoodKind and the fluctuation prices in markets
+///
+/// **Andrea Ballarini**
+fn _test_sell_kind(kind: GoodKind, trader: &mut Trader) {
+    //try the changes after selling all sol
+    let mut count = 0;
+    println!("\t\tAfter Selling All SOL");
+    loop {
+        if count == 150{
+            break;
+        }
+        //sell from SOL
+        let sol_price = match trader.sol.borrow().get_sell_price(kind,10.0){
+            Ok(price) => price,
+            Err(_) => break,
+        };
+        let token = match (*trader.sol).borrow_mut().lock_sell(kind, 10.0, sol_price, trader.name.clone()){
+            Ok(token) => token,
+            Err(_) => break,
+        };
+        let _ = match (*trader.sol).borrow_mut().sell(token,&mut Good::new(kind, 10.0)){
+            Ok(_) => (),
+            Err(_) => break,
+        };
+        print_good_kind(&trader.sol, kind);
+        count += 1;
+    }
+
+    //try the changes after selling all PARSE
+    println!("\t\tAfter Selling All PARSE");
+    loop {
+        //sell from PARSE
+        let parse_price = match trader.parse.borrow().get_sell_price(kind, 10.0) {
+            Ok(price) => price,
+            Err(_) => break,
+        };
+        let token = match (*trader.parse).borrow_mut().lock_sell(kind, 10.0, parse_price, trader.name.clone()){
+            Ok(token) => token,
+            Err(_) => break,
+        };
+        let _ = match (*trader.parse).borrow_mut().sell(token,&mut Good::new(kind, 10.0)) {
+            Ok(_) => (),
+            Err(_) => break,
+        };
+        print_good_kind(&trader.parse, kind);
+    }
+
+    //try the changes after selling all BFB
+    println!("\t\tAfter Selling All BFB");
+    loop {
+        //sell from BFB
+        let bfb_price = match trader.bfb.borrow().get_sell_price(kind, 10.0) {
+            Ok(price) => price,
+            Err(_) => break,
+        };
+        let token = match (*trader.bfb).borrow_mut().lock_sell(kind, 10.0, bfb_price, trader.name.clone()){
+            Ok(token) => token,
+            Err(_) => break,
+        };
+        let _ = match (*trader.bfb).borrow_mut().sell(token,&mut Good::new(kind, 10.0)){
+            Ok(_) => (),
+            Err(_) => break,
+        };
+        print_good_kind(&trader.bfb, kind);
+    }
+}
 
 fn main() {
 
     //initialize the trader name
-    let _trader_name = "TSE".to_string();
+    let trader_name = "TSE".to_string();
 
     // the random initialization of the markets
     let (mut sol, mut parse, mut bfb) = random_init();
@@ -68,5 +249,19 @@ fn main() {
     println!("BFB:");
     print_values(&bfb);
     println!(" ");
+
+    subscribe_each_other!(sol, parse, bfb);
+
+    //initialize the trader
+    let mut trader = Trader::new(
+        trader_name,
+        1000.00,
+        sol,
+        bfb,
+        parse
+    );
+
+    test_buy_kind(GoodKind::USD, &mut trader);
+    //test_sell_kind(GoodKind::USD, &mut trader);
 
 }
