@@ -13,15 +13,15 @@ pub struct Arbitrager {
     sol: Rc<RefCell<dyn Market>>,
     bfb: Rc<RefCell<dyn Market>>,
     parse: Rc<RefCell<dyn Market>>,
-    traderName: String,
+    trader_name: String,
 }
 
 pub struct ArbitrageResult {
-    eurSent: f32,
-    altReceived: f32,
-    eurReceived: f32,
-    buyMarketName: String,
-    sellMarketName: String,
+    eur_sent: f32,
+    alt_received: f32,
+    eur_received: f32,
+    buy_market_name: String,
+    sell_market_name: String,
 }
 
 impl Arbitrager {
@@ -29,164 +29,165 @@ impl Arbitrager {
     ///
     /// **Lorenzo Tinfena**
     pub fn new(
-        traderName: String,
+        trader_name: String,
         sol: Rc<RefCell<dyn Market>>,
         bfb: Rc<RefCell<dyn Market>>,
         parse: Rc<RefCell<dyn Market>>,
     ) -> Self {
         Arbitrager {
-            traderName,
+            trader_name,
             sol,
             bfb,
             parse,
         }
     }
 
-    fn getBestQuantityBuy(goodKind: GoodKind, maxQuantity: f32) {}
+    fn get_best_quantity_buy(good_kind: GoodKind, max_quantity: f32) {}
 
-    pub fn arbitrage(self: &Self, eur: Good) -> (Good, Option<ArbitrageResult>) {
+    pub fn arbitrage(self: &Self, mut eur: Good) -> (Good, Option<ArbitrageResult>) {
         if eur.get_qty() <= 0. {
             return (eur, None);
         }
 
-        let goodKinds = vec![GoodKind::USD, GoodKind::YEN, GoodKind::YUAN];
+        let good_kinds = vec![GoodKind::USD, GoodKind::YEN, GoodKind::YUAN];
 
         let markets = vec![
-            self.sol,
-            self.bfb,
-            self.parse,
+            self.sol.clone(),
+            self.bfb.clone(),
+            self.parse.clone(),
         ];
 
         const F32SMALL: f32 = 0.0000001;
         const F32LARGE: f32 = 1000000000000.;
 
-        let mut bestBuyMarket = self.sol.deref().borrow_mut();
-        let mut bestSellMarket = self.sol.deref().borrow_mut();
-        let mut bestMaxAltToReceive: f32;
-        let mut bestMaxEurToSend: f32;
-        let mut bestKindAltToReceive: GoodKind;
-        let mut bestProfit = 0.;
+        let mut best_buy_market = self.sol.deref().borrow_mut();
+        let mut best_sell_market = self.sol.deref().borrow_mut();
+        let mut best_max_alt_to_receive: f32 = 0.0;
+        let mut best_max_eur_to_send: f32 = 0.0;
+        let mut best_kind_alt_to_receive: GoodKind = GoodKind::EUR;
+        let mut best_profit = 0.;
         // Try to arbitrage over all currencies
-        for goodKind in goodKinds {
-            for _sellMarket in markets {
-                for _buyMarket in markets {
+        for goodKind in good_kinds {
+            for _sell_market in &markets {
+                for _buy_market in &markets {
                     // Get some bounds for prices (for price I mean goodKind/EUR)
                     
-                    let buyMarket = _buyMarket.deref().borrow_mut();
-                    let sellMarket = _sellMarket.deref().borrow_mut();
+                    let buy_market = _buy_market.deref().borrow_mut();
+                    let sell_market = _sell_market.deref().borrow_mut();
 
-                    let buyMinPrice =
-                        buyMarket.get_buy_price(goodKind, F32SMALL).unwrap() / F32SMALL;
-                    let sellMaxPrice =
-                        sellMarket.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
+                    let buy_min_price =
+                        buy_market.get_buy_price(goodKind, F32SMALL).unwrap() / F32SMALL;
+                    let sell_max_price =
+                        sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
 
                     // Trying to get the max altcoin (aka goodKind) quantity to buy, such as the eur to send is less or equal than the ones I have
-                    let mut maxAltToReceive =
-                        match buyMarket.get_buy_price(goodKind, F32LARGE).unwrap_err() {
+                    let mut max_alt_to_receive =
+                        match buy_market.get_buy_price(goodKind, F32LARGE).unwrap_err() {
                             MarketGetterError::NonPositiveQuantityAsked => unimplemented!(),
                             MarketGetterError::InsufficientGoodQuantityAvailable {
-                                requested_good_kind,
-                                requested_good_quantity,
+                                requested_good_kind: _requested_good_kind,
+                                requested_good_quantity: _requested_good_quantity,
                                 available_good_quantity,
                             } => available_good_quantity,
                         };
-                    let mut maxEurToSend =
-                        buyMarket.get_buy_price(goodKind, maxAltToReceive).unwrap();
-                    while maxEurToSend > eur.get_qty() {
-                        maxAltToReceive /= 2.;
-                        maxEurToSend = buyMarket.get_buy_price(goodKind, maxAltToReceive).unwrap();
+                    let mut max_eur_to_send =
+                        buy_market.get_buy_price(goodKind, max_alt_to_receive).unwrap();
+                    while max_eur_to_send > eur.get_qty() {
+                        max_alt_to_receive /= 2.;
+                        max_eur_to_send = buy_market.get_buy_price(goodKind, max_alt_to_receive).unwrap();
                     }
 
                     // Get remaining bounds for prices
-                    let buyMaxPrice = F32SMALL
-                        / (maxEurToSend
-                            - (buyMarket
-                                .get_buy_price(goodKind, maxAltToReceive - F32SMALL)
+                    let buy_max_price = F32SMALL
+                        / (max_eur_to_send
+                            - (buy_market
+                                .get_buy_price(goodKind, max_alt_to_receive - F32SMALL)
                                 .unwrap()));
-                    let sellMinPrice = F32SMALL
-                        / (sellMarket
-                            .get_sell_price(goodKind, maxAltToReceive)
+                    let sell_min_price = F32SMALL
+                        / (sell_market
+                            .get_sell_price(goodKind, max_alt_to_receive)
                             .unwrap()
-                            - sellMarket
-                                .get_sell_price(goodKind, maxAltToReceive - F32SMALL)
+                            - sell_market
+                                .get_sell_price(goodKind, max_alt_to_receive - F32SMALL)
                                 .unwrap());
 
                     // Skip markets where prices are not growing with the quantity
-                    if buyMaxPrice < buyMinPrice || sellMaxPrice < sellMinPrice {
+                    if buy_max_price < buy_min_price || sell_max_price < sell_min_price {
                         continue;
                     }
 
                     // Compute profit
-                    let mut profit = if buyMaxPrice <= sellMinPrice {
+                    let profit = if buy_max_price <= sell_min_price {
                         // First case
-                        sellMarket
-                            .get_sell_price(goodKind, maxAltToReceive)
+                        sell_market
+                            .get_sell_price(goodKind, max_alt_to_receive)
                             .unwrap()
-                            - maxEurToSend
+                            - max_eur_to_send
                     } else {
                         // Second case
-                        maxEurToSend
-                            * ((sellMinPrice - buyMinPrice)
-                                / (buyMaxPrice - buyMinPrice + sellMaxPrice - sellMinPrice))
+                        max_eur_to_send
+                            * ((sell_min_price - buy_min_price)
+                                / (buy_max_price - buy_min_price + sell_max_price - sell_min_price))
                     };
 
-                    if profit > bestProfit {
-                        bestProfit = profit;
-                        bestMaxAltToReceive = maxAltToReceive;
-                        bestKindAltToReceive = goodKind;
-                        bestMaxEurToSend = maxEurToSend;
-                        bestBuyMarket = _buyMarket.deref().borrow_mut();
-                        bestSellMarket = _sellMarket.deref().borrow_mut();
+                    if profit > best_profit {
+                        best_profit = profit;
+                        best_max_alt_to_receive = max_alt_to_receive;
+                        best_kind_alt_to_receive = goodKind;
+                        best_max_eur_to_send = max_eur_to_send;
+                        best_buy_market = _buy_market.deref().borrow_mut();
+                        best_sell_market = _sell_market.deref().borrow_mut();
                     }
                 }
             }
         }
 
-        if bestProfit <= 0. {
+        if best_profit <= 0. {
             return (eur, None);
         }
 
         // Do actual trade
-        let buyToken = match bestBuyMarket.borrow_mut().lock_buy(
-            bestKindAltToReceive,
-            bestMaxAltToReceive * 0.999,
-            bestMaxEurToSend,
-            self.traderName,
+        let buy_token = match best_buy_market.borrow_mut().lock_buy(
+            best_kind_alt_to_receive,
+            best_max_alt_to_receive * 0.999,
+            best_max_eur_to_send,
+            self.trader_name.clone(),
         ) {
             Ok(token) => token,
             Err(err) => unimplemented!(),
         };
-        // TODO handle bestMaxEurToSend==
-        let altCoin = bestBuyMarket
+        // TODO handle best_max_eur_to_send
+        //==
+        let mut alt_coin = best_buy_market
             .borrow_mut()
-            .buy(buyToken, &mut eur.split(bestMaxEurToSend).unwrap())
+            .buy(buy_token, &mut eur.split(best_max_eur_to_send).unwrap())
             .unwrap();
-        let sellToken = match bestSellMarket.borrow_mut().lock_sell(
-            bestKindAltToReceive,
-            altCoin.get_qty(),
-            bestMaxEurToSend + bestProfit,
-            self.traderName,
+        let sell_token = match best_sell_market.borrow_mut().lock_sell(
+            best_kind_alt_to_receive,
+            alt_coin.get_qty(),
+            best_max_eur_to_send + best_profit,
+            self.trader_name.clone(),
         ) {
             Ok(token) => token,
             Err(err) => unimplemented!(),
         };
-        let altCoinQuantityReceived = altCoin.get_qty();
-        let eurReceived = bestSellMarket
+        let alt_coin_quantity_received = alt_coin.get_qty();
+        let eur_received = best_sell_market
             .borrow_mut()
-            .sell(sellToken, &mut altCoin)
+            .sell(sell_token, &mut alt_coin)
             .unwrap();
 
-        let eurQuantityReceived = eurReceived.get_qty();
-        eur.merge(eurReceived);
+        let eur_quantity_received = eur_received.get_qty();
+        eur.merge(eur_received);
 
         return (
             eur,
             Some(ArbitrageResult {
-                eurSent: bestMaxEurToSend,
-                altReceived: altCoinQuantityReceived,
-                eurReceived: eurQuantityReceived,
-                buyMarketName: bestBuyMarket.get_name().to_string(),
-                sellMarketName: bestSellMarket.get_name().to_string(),
+                eur_sent: best_max_eur_to_send,
+                alt_received: alt_coin_quantity_received,
+                eur_received: eur_quantity_received,
+                buy_market_name: best_buy_market.get_name().to_string(),
+                sell_market_name: best_sell_market.get_name().to_string(),
             }),
         );
     }

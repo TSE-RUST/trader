@@ -8,11 +8,12 @@ use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
 mod arbitrager;
+
 use crate::arbitrager::ArbitrageResult;
 use crate::arbitrager::Arbitrager;
 
 ///the struct for the trader agent
-struct Trader {
+pub struct Trader {
     name: String,
     _money: f32,
     _goods: Vec<Good>,
@@ -314,7 +315,7 @@ fn main() {
     subscribe_each_other!(sol, parse, bfb);
 
     //initialize the trader
-    let mut trader = Trader::new(trader_name, 1000.00, sol, bfb, parse);
+    let mut trader = Trader::new(trader_name, 1000.00, sol.clone(), bfb.clone(), parse.clone());
 
     // test
     let arbitrager = Arbitrager::new("trado".to_string(), sol, bfb, parse);
