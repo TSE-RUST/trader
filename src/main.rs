@@ -292,7 +292,7 @@ fn main() {
     let (mut sol, mut parse, mut bfb) = random_init();
 
     // print the value in good labels for each market
-    println!("{}", "\n\t\tRandomly Generated".blue().bold());
+    println!("{}", "\nRandomly Generated".blue().bold());
     println!("{}", "SOL:".cyan().bold());
     print_values(&sol);
     println!("{}", "PARSE:".cyan().bold());
@@ -308,7 +308,7 @@ fn main() {
     }
 
     // print the value in good labels for each market
-    println!("{}", "\n\t\tWith Initial Quantity".blue().bold());
+    println!("{}", "With Initial Quantity".blue().bold());
     println!("{}", "SOL:".cyan().bold());
     print_values(&sol);
     println!("{}", "PARSE:".cyan().bold());
