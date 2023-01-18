@@ -7,6 +7,7 @@ use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
+use gag::Gag;
 mod arbitrager;
 
 use crate::arbitrager::ArbitrageResult;
@@ -300,7 +301,10 @@ fn main() {
     println!(" ");
 
     // the initialization of the markets with the initial quantity
-    (sol, parse, bfb) = init_with_quantity(100.0, 100.0, 100.0, 100.0);
+    {
+        let hide_stdout = Gag::stdout().unwrap();
+        (sol, parse, bfb) = init_with_quantity(100.0, 100.0, 100.0, 100.0);
+    }
 
     // print the value in good labels for each market
     println!("\t\tWith Initial Quantity");
@@ -313,6 +317,9 @@ fn main() {
     println!(" ");
 
     subscribe_each_other!(sol, parse, bfb);
+
+    // per vedere l'output commentatela
+    let print_gag = Gag::stdout().unwrap();
 
     //initialize the trader
     let mut trader = Trader::new(trader_name, 1000.00, sol.clone(), bfb.clone(), parse.clone());
