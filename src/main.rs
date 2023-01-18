@@ -9,6 +9,7 @@ use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
 use gag::Gag;
 use colored::*;
+
 mod arbitrager;
 
 use crate::arbitrager::ArbitrageResult;
@@ -292,12 +293,12 @@ fn main() {
     let (mut sol, mut parse, mut bfb) = random_init();
 
     // print the value in good labels for each market
-    println!("{}", "\nRandomly Generated".blue().bold());
-    println!("{}", "SOL:".cyan().bold());
+    println!("{}", "\nRandomly Generated".truecolor(30, 144, 255).bold().underline());
+    println!("{}", "SOL:".truecolor(0, 191, 255).bold());
     print_values(&sol);
-    println!("{}", "PARSE:".cyan().bold());
+    println!("{}", "PARSE:".truecolor(0, 191, 255).bold());
     print_values(&parse);
-    println!("{}", "BFB:".cyan().bold());
+    println!("{}", "BFB:".truecolor(0, 191, 255).bold());
     print_values(&bfb);
     println!(" ");
 
@@ -308,12 +309,12 @@ fn main() {
     }
 
     // print the value in good labels for each market
-    println!("{}", "With Initial Quantity".blue().bold());
-    println!("{}", "SOL:".cyan().bold());
+    println!("{}", "With Initial Quantity".truecolor(30, 144, 255).bold().underline());
+    println!("{}", "SOL:".truecolor(0, 191, 255).bold());
     print_values(&sol);
-    println!("{}", "PARSE:".cyan().bold());
+    println!("{}", "PARSE:".truecolor(0, 191, 255).bold());
     print_values(&parse);
-    println!("{}", "BFB:".cyan().bold());
+    println!("{}", "BFB:".truecolor(0, 191, 255).bold());
     print_values(&bfb);
     println!(" ");
 
