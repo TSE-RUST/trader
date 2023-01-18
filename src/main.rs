@@ -8,6 +8,7 @@ use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
 use gag::Gag;
+use colored::*;
 mod arbitrager;
 
 use crate::arbitrager::ArbitrageResult;
@@ -291,12 +292,12 @@ fn main() {
     let (mut sol, mut parse, mut bfb) = random_init();
 
     // print the value in good labels for each market
-    println!("\t\tRandomly Generated");
-    println!("SOL:");
+    println!("{}", "\n\t\tRandomly Generated".blue().bold());
+    println!("{}", "SOL:".cyan().bold());
     print_values(&sol);
-    println!("PARSE:");
+    println!("{}", "PARSE:".cyan().bold());
     print_values(&parse);
-    println!("BFB:");
+    println!("{}", "BFB:".cyan().bold());
     print_values(&bfb);
     println!(" ");
 
@@ -307,12 +308,12 @@ fn main() {
     }
 
     // print the value in good labels for each market
-    println!("\t\tWith Initial Quantity");
-    println!("SOL:");
+    println!("{}", "\n\t\tWith Initial Quantity".blue().bold());
+    println!("{}", "SOL:".cyan().bold());
     print_values(&sol);
-    println!("PARSE:");
+    println!("{}", "PARSE:".cyan().bold());
     print_values(&parse);
-    println!("BFB:");
+    println!("{}", "BFB:".cyan().bold());
     print_values(&bfb);
     println!(" ");
 

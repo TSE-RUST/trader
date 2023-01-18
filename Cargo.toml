@@ -11,3 +11,4 @@ parse_market={version="1.0.2", registry="kellnr"}
 bfb={version="0.1.0", registry="kellnr"}
 market_sol={version="1.0.4", registry="kellnr"}
 gag = "1.0.0"
+colored = "2.0.0"
