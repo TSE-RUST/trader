@@ -1,4 +1,6 @@
 use bfb::bfb_market::Bfb as bfb;
+use colored::*;
+use gag::Gag;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 use std::cell::RefCell;
@@ -7,8 +9,6 @@ use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
-use gag::Gag;
-use colored::*;
 
 mod arbitrager;
 
@@ -293,7 +293,13 @@ fn main() {
     let (mut sol, mut parse, mut bfb) = random_init();
 
     // print the value in good labels for each market
-    println!("{}", "\nRandomly Generated".truecolor(30, 144, 255).bold().underline());
+    println!(
+        "{}",
+        "\nRandomly Generated"
+            .truecolor(30, 144, 255)
+            .bold()
+            .underline()
+    );
     println!("{}", "SOL:".truecolor(0, 191, 255).bold());
     print_values(&sol);
     println!("{}", "PARSE:".truecolor(0, 191, 255).bold());
@@ -309,7 +315,13 @@ fn main() {
     }
 
     // print the value in good labels for each market
-    println!("{}", "With Initial Quantity".truecolor(30, 144, 255).bold().underline());
+    println!(
+        "{}",
+        "With Initial Quantity"
+            .truecolor(30, 144, 255)
+            .bold()
+            .underline()
+    );
     println!("{}", "SOL:".truecolor(0, 191, 255).bold());
     print_values(&sol);
     println!("{}", "PARSE:".truecolor(0, 191, 255).bold());
@@ -324,10 +336,23 @@ fn main() {
     let print_gag = Gag::stdout().unwrap();
 
     //initialize the trader
-    let mut trader = Trader::new(trader_name, 1000.00, sol.clone(), bfb.clone(), parse.clone());
+    let mut trader = Trader::new(
+        trader_name,
+        1000.00,
+        sol.clone(),
+        bfb.clone(),
+        parse.clone(),
+    );
 
     // test
-    let arbitrager = Arbitrager::new("trado".to_string(), sol, bfb, parse);
+    {
+        let mut tmp = (*sol).borrow_mut();
+        let t = tmp
+            .lock_buy(GoodKind::USD, 50., 200., "dsds".to_string())
+            .unwrap();
+        tmp.buy(t, &mut Good::new(GoodKind::EUR, 200.));
+    }
+    let arbitrager = Arbitrager::new("trado".to_string(), &sol, &bfb, &parse);
 
     arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.));
 

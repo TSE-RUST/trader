@@ -30,15 +30,15 @@ impl Arbitrager {
     /// **Lorenzo Tinfena**
     pub fn new(
         trader_name: String,
-        sol: Rc<RefCell<dyn Market>>,
-        bfb: Rc<RefCell<dyn Market>>,
-        parse: Rc<RefCell<dyn Market>>,
+        sol: &Rc<RefCell<dyn Market>>,
+        bfb: &Rc<RefCell<dyn Market>>,
+        parse: &Rc<RefCell<dyn Market>>,
     ) -> Self {
         Arbitrager {
             trader_name,
-            sol: Rc::clone(&sol),
-            bfb: Rc::clone(&bfb),
-            parse: Rc::clone(&parse),
+            sol: Rc::clone(sol),
+            bfb: Rc::clone(bfb),
+            parse: Rc::clone(parse),
         }
     }
 
@@ -66,15 +66,8 @@ impl Arbitrager {
         for goodKind in good_kinds {
             for _sell_market in &markets {
                 for _buy_market in &markets {
-                    // Get some bounds for prices (for price I mean goodKind/EUR)
-
                     let buy_market = (**_buy_market).borrow();
                     let sell_market = (**_sell_market).borrow();
-
-                    let buy_min_price =
-                        buy_market.get_buy_price(goodKind, F32SMALL).unwrap() / F32SMALL;
-                    let sell_max_price =
-                        sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
 
                     // Trying to get the max good (aka goodKind or altcoin or alt) quantity to buy, such as the eur to send is less or equal than the ones I have
                     let mut max_alt_to_receive =
@@ -86,6 +79,10 @@ impl Arbitrager {
                                 available_good_quantity,
                             } => available_good_quantity,
                         };
+                    if max_alt_to_receive == 0. {
+                        continue;
+                    }
+
                     let mut max_eur_to_send = buy_market
                         .get_buy_price(goodKind, max_alt_to_receive)
                         .unwrap();
@@ -95,7 +92,14 @@ impl Arbitrager {
                             .get_buy_price(goodKind, max_alt_to_receive)
                             .unwrap();
                     }
-                    // Get remaining bounds for prices
+
+                    // bounds for prices
+
+                    let buy_min_price =
+                        buy_market.get_buy_price(goodKind, F32SMALL).unwrap() / F32SMALL;
+                    let sell_max_price =
+                        sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
+
                     let buy_max_price = F32SMALL
                         / (max_eur_to_send
                             - (buy_market
@@ -109,10 +113,11 @@ impl Arbitrager {
                                 .get_sell_price(goodKind, max_alt_to_receive - F32SMALL)
                                 .unwrap());
 
-                    if buy_max_price < buy_min_price || sell_max_price < sell_min_price // Skip if prices are not growing with the quantity
+                    // Skip if prices are not growing with the quantity or can't be profit
+                    if buy_max_price < buy_min_price
+                        || sell_max_price < sell_min_price
                         || buy_min_price >= sell_max_price
                     {
-                        // Skip if can't be profit
                         continue;
                     }
 
@@ -144,8 +149,8 @@ impl Arbitrager {
                         best_alt_to_receive = x * max_alt_to_receive;
                         best_kind_alt_to_receive = goodKind;
                         best_eur_to_send = x * max_eur_to_send;
-                        best_buy_market = Rc::clone(&_buy_market);
-                        best_sell_market = Rc::clone(&_sell_market);
+                        best_buy_market = (*_buy_market).clone();
+                        best_sell_market = (*_sell_market).clone();
                     }
                 }
             }
