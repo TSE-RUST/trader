@@ -56,10 +56,10 @@ impl Arbitrager {
         const F32SMALL: f32 = 0.001;
         const F32LARGE: f32 = 1000000000000.;
 
-        let mut best_buy_market = Rc::clone(&self.sol);
-        let mut best_sell_market = Rc::clone(&self.sol);
-        let mut best_max_alt_to_receive: f32 = 0.0;
-        let mut best_max_eur_to_send: f32 = 0.0;
+        let mut best_buy_market = sol::new_random();
+        let mut best_sell_market = sol::new_random();
+        let mut best_alt_to_receive: f32 = 0.0;
+        let mut best_eur_to_send: f32 = 0.0;
         let mut best_kind_alt_to_receive: GoodKind = GoodKind::EUR;
         let mut best_profit = 0.;
         // Try to arbitrage over all currencies
@@ -76,7 +76,7 @@ impl Arbitrager {
                     let sell_max_price =
                         sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
 
-                    // Trying to get the max altcoin (aka goodKind) quantity to buy, such as the eur to send is less or equal than the ones I have
+                    // Trying to get the max good (aka goodKind or altcoin or alt) quantity to buy, such as the eur to send is less or equal than the ones I have
                     let mut max_alt_to_receive =
                         match buy_market.get_buy_price(goodKind, F32LARGE).unwrap_err() {
                             MarketGetterError::NonPositiveQuantityAsked => unimplemented!(),
@@ -109,30 +109,41 @@ impl Arbitrager {
                                 .get_sell_price(goodKind, max_alt_to_receive - F32SMALL)
                                 .unwrap());
 
-                    // Skip markets where prices are not growing with the quantity
-                    if buy_max_price < buy_min_price || sell_max_price < sell_min_price {
+                    if buy_max_price < buy_min_price || sell_max_price < sell_min_price // Skip if prices are not growing with the quantity
+                        || buy_min_price >= sell_max_price
+                    {
+                        // Skip if can't be profit
                         continue;
                     }
 
                     // Compute profit
-                    let profit = if buy_max_price <= sell_min_price {
+                    let (profit, x) = if buy_max_price <= sell_min_price {
                         // First case
-                        sell_market
-                            .get_sell_price(goodKind, max_alt_to_receive)
-                            .unwrap()
-                            - max_eur_to_send
+                        (
+                            sell_market
+                                .get_sell_price(goodKind, max_alt_to_receive)
+                                .unwrap()
+                                - max_eur_to_send,
+                            1.,
+                        )
                     } else {
+                        let x = ((sell_min_price - buy_min_price)
+                            / (buy_max_price - buy_min_price - sell_max_price + sell_min_price));
                         // Second case
-                        max_eur_to_send
-                            * ((sell_min_price - buy_min_price)
-                                / (buy_max_price - buy_min_price + sell_max_price - sell_min_price))
+                        (
+                            sell_market
+                                .get_sell_price(goodKind, x * max_alt_to_receive)
+                                .unwrap()
+                                - max_eur_to_send,
+                            x,
+                        )
                     };
 
                     if profit > best_profit {
                         best_profit = profit;
-                        best_max_alt_to_receive = max_alt_to_receive;
+                        best_alt_to_receive = x * max_alt_to_receive;
                         best_kind_alt_to_receive = goodKind;
-                        best_max_eur_to_send = max_eur_to_send;
+                        best_eur_to_send = x * max_eur_to_send;
                         best_buy_market = Rc::clone(&_buy_market);
                         best_sell_market = Rc::clone(&_sell_market);
                     }
@@ -146,11 +157,11 @@ impl Arbitrager {
         let mut best_buy_market_deref = (*best_buy_market).borrow_mut();
         let mut best_sell_market_deref = (*best_sell_market).borrow_mut();
 
-        // Do actual trade
+        // Do actual trade6
         let buy_token = match best_buy_market_deref.lock_buy(
             best_kind_alt_to_receive,
-            best_max_alt_to_receive * 0.999,
-            best_max_eur_to_send,
+            best_alt_to_receive * 0.999,
+            best_eur_to_send,
             self.trader_name.clone(),
         ) {
             Ok(token) => token,
@@ -159,12 +170,12 @@ impl Arbitrager {
         // TODO handle best_max_eur_to_send
         //==
         let mut alt_coin = best_buy_market_deref
-            .buy(buy_token, &mut eur.split(best_max_eur_to_send).unwrap())
+            .buy(buy_token, &mut eur.split(best_eur_to_send).unwrap())
             .unwrap();
         let sell_token = match best_sell_market_deref.lock_sell(
             best_kind_alt_to_receive,
             alt_coin.get_qty(),
-            best_max_eur_to_send + best_profit,
+            best_eur_to_send + best_profit,
             self.trader_name.clone(),
         ) {
             Ok(token) => token,
@@ -181,13 +192,11 @@ impl Arbitrager {
         return (
             eur,
             Some(ArbitrageResult {
-                eur_sent: best_max_eur_to_send,
+                eur_sent: best_eur_to_send,
                 alt_received: alt_coin_quantity_received,
                 eur_received: eur_quantity_received,
-                buy_market_name: (*best_buy_market)
-                .borrow().get_name().to_string(),
-                sell_market_name: (*best_sell_market)
-                .borrow().get_name().to_string(),
+                buy_market_name: (*best_buy_market).borrow().get_name().to_string(),
+                sell_market_name: (*best_sell_market).borrow().get_name().to_string(),
             }),
         );
     }
