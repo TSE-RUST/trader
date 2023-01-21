@@ -17,6 +17,7 @@ Then if the maximum profit is > 0, it execute the corresponding arbitrage.
 Let's see how a profit can be computed:
 
 Let's say that im looking to buy (the good bought is not important here) from the market A, I will now compare 3 market where I can sell (B, C and D).
+
 ![](assets/a.png)
 
 ## Step 1
@@ -52,6 +53,8 @@ Increasing by x these 2 prices will be equal at some point, the corresponding x,
 ![](assets/c.png)
 
 If sell_min_price is greater or equal than buy_max_price we can have a problem with the previous computations, but we are lucky because we can send all the "max_eur_to_send" quantity (Or we can say that we set x as 1).
+
 ![](assets/d.png)
+
 ## Step 4
 Given the market pair, good, quantity of good to request and quantity of eur to send; which can maximize the profit, we will execute that trade.
