@@ -36,11 +36,12 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "bfb"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+git://advancedprogramming.disi.unitn.it/index"
-checksum = "b6922f1a33c880457256d03fa65922c4b49b77b99199ecee638e1a30a0ddf4d6"
+checksum = "c683240686f58f3002f8e76c2f1b46b1b9755771891052f0f5194217d423ae1f"
 dependencies = [
  "chrono",
+ "log",
  "rand",
  "serde",
  "serde_json",
@@ -602,9 +603,9 @@ checksum = "86f0b0d4bf799edbc74508c1e8bf170ff5f41238e5f8225603ca7caaae2b7860"
 
 [[package]]
 name = "parse_market"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+git://advancedprogramming.disi.unitn.it/index"
-checksum = "1b57e986964c96f7db874bfad810dd4b100a61b468f102587ad16a6b0be3a6fc"
+checksum = "e7b0253a57e2002cb897c9ac8dc24656ca2e1f311a1526aa3ac3113bc5f86a9a"
 dependencies = [
  "chrono",
  "rand",

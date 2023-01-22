@@ -1,6 +1,4 @@
 use bfb::bfb_market::Bfb as bfb;
-use colored::*;
-use gag::Gag;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 use std::cell::RefCell;
@@ -9,11 +7,13 @@ use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
+use gag::Gag;
+use colored::*;
+use crate::arbitrager::Arbitrager;
+use crate::bot::bot;
 
 mod arbitrager;
-
-use crate::arbitrager::ArbitrageResult;
-use crate::arbitrager::Arbitrager;
+mod bot;
 
 ///the struct for the trader agent
 pub struct Trader {
@@ -333,7 +333,7 @@ fn main() {
     subscribe_each_other!(sol, parse, bfb);
 
     // per vedere l'output commentatela
-    let print_gag = Gag::stdout().unwrap();
+    // let print_gag = Gag::stdout().unwrap();
 
     //initialize the trader
     let mut trader = Trader::new(
@@ -356,6 +356,8 @@ fn main() {
 
     arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.));
 
-    test_buy_kind(GoodKind::USD, &mut trader);
-    //test_sell_kind(GoodKind::USD, &mut trader);
+
+    //test_buy_kind(GoodKind::USD, &mut trader);
+    //_test_sell_kind(GoodKind::YEN, &mut trader);
+    bot(&mut trader);
 }
