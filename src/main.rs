@@ -1,4 +1,8 @@
+use crate::arbitrager::Arbitrager;
+use crate::bot::bot;
 use bfb::bfb_market::Bfb as bfb;
+use colored::*;
+use gag::Gag;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 use std::cell::RefCell;
@@ -7,10 +11,6 @@ use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::subscribe_each_other;
-use gag::Gag;
-use colored::*;
-use crate::arbitrager::Arbitrager;
-use crate::bot::bot;
 
 mod arbitrager;
 mod bot;
@@ -336,28 +336,36 @@ fn main() {
     // let print_gag = Gag::stdout().unwrap();
 
     //initialize the trader
-    let mut trader = Trader::new(
-        trader_name,
-        1000.00,
-        sol.clone(),
-        bfb.clone(),
-        parse.clone(),
-    );
+    //let mut trader = Trader::new(
+    //    trader_name,
+    //    1000.00,
+    //    sol.clone(),
+    //    bfb.clone(),
+    //    parse.clone(),
+    //);
 
-    // test
-    {
-        let mut tmp = (*sol).borrow_mut();
+    // test arbitrager
+    /*{
+        let mut tmp = (*parse).borrow_mut();
         let t = tmp
-            .lock_buy(GoodKind::USD, 50., 200., "dsds".to_string())
+            .lock_buy(GoodKind::USD, 25., 200., "dsds".to_string())
             .unwrap();
         tmp.buy(t, &mut Good::new(GoodKind::EUR, 200.));
     }
-    let arbitrager = Arbitrager::new("trado".to_string(), &sol, &bfb, &parse);
+    {
+        let mut tmp = (*parse).borrow_mut();
+        let t = tmp
+            .lock_buy(GoodKind::USD, 25., 200., "dsds".to_string())
+            .unwrap();
+        tmp.buy(t, &mut Good::new(GoodKind::EUR, 200.));
+    }*/
+    for i in 0..1000 {
+        let arbitrager = Arbitrager::new("trado".to_string(), &sol, &bfb, &parse);
 
-    arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.));
-
+        arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.));
+    }
 
     //test_buy_kind(GoodKind::USD, &mut trader);
     //_test_sell_kind(GoodKind::YEN, &mut trader);
-    bot(&mut trader);
+    //bot(&mut trader);
 }

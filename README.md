@@ -11,7 +11,7 @@ An arbitrage is done selling EUR in a market and rebuy as much as possible in an
 Is not guaranteed that it doesn't convenient arbitrages because markets can change price after a trade or lock.
 
 # In detail:
-Assumption: For price I mean spot price (e.g. if 1 EUR corresponds to 2 USD, then EUR/USD=2/1=2)
+Assumption: For price I mean spot price (e.g. if 2 EUR corresponds to 1 USD, then USD/EUR=2/1=2)
 For each pair or market, and for each good (not EUR) it compute the profit gained from 1 arbitrage.
 Then if the maximum profit is > 0, it execute the corresponding arbitrage.
 Let's see how a profit can be computed:

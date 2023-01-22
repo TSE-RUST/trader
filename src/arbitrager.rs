@@ -7,7 +7,7 @@ use std::ops::{Deref, DerefMut};
 use std::rc::Rc;
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
-use unitn_market_2022::market::{Market, MarketGetterError};
+use unitn_market_2022::market::{LockSellError, Market, MarketGetterError};
 
 pub struct Arbitrager {
     sol: Rc<RefCell<dyn Market>>,
@@ -69,6 +69,10 @@ impl Arbitrager {
                     let buy_market = (**_buy_market).borrow();
                     let sell_market = (**_sell_market).borrow();
 
+                    if buy_market.get_name() == sell_market.get_name() {
+                        continue;
+                    }
+
                     // Trying to get the max good (aka goodKind or altcoin or alt) quantity to buy, such as the eur to send is less or equal than the ones I have
                     let mut max_alt_to_receive =
                         match buy_market.get_buy_price(goodKind, F32LARGE).unwrap_err() {
@@ -79,7 +83,8 @@ impl Arbitrager {
                                 available_good_quantity,
                             } => available_good_quantity,
                         };
-                    if max_alt_to_receive == 0. {
+
+                    if max_alt_to_receive <= F32SMALL {
                         continue;
                     }
 
@@ -93,6 +98,10 @@ impl Arbitrager {
                             .unwrap();
                     }
 
+                    if max_alt_to_receive <= F32SMALL {
+                        continue;
+                    }
+
                     // bounds for prices
 
                     let buy_min_price =
@@ -100,18 +109,18 @@ impl Arbitrager {
                     let sell_max_price =
                         sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
 
-                    let buy_max_price = F32SMALL
-                        / (max_eur_to_send
-                            - (buy_market
-                                .get_buy_price(goodKind, max_alt_to_receive - F32SMALL)
-                                .unwrap()));
-                    let sell_min_price = F32SMALL
-                        / (sell_market
-                            .get_sell_price(goodKind, max_alt_to_receive)
-                            .unwrap()
-                            - sell_market
-                                .get_sell_price(goodKind, max_alt_to_receive - F32SMALL)
-                                .unwrap());
+                    let buy_max_price = (max_eur_to_send
+                        - (buy_market
+                            .get_buy_price(goodKind, max_alt_to_receive - F32SMALL)
+                            .unwrap()))
+                        / F32SMALL;
+                    let sell_min_price = (sell_market
+                        .get_sell_price(goodKind, max_alt_to_receive)
+                        .unwrap()
+                        - sell_market
+                            .get_sell_price(goodKind, max_alt_to_receive - F32SMALL)
+                            .unwrap())
+                        / F32SMALL;
 
                     // Skip if prices are not growing with the quantity or can't be profit
                     if buy_max_price < buy_min_price
@@ -159,37 +168,54 @@ impl Arbitrager {
         if best_profit <= 0. {
             return (eur, None);
         }
-        let mut best_buy_market_deref = (*best_buy_market).borrow_mut();
-        let mut best_sell_market_deref = (*best_sell_market).borrow_mut();
 
-        // Do actual trade6
-        let buy_token = match best_buy_market_deref.lock_buy(
-            best_kind_alt_to_receive,
-            best_alt_to_receive * 0.999,
-            best_eur_to_send,
-            self.trader_name.clone(),
-        ) {
-            Ok(token) => token,
-            Err(err) => unimplemented!(),
-        };
-        // TODO handle best_max_eur_to_send
-        //==
-        let mut alt_coin = best_buy_market_deref
-            .buy(buy_token, &mut eur.split(best_eur_to_send).unwrap())
-            .unwrap();
-        let sell_token = match best_sell_market_deref.lock_sell(
-            best_kind_alt_to_receive,
-            alt_coin.get_qty(),
-            best_eur_to_send + best_profit,
-            self.trader_name.clone(),
-        ) {
-            Ok(token) => token,
-            Err(err) => unimplemented!(),
-        };
+        let mut alt_coin = Good::new(GoodKind::EUR, 100.);
+
+        {
+            let mut best_buy_market_deref = (*best_buy_market).borrow_mut();
+
+            // Do actual trade6
+            let buy_token = match best_buy_market_deref.lock_buy(
+                best_kind_alt_to_receive,
+                best_alt_to_receive * 0.999,
+                best_eur_to_send,
+                self.trader_name.clone(),
+            ) {
+                Ok(token) => token,
+                Err(_) => unimplemented!(),
+            };
+            // TODO handle best_max_eur_to_send
+            //==
+            alt_coin = best_buy_market_deref
+                .buy(buy_token, &mut eur.split(best_eur_to_send).unwrap())
+                .unwrap();
+        }
+
         let alt_coin_quantity_received = alt_coin.get_qty();
-        let eur_received = best_sell_market_deref
-            .sell(sell_token, &mut alt_coin)
-            .unwrap();
+        let mut eur_received = Good::new(GoodKind::EUR, 100.);
+        {
+            let mut best_sell_market_deref = (*best_sell_market).borrow_mut();
+
+            // Compute actual offer
+            let offer = best_sell_market_deref
+                .get_sell_price(best_kind_alt_to_receive, alt_coin.get_qty())
+                .unwrap();
+
+            // Do actual trade
+            let sell_token = match best_sell_market_deref.lock_sell(
+                best_kind_alt_to_receive,
+                alt_coin.get_qty(),
+                offer,
+                self.trader_name.clone(),
+            ) {
+                Ok(token) => token,
+                Err(_) => unimplemented!(),
+            };
+
+            eur_received = best_sell_market_deref
+                .sell(sell_token, &mut alt_coin)
+                .unwrap();
+        }
 
         let eur_quantity_received = eur_received.get_qty();
         eur.merge(eur_received);
