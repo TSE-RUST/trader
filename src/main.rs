@@ -362,7 +362,12 @@ fn main() {
     for i in 0..1000 {
         let arbitrager = Arbitrager::new("trado".to_string(), &sol, &bfb, &parse);
 
-        arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.));
+        match arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.)).1 {
+            Some(res) => {
+                print!("{}......{}", res.buy_market_name, res.sell_market_name);
+            },
+            None => todo!(),
+        }
     }
 
     //test_buy_kind(GoodKind::USD, &mut trader);

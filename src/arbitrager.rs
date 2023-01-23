@@ -17,11 +17,11 @@ pub struct Arbitrager {
 }
 
 pub struct ArbitrageResult {
-    eur_sent: f32,
-    alt_received: f32,
-    eur_received: f32,
-    buy_market_name: String,
-    sell_market_name: String,
+    pub eur_sent: f32,
+    pub alt_received: f32,
+    pub eur_received: f32,
+    pub buy_market_name: String,
+    pub sell_market_name: String,
 }
 
 impl Arbitrager {
@@ -53,7 +53,7 @@ impl Arbitrager {
 
         let markets = vec![self.sol.clone(), self.bfb.clone(), self.parse.clone()];
 
-        const F32SMALL: f32 = 0.001;
+        const F32SMALL: f32 = 0.01;
         const F32LARGE: f32 = 1000000000000.;
 
         let mut best_buy_market = sol::new_random();
@@ -68,10 +68,6 @@ impl Arbitrager {
                 for _buy_market in &markets {
                     let buy_market = (**_buy_market).borrow();
                     let sell_market = (**_sell_market).borrow();
-
-                    if buy_market.get_name() == sell_market.get_name() {
-                        continue;
-                    }
 
                     // Trying to get the max good (aka goodKind or altcoin or alt) quantity to buy, such as the eur to send is less or equal than the ones I have
                     let mut max_alt_to_receive =
@@ -91,6 +87,7 @@ impl Arbitrager {
                     let mut max_eur_to_send = buy_market
                         .get_buy_price(goodKind, max_alt_to_receive)
                         .unwrap();
+
                     while max_eur_to_send > eur.get_qty() {
                         max_alt_to_receive /= 2.;
                         max_eur_to_send = buy_market
@@ -104,7 +101,7 @@ impl Arbitrager {
 
                     // bounds for prices
 
-                    let buy_min_price =
+                    let mut buy_min_price =
                         buy_market.get_buy_price(goodKind, F32SMALL).unwrap() / F32SMALL;
                     let sell_max_price =
                         sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
@@ -114,7 +111,7 @@ impl Arbitrager {
                             .get_buy_price(goodKind, max_alt_to_receive - F32SMALL)
                             .unwrap()))
                         / F32SMALL;
-                    let sell_min_price = (sell_market
+                    let mut sell_min_price = (sell_market
                         .get_sell_price(goodKind, max_alt_to_receive)
                         .unwrap()
                         - sell_market
@@ -122,11 +119,15 @@ impl Arbitrager {
                             .unwrap())
                         / F32SMALL;
 
-                    // Skip if prices are not growing with the quantity or can't be profit
-                    if buy_max_price < buy_min_price
-                        || sell_max_price < sell_min_price
-                        || buy_min_price >= sell_max_price
-                    {
+                    if buy_min_price > buy_max_price {
+                        buy_min_price = buy_max_price;
+                    }
+
+                    if sell_min_price > sell_max_price {
+                        sell_min_price = sell_max_price;
+                    }
+
+                    if buy_min_price >= sell_max_price {
                         continue;
                     }
 

@@ -58,3 +58,6 @@ If sell_min_price is greater or equal than buy_max_price we can have a problem w
 
 ## Step 4
 Given the market pair, good, quantity of good to request and quantity of eur to send; which can maximize the profit, we will execute that trade.
+
+# Some adaptations
+In the case of buy_market max_price is lower than min_price, then max_price=min_price, the opposite in the case of sell_market, if this occours is an exploitation of the market. buy_market and sell_market in a trade could be the same, if this, is another exploitation.
