@@ -202,9 +202,9 @@ impl Arbitrager {
                 .get_sell_price(best_kind_alt_to_receive, alt_coin.get_qty())
                 .unwrap();
 
-            if offer.get_qty() <= 0. { // get_sell_price could return 0, but in lock_sell I can't pass 0
-                return (eur, None);
-            }
+            // if offer.get_qty() <= 0. { // get_sell_price could return 0, but in lock_sell I can't pass 0
+            //     return (eur, None);
+            // }
             
             // Do actual trade
             let sell_token = match best_sell_market_deref.lock_sell(
