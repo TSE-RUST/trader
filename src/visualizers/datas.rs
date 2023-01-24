@@ -37,6 +37,7 @@ pub struct TraderUi {
     pub current_trade: u32,
     pub quantity_str: String,
     pub boolean: bool,
+    pub safe_mode: bool,
 }
 
 /// the SingleMarket struct is used to store the data of
@@ -53,7 +54,7 @@ impl TraderUi {
     /// the new function creates a new instance of the TraderUi struct
     pub fn new() -> Self {
         Self {
-            current_view: 1,
+            current_view: 0,
             bfb_kinds: vector![" ".to_string(), " ".to_string(), " ".to_string(), " ".to_string()],
             bfb_quantities: vector![0.0, 0.0, 0.0, 0.0],
             bfb_exchange_rate_buy: vector![0.0, 0.0, 0.0, 0.0],
@@ -72,6 +73,7 @@ impl TraderUi {
             current_trade: 0,
             quantity_str: " ".to_string(),
             boolean: false,
+            safe_mode: true,
         }
     }
 
