@@ -1,11 +1,12 @@
 // library dependencies
-use druid::{Color, theme, Widget, WidgetExt};
+use druid::{Color, RenderContext, theme, Widget, WidgetExt};
 use druid::im::Vector;
-use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split, TextBox};
+use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, Painter, ProgressBar, Radio, Slider, Split, TextBox};
 
 // local dependencies
 use crate::TraderUi;
 use crate::visualizers::datas::Trader;
+use crate::visualizers::custom_widget::custom_button;
 
 /// This function builds the widget that will be displayed
 /// on the user side of the application.
@@ -100,50 +101,23 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         .center();
 
     // market buttons
-    let button_bfb = Button::new("BFB")
+    let button_bfb = custom_button("BFB")
         .on_click(|ctx, data: &mut TraderUi, _| {
             data.current_trade = 0;
-            println!("current trade: BFB");
-        })
-        .border(({
-            let mut a = Color::from_hex_str("#ffffff").unwrap();
-            if true {
-                a = Color::from_hex_str("#5cc4ff").unwrap();
-            }
-            a
-        }), 2.0)
-        .padding(5.0)
-        .center();
+            println!("BFB button clicked");
+        });
 
-    let button_sol = Button::new("SOL")
+    let button_sol = custom_button("SOL")
         .on_click(|ctx, data: &mut TraderUi, _| {
             data.current_trade = 1;
-            println!("current trade: SOL");
-        })
-        .border(({
-            let mut a = Color::from_hex_str("#ffffff").unwrap();
-            if true {
-                a = Color::from_hex_str("#5cc4ff").unwrap();
-            }
-            a
-        }), 2.0)
-        .padding(5.0)
-        .center();
+            println!("SOL button clicked");
+        });
 
-    let button_parse = Button::new("PARSE")
+    let button_parse = custom_button("PARSE")
         .on_click(|ctx, data: &mut TraderUi, _| {
             data.current_trade = 2;
-            println!("current trade: PARSE");
-        })
-        .border(({
-            let mut a = Color::from_hex_str("#ffffff").unwrap();
-            if true {
-                a = Color::from_hex_str("#5cc4ff").unwrap();
-            }
-            a
-        }), 2.0)
-        .padding(5.0)
-        .center();
+            println!("PARSE button clicked");
+        });
 
     let flex_buttons_markets = Flex::row()
         .with_child(button_bfb)
@@ -151,6 +125,40 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(button_sol)
         .with_spacer(40.0)
         .with_child(button_parse)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(5.0)
+        .center();
+
+    // good buttons
+    let button_eur = custom_button("EUR")
+        .on_click(|ctx, data: &mut TraderUi, _| {
+            println!("EUR button clicked");
+        });
+
+    let button_yen = custom_button("YEN")
+        .on_click(|ctx, data: &mut TraderUi, _| {
+            println!("YEN button clicked");
+        });
+
+    let button_usd = custom_button("USD")
+        .on_click(|ctx, data: &mut TraderUi, _| {
+            println!("USD button clicked")
+        });
+
+    let button_yuan = custom_button("YUAN")
+        .on_click(|ctx, data: &mut TraderUi, _| {
+            println!("YUAN button clicked");
+        });
+
+    let flex_buttons_goods = Flex::row()
+        .with_child(button_eur)
+        .with_spacer(40.0)
+        .with_child(button_yen)
+        .with_spacer(40.0)
+        .with_child(button_usd)
+        .with_spacer(40.0)
+        .with_child(button_yuan)
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0)
@@ -190,19 +198,15 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         );
 
     // trade buttons
-    let button_buy = Button::new("BUY")
+    let button_buy = custom_button("BUY")
         .on_click(|ctx, data: &mut TraderUi, _| {
-            // TODO
-        })
-        .border(Color::from_hex_str("#ffffff").unwrap(), 2.0)
-        .padding(5.0);
+            println!("BUY button clicked")
+        });
 
-    let button_sell = Button::new("SELL")
+    let button_sell = custom_button("SELL")
         .on_click(|ctx, data: &mut TraderUi, _| {
-            // TODO
-        })
-        .border(Color::from_hex_str("#ffffff").unwrap(), 2.0)
-        .padding(5.0);
+            println!("SELL button clicked")
+        });
 
     let flex_buttons_trades = Flex::row()
         .with_child(button_buy)
@@ -216,6 +220,8 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
     // trader central panel
     let centralpanel = Flex::column()
         .with_child(flex_buttons_markets)
+        .with_spacer(20.0)
+        .with_child(flex_buttons_goods)
         .with_spacer(20.0)
         .with_child(slider.center())
         .with_spacer(20.0)

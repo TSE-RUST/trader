@@ -36,12 +36,14 @@ pub struct TraderUi {
     pub quantity: f64,
     pub current_trade: u32,
     pub quantity_str: String,
+    pub boolean: bool,
 }
 
 /// the SingleMarket struct is used to store the data of
 /// a single market
 #[derive(Clone, Data, Lens)]
 pub struct Trader {
+    pub(crate) name: String,
     pub(crate) money: f32,
     pub(crate) goods: Vector<f32>,
 }
@@ -65,10 +67,11 @@ impl TraderUi {
             parse_exchange_rate_buy: vector![0.0, 0.0, 0.0, 0.0],
             parse_exchange_rate_sell: vector![0.0, 0.0, 0.0, 0.0],
             markets: vector![bfb::new_random(), sol::new_random(), parse::new_random(),],
-            trader: Trader { money: 0.0, goods: vector![0.0, 0.0, 0.0] },
+            trader: Trader { name: "TRADER TSE".to_string(), money: 0.0, goods: vector![0.0, 0.0, 0.0] },
             quantity: 0.0,
             current_trade: 0,
             quantity_str: " ".to_string(),
+            boolean: false,
         }
     }
 }
