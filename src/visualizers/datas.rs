@@ -9,6 +9,7 @@ use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
+use unitn_market_2022::good::good::Good;
 
 #[path = "../bots/mod.rs"]
 mod bots;
@@ -31,13 +32,18 @@ pub struct TraderUi {
     pub parse_exchange_rate_buy: Vector<f32>,
     pub parse_exchange_rate_sell: Vector<f32>,
     pub markets: Vector<Rc<RefCell<dyn Market>>>,
+    pub trader: Trader,
+    pub quantity: f64,
+    pub current_trade: u32,
+    pub quantity_str: String,
 }
 
 /// the SingleMarket struct is used to store the data of
 /// a single market
 #[derive(Clone, Data, Lens)]
-struct SingleMarket {
-    market: Rc<RefCell<dyn Market>>,
+pub struct Trader {
+    pub(crate) money: f32,
+    pub(crate) goods: Vector<f32>,
 }
 
 /// impl block of the TraderUi struct
@@ -59,6 +65,10 @@ impl TraderUi {
             parse_exchange_rate_buy: vector![0.0, 0.0, 0.0, 0.0],
             parse_exchange_rate_sell: vector![0.0, 0.0, 0.0, 0.0],
             markets: vector![bfb::new_random(), sol::new_random(), parse::new_random(),],
+            trader: Trader { money: 0.0, goods: vector![0.0, 0.0, 0.0] },
+            quantity: 0.0,
+            current_trade: 0,
+            quantity_str: " ".to_string(),
         }
     }
 }
@@ -103,6 +113,8 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.parse_quantities = quantities_parse;
     app.parse_exchange_rate_buy = exchange_rate_buy_parse;
     app.parse_exchange_rate_sell = exchange_rate_sell_parse;
+
+    app.trader.money = 100.0;
 
     app
 }

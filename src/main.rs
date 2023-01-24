@@ -75,7 +75,7 @@ impl Trader {
 
 fn main() {
     //initialize the trader name
-    let _ = "TSE".to_string();
+    let trader_name = "TSE".to_string();
 
     // the random initialization of the markets
     let (mut sol, mut parse, mut bfb) = random_init();
@@ -124,13 +124,13 @@ fn main() {
     // let print_gag = Gag::stdout().unwrap();
 
     //initialize the trader
-    //let mut trader = Trader::new(
-    //    trader_name,
-    //    1000.00,
-    //    sol.clone(),
-    //    bfb.clone(),
-    //    parse.clone(),
-    //);
+    let mut trader = Trader::new(
+       trader_name,
+       1000.00,
+       sol.clone(),
+       bfb.clone(),
+       parse.clone(),
+    );
 
     // test arbitrager
     /*{
