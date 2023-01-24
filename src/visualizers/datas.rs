@@ -33,11 +33,12 @@ pub struct TraderUi {
     pub parse_exchange_rate_sell: Vector<f32>,
     pub markets: Vector<Rc<RefCell<dyn Market>>>,
     pub trader: Trader,
-    pub quantity: f64,
-    pub current_trade: u32,
-    pub quantity_str: String,
+    pub percentage: f64,
     pub boolean: bool,
     pub safe_mode: bool,
+    pub selected_market: String,
+    pub selected_good: String,
+    pub selected_method_of_trade: String,
 }
 
 /// the SingleMarket struct is used to store the data of
@@ -69,16 +70,17 @@ impl TraderUi {
             parse_exchange_rate_sell: vector![0.0, 0.0, 0.0, 0.0],
             markets: vector![bfb::new_random(), sol::new_random(), parse::new_random(),],
             trader: Trader { name: "TRADER TSE".to_string(), money: 0.0, goods: vector![0.0, 0.0, 0.0] },
-            quantity: 0.0,
-            current_trade: 0,
-            quantity_str: " ".to_string(),
+            percentage: 1.0,
             boolean: false,
             safe_mode: true,
+            selected_market: "BFB".to_string(),
+            selected_good: "EUR".to_string(),
+            selected_method_of_trade: "BUY".to_string(),
         }
     }
 
     pub fn return_quantity(&self) -> f64 {
-        self.quantity
+        self.percentage
     }
 }
 

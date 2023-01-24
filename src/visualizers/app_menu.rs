@@ -40,11 +40,11 @@ fn create_menu(base: Menu<TraderUi>) -> Menu<TraderUi> {
     base.entry(
         Menu::new(LocalizedString::new("App"))
             .entry(
-                MenuItem::new(LocalizedString::new("Bot Mode"))
+                MenuItem::new(LocalizedString::new("Trader Mode"))
                     .on_activate(|_ctx, data: &mut TraderUi, _env| data.current_view = 0),
             )
             .entry(
-                MenuItem::new(LocalizedString::new("Trader Mode"))
+                MenuItem::new(LocalizedString::new("Bot Mode"))
                     .on_activate(|_ctx, data: &mut TraderUi, _env| data.current_view = 1),
             )
             .separator()
