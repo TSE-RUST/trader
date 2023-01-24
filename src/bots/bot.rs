@@ -1,9 +1,14 @@
+// libraries dependencies
 use std::cell::RefCell;
 use std::rc::Rc;
+
+// market dependencies
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::wait_one_day;
+
+// local dependencies
 use crate::Trader;
 
 

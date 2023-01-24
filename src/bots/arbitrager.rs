@@ -1,13 +1,12 @@
-use bfb::bfb_market::Bfb as bfb;
-use market_sol::SOLMarket as sol;
-use parse_market::ParseMarket as parse;
-use std::borrow::BorrowMut;
+// libraries dependencies
 use std::cell::RefCell;
-use std::ops::{Deref, DerefMut};
 use std::rc::Rc;
+
+// market dependencies
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
-use unitn_market_2022::market::{LockSellError, Market, MarketGetterError};
+use unitn_market_2022::market::{Market, MarketGetterError};
+use market_sol::SOLMarket as sol;
 
 pub struct Arbitrager {
     sol: Rc<RefCell<dyn Market>>,
@@ -143,8 +142,8 @@ impl Arbitrager {
                             1.,
                         )
                     } else {
-                        let x = ((sell_max_price - buy_min_price)
-                            / (buy_max_price - buy_min_price + sell_max_price - sell_min_price));
+                        let x = (sell_max_price - buy_min_price)
+                            / (buy_max_price - buy_min_price + sell_max_price - sell_min_price);
                         // Second case
                         (
                             sell_market
