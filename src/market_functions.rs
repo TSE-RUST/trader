@@ -3,12 +3,12 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 // market dependencies
-use unitn_market_2022::good::good::Good;
-use unitn_market_2022::good::good_kind::GoodKind;
-use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
+use unitn_market_2022::good::good::Good;
+use unitn_market_2022::good::good_kind::GoodKind;
+use unitn_market_2022::market::Market;
 
 // local dependencies
 use crate::Trader;
@@ -24,7 +24,6 @@ pub(crate) fn initgoods(eur: f32, usd: f32, yen: f32, yuan: f32) -> Vec<Good> {
     goods.push(Good::new(GoodKind::YUAN, yuan));
     goods
 }
-
 
 /// the initialization function randomly generated the initial quantity in the markets
 ///

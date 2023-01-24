@@ -6,7 +6,7 @@ Every time you want to start the bot, you have to create a new "Arbitrager" pass
 
 Its goal is to maximize only EUR through arbitrage over USD, YEN, YUAN, and over all three markets
 
-An arbitrage is done selling EUR in a market and rebuy as much as possible in another market. If that seems not convenient it doesn't make any arbitrage and the function returns None.
+An arbitrage is done selling EUR in a market and rebuy as much as possible in another market. If none arbitrage seems convenient it doesn't make any arbitrage and the function returns None as last parameter (it doesn nothing).
 
 Is not guaranteed that it doesn't convenient arbitrages because markets can change price after a trade or lock.
 
@@ -61,3 +61,4 @@ Given the market pair, good, quantity of good to request and quantity of eur to 
 
 # Some adaptations
 In the case of buy_market max_price is lower than min_price, then max_price=min_price, the opposite in the case of sell_market, if this occours is an exploitation of the market. buy_market and sell_market in a trade could be the same, if this, is another exploitation.
+It can be returned also a rest of good along with the EUR good, because in the first trade there can be the possibility that the goods or prices in the sell_market could change, so it tries to sell all goods at the maximum price as possible, and return the rest.

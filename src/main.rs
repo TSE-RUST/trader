@@ -1,9 +1,10 @@
 // libraries dependencies
-use std::cell::RefCell;
-use gag::Gag;
 use colored::*;
-use std::rc::Rc;
 use druid::{AppLauncher, WindowDesc};
+use gag::Gag;
+use std::cell::RefCell;
+use std::rc::Rc;
+use unitn_market_2022::good::good_kind::GoodKind;
 
 // market dependencies
 use unitn_market_2022::good::good::Good;
@@ -18,7 +19,6 @@ use bots::bot::bot;
 // todo()
 use bots::arbitrager::Arbitrager;
 
-
 mod visualizers;
 
 // function that creates the menu of the application
@@ -30,7 +30,6 @@ use visualizers::datas::TraderUi;
 // function that initializes the datas inside the TraderUi struct
 use visualizers::datas::initialize_quantities;
 
-
 mod market_functions;
 
 // function that initializes the goods for the trader
@@ -41,7 +40,6 @@ use market_functions::random_init;
 use market_functions::init_with_quantity;
 // function that prints the goods of the markets
 use market_functions::print_values;
-
 
 ///the struct for the trader agent
 pub struct Trader {
@@ -150,16 +148,54 @@ fn main() {
         tmp.buy(t, &mut Good::new(GoodKind::EUR, 200.));
     }*/
 
-    // for i in 0..1000 {
-    //     let arbitrager = Arbitrager::new("trado".to_string(), &sol, &bfb, &parse);
-    //
-    //     match arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.)).1 {
-    //         Some(res) => {
-    //             print!("{}......{}", res.buy_market_name, res.sell_market_name);
-    //         },
-    //         None => todo!(),
-    //     }
-    // }
+    // TEST ARBITRAGE
+    //{
+    //    let mut profit = 0.;
+    //    let mut usd = Good::new(GoodKind::USD, 0.);
+    //    let mut yen = Good::new(GoodKind::YEN, 0.);
+    //    let mut yuan = Good::new(GoodKind::YUAN, 0.);
+    //    for i in 0..100 {
+    //        let arbitrager = Arbitrager::new("trado".to_string(), &sol, &bfb, &parse);
+    //        //
+    //        let tmp = arbitrager.arbitrage(Good::new(GoodKind::EUR, 1000.));
+    //        profit += tmp.0.get_qty();
+    //        match tmp.1 {
+    //            Some(g) => match g.get_kind() {
+    //                GoodKind::EUR => todo!(),
+    //                GoodKind::YEN => {
+    //                    yen.merge(g);
+    //                }
+    //                GoodKind::USD => {
+    //                    usd.merge(g);
+    //                }
+    //                GoodKind::YUAN => {
+    //                    yuan.merge(g);
+    //                }
+    //            },
+    //            None => {}
+    //        }
+    //        match tmp.2 {
+    //            Some(res) => {
+    //                println!();
+//
+    //                println!(
+    //                    "😉 {}......{}......{}",
+    //                    res.buy_market_name,
+    //                    res.sell_market_name,
+    //                    res.eur_received - res.eur_sent
+    //                );
+    //            }
+    //            None => {}
+    //        }
+    //    }
+    //    println!(
+    //        "EUR gained: {}, USD: {}, YEN: {}, YUAN: {}",
+    //        profit,
+    //        usd.get_qty(),
+    //        yen.get_qty(),
+    //        yuan.get_qty()
+    //    );
+    //}
 
     //test_buy_kind(GoodKind::USD, &mut trader);
     //_test_sell_kind(GoodKind::YEN, &mut trader);
@@ -184,5 +220,4 @@ fn main() {
     AppLauncher::with_window(main_window)
         .launch(initial_data)
         .expect("Failed to launch application");
-
 }

@@ -42,11 +42,13 @@ impl Arbitrager {
         }
     }
 
-    fn get_best_quantity_buy(good_kind: GoodKind, max_quantity: f32) {}
-
-    pub fn arbitrage(&self, mut eur: Good) -> (Good, Option<ArbitrageResult>) {
+    // Pass the eur you want to invest, and returns:
+    // 1. eur returned back (could be with 0 quantity)
+    // 2. optional good as rest as the arbitrage
+    // 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the second returned parameter is None
+    pub fn arbitrage(&self, mut eur: Good) -> (Good, Option<Good>, Option<ArbitrageResult>) {
         if eur.get_qty() <= 0. {
-            return (eur, None);
+            return (eur, None, None);
         }
 
         let good_kinds = vec![GoodKind::USD, GoodKind::YEN, GoodKind::YUAN];
@@ -93,10 +95,9 @@ impl Arbitrager {
                         max_eur_to_send = buy_market
                             .get_buy_price(goodKind, max_alt_to_receive)
                             .unwrap();
-                    }
-
-                    if max_alt_to_receive <= F32SMALL {
-                        continue;
+                        if max_alt_to_receive <= F32SMALL {
+                            continue;
+                        }
                     }
 
                     // bounds for prices
@@ -142,8 +143,8 @@ impl Arbitrager {
                             1.,
                         )
                     } else {
-                        let x = ((sell_min_price - buy_min_price)
-                            / (buy_max_price - buy_min_price - sell_max_price + sell_min_price));
+                        let x = ((sell_max_price - buy_min_price)
+                            / (buy_max_price - buy_min_price + sell_max_price - sell_min_price));
                         // Second case
                         (
                             sell_market
@@ -167,7 +168,7 @@ impl Arbitrager {
         }
 
         if best_profit <= 0. {
-            return (eur, None);
+            return (eur, None, None);
         }
 
         let mut alt_coin = Good::new(GoodKind::EUR, 100.);
@@ -175,41 +176,71 @@ impl Arbitrager {
         {
             let mut best_buy_market_deref = (*best_buy_market).borrow_mut();
 
-            // Do actual trade6
+            // Do actual trade
             let buy_token = match best_buy_market_deref.lock_buy(
                 best_kind_alt_to_receive,
-                best_alt_to_receive * 0.999,
+                best_alt_to_receive,
                 best_eur_to_send,
                 self.trader_name.clone(),
             ) {
                 Ok(token) => token,
                 Err(_) => unimplemented!(),
             };
-            // TODO handle best_max_eur_to_send
-            //==
+
             alt_coin = best_buy_market_deref
                 .buy(buy_token, &mut eur.split(best_eur_to_send).unwrap())
                 .unwrap();
         }
 
         let alt_coin_quantity_received = alt_coin.get_qty();
+
+        if alt_coin_quantity_received <= 0. {
+            return (eur, None, None);
+        }
+
+        let mut rest = None;
         let mut eur_received = Good::new(GoodKind::EUR, 100.);
         {
             let mut best_sell_market_deref = (*best_sell_market).borrow_mut();
 
-            // Compute actual offer
-            let offer = best_sell_market_deref
-                .get_sell_price(best_kind_alt_to_receive, alt_coin.get_qty())
-                .unwrap();
+            let mut eur_budget = 0.;
+            for good in best_sell_market_deref.get_goods() {
+                if good.good_kind == GoodKind::EUR {
+                    eur_budget = good.quantity;
+                }
+            }
 
-            // if offer.get_qty() <= 0. { // get_sell_price could return 0, but in lock_sell I can't pass 0
-            //     return (eur, None);
-            // }
-            
+            // Compute actual qty_to_send and offer
+            let mut qty_to_send = alt_coin.get_qty();
+            let mut offer = best_sell_market_deref
+                .get_sell_price(best_kind_alt_to_receive, qty_to_send)
+                .unwrap();
+            while offer > eur_budget {
+                qty_to_send /= 2.;
+                offer = best_sell_market_deref
+                    .get_sell_price(best_kind_alt_to_receive, qty_to_send)
+                    .unwrap();
+                if offer <= F32SMALL {
+                    break;
+                }
+            }
+            if offer <= F32SMALL {
+                return (eur, Some(alt_coin), None);
+            }
+
+            let mut alt_coin_to_send: Good;
+            if qty_to_send == alt_coin.get_qty() {
+                alt_coin_to_send = alt_coin;
+                rest = None;
+            } else {
+                alt_coin_to_send = alt_coin.split(qty_to_send).unwrap();
+                rest = Some(alt_coin);
+            };
+
             // Do actual trade
             let sell_token = match best_sell_market_deref.lock_sell(
                 best_kind_alt_to_receive,
-                alt_coin.get_qty(),
+                alt_coin_to_send.get_qty(),
                 offer,
                 self.trader_name.clone(),
             ) {
@@ -218,7 +249,7 @@ impl Arbitrager {
             };
 
             eur_received = best_sell_market_deref
-                .sell(sell_token, &mut alt_coin)
+                .sell(sell_token, &mut alt_coin_to_send)
                 .unwrap();
         }
 
@@ -227,6 +258,7 @@ impl Arbitrager {
 
         return (
             eur,
+            rest,
             Some(ArbitrageResult {
                 eur_sent: best_eur_to_send,
                 alt_received: alt_coin_quantity_received,
