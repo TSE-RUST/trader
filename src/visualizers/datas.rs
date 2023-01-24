@@ -74,6 +74,10 @@ impl TraderUi {
             boolean: false,
         }
     }
+
+    pub fn return_quantity(&self) -> f64 {
+        self.quantity
+    }
 }
 
 /// support functions of the TraderUi struct:
@@ -117,7 +121,8 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.parse_exchange_rate_buy = exchange_rate_buy_parse;
     app.parse_exchange_rate_sell = exchange_rate_sell_parse;
 
-    app.trader.money = 100.0;
+    app.trader.money = 40000.0;
+    app.trader.goods = vector![10000.0, 20000.0, 30000.0];
 
     app
 }

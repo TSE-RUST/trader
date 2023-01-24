@@ -1,12 +1,13 @@
 // library dependencies
-use druid::{Color, RenderContext, theme, Widget, WidgetExt};
+use druid::{Color, KeyOrValue, lens, RenderContext, theme, Widget, WidgetExt};
 use druid::im::Vector;
-use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, Painter, ProgressBar, Radio, Slider, Split, TextBox};
+use druid::widget::{Axis, Button, CrossAxisAlignment, Flex, KnobStyle, Label, MainAxisAlignment, Painter, ProgressBar, Radio, Slider, Split, TextBox, ViewSwitcher};
 
 // local dependencies
 use crate::TraderUi;
 use crate::visualizers::datas::Trader;
 use crate::visualizers::custom_widget::custom_button;
+use crate::visualizers::datas::trader_ui_derived_lenses::trader;
 
 /// This function builds the widget that will be displayed
 /// on the user side of the application.
@@ -35,10 +36,10 @@ pub(crate) fn user_side() -> impl Widget<TraderUi> {
 fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // trader header
-    let label_trader = Label::new("Trader".to_string())
+    let label_trader = Label::new("Tokyo Stock Exchange Trader".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(35.0)
-        .padding(5.0);
+        .with_text_size(35.0);
+        // .padding(5.0);
 
     let label_trader_eur = Flex::column()
         .with_child(Label::new("EUR".to_string())
@@ -97,8 +98,8 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(label_trader_yuan)
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
-        .padding(5.0)
-        .center();
+        .padding(25.0);
+        // .center();
 
     // market buttons
     let button_bfb = custom_button("BFB")
@@ -127,8 +128,8 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(button_parse)
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
-        .padding(5.0)
-        .center();
+        .padding(5.0);
+    // .center();
 
     // good buttons
     let button_eur = custom_button("EUR")
@@ -161,41 +162,49 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(button_yuan)
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
-        .padding(5.0)
-        .center();
+        .padding(5.0);
+    // .center();
 
     // quantity textbox
     let textbox = TextBox::new().lens(TraderUi::quantity_str);
 
     // quantity slider
-    let slider = Flex::column()
+    let slider = Flex::row()
         .with_child(
             Slider::new()
                 .with_range(0.0, 1.0)
-                .with_step(0.01)
-                .lens(TraderUi::quantity),
+                // .with_step(0.10)
+                .lens(TraderUi::quantity)
+                .fix_width(180.0),
         )
-        .with_spacer(4.0);
-
-    // quantity progressbar
-    let progressbar = Flex::column()
-        .with_child(ProgressBar::new().lens(TraderUi::quantity))
         .with_spacer(4.0)
         .with_child(Label::new(|data: &TraderUi, _: &_| {
-            format!("{:.1}", data.quantity * 100.0)
-            // format!("{:.1}%", data.quantity * 100.0)
+            let a = format!("Quantity: {:.2}", data.quantity * data.trader.money as f64);
+            //if data.quantity_str is numeric, then use that instead
+            if data.quantity_str.parse::<f64>().is_ok() {
+                format!("Quantity: {:.2}", data.quantity_str.parse::<f64>().unwrap())
+            } else {
+                a
+            }
         }))
         .with_spacer(4.0)
         .with_child(
             Flex::row()
                 .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
-                    data.quantity = (data.quantity - 0.05).max(0.0);
+                    data.quantity = (data.quantity - 0.005).max(0.0);
                 }))
                 .with_spacer(4.0)
                 .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                    data.quantity = (data.quantity + 0.05).min(1.0);
+                    data.quantity = (data.quantity + 0.005).min(1.0);
                 })),
-        );
+        )
+        .with_spacer(4.0)
+        .with_child(textbox);
+
+    // quantity progressbar
+    let progressbar = Flex::column()
+        .with_child(ProgressBar::new().lens(TraderUi::quantity).fix_width(380.0))
+        .with_spacer(4.0);
 
     // trade buttons
     let button_buy = custom_button("BUY")
@@ -214,26 +223,36 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(button_sell)
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
-        .padding(5.0)
-        .center();
+        .padding(5.0);
+    // .center();
 
     // trader central panel
     let centralpanel = Flex::column()
+        .with_child(Label::new(" Choose a market".to_string())
+            .with_text_color(Color::rgb8(176, 196, 222))
+            .with_text_size(26.0))
         .with_child(flex_buttons_markets)
         .with_spacer(20.0)
+        .with_child(Label::new(" Choose a good".to_string())
+            .with_text_color(Color::rgb8(176, 196, 222))
+            .with_text_size(26.0))
         .with_child(flex_buttons_goods)
         .with_spacer(20.0)
-        .with_child(slider.center())
+        .with_child(Label::new(" Choose how to trade".to_string())
+            .with_text_color(Color::rgb8(176, 196, 222))
+            .with_text_size(26.0))
+        .with_child(flex_buttons_trades)
         .with_spacer(20.0)
-        .with_child(textbox.center())
+        .with_child(slider)
         .with_spacer(20.0)
-        .with_child(progressbar.center())
-        .with_spacer(20.0)
-        .with_child(flex_buttons_trades.center())
+        // .with_child(textbox.center())
+        // .with_spacer(20.0)
+        .with_child(progressbar)
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0)
-        .center();
+        .padding(30.0);
+        // .center();
 
     // trader bottom panel
     let bottompanel = Label::new("Consigli interessanti su cosa acquistare".to_string())
