@@ -9,13 +9,15 @@ use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
-use unitn_market_2022::good::good::Good;
 
+// local dependencies
 #[path = "../bots/mod.rs"]
 mod bots;
 
 /// the TraderUi struct is the main struct which
 /// contains the data of the application
+///
+/// **Federico Brancasi**
 #[derive(Clone, Data, Lens)]
 pub struct TraderUi {
     pub current_view: u32,
@@ -43,6 +45,8 @@ pub struct TraderUi {
 
 /// the SingleMarket struct is used to store the data of
 /// a single market
+///
+/// **Federico Brancasi**
 #[derive(Clone, Data, Lens)]
 pub struct Trader {
     pub(crate) name: String,
@@ -51,6 +55,9 @@ pub struct Trader {
 }
 
 /// impl block of the TraderUi struct
+///
+///
+/// **Federico Brancasi**
 impl TraderUi {
     /// the new function creates a new instance of the TraderUi struct
     pub fn new() -> Self {
@@ -78,15 +85,13 @@ impl TraderUi {
             selected_method_of_trade: "BUY".to_string(),
         }
     }
-
-    pub fn return_quantity(&self) -> f64 {
-        self.percentage
-    }
 }
 
 /// support functions of the TraderUi struct:
 
 /// the get_market_index function returns the index of the market from the name
+///
+/// **Federico Brancasi**
 // pub fn get_market_index(market_name: &str) -> usize {
 //     match market_name.to_lowercase().as_str() {
 //         "bfb" => 0,
@@ -99,6 +104,8 @@ impl TraderUi {
 /// initializer of the TraderUi struct
 /// this function is called when the TraderUi is created and it
 /// initializes the TraderUi struct datas when the program starts
+///
+/// **Federico Brancasi**
 pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
 
     // set values for bfb market

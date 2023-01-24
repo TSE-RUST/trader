@@ -5,6 +5,8 @@ use druid::{Env, LocalizedString, Menu, MenuItem, WindowId};
 use crate::TraderUi;
 
 /// this function renders the menu bar for the application
+///
+/// **Federico Brancasi**
 #[allow(unused_assignments, unused_mut)]
 pub fn make_menu(_window_id: Option<WindowId>, _app_state: &TraderUi, _env: &Env) -> Menu<TraderUi> {
 
@@ -36,6 +38,8 @@ pub fn make_menu(_window_id: Option<WindowId>, _app_state: &TraderUi, _env: &Env
 
 /// this function creates the menu of our app (we use an external
 /// function to make it more readable and not to duplicate code)
+///
+/// **Federico Brancasi**
 fn create_menu(base: Menu<TraderUi>) -> Menu<TraderUi> {
     base.entry(
         Menu::new(LocalizedString::new("App"))

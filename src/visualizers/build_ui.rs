@@ -6,8 +6,9 @@ use druid::widget::{Label, ViewSwitcher};
 use crate::visualizers::{bot_side, user_side};
 use crate::visualizers::datas::TraderUi;
 
-
 /// the build_ui function creates the main ui of the application
+///
+/// **Federico Brancasi**
 pub fn build_ui() -> impl Widget<TraderUi> {
 
     // the view switcher is used to switch between the user side and the bots side

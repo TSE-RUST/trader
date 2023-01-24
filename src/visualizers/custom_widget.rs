@@ -1,13 +1,13 @@
 // library dependencies
 use druid::{Color, RenderContext, theme, Widget, WidgetExt};
-use druid::im::Vector;
-use druid::kurbo::Shape;
-use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, Painter, ProgressBar, Radio, Slider, Split, TextBox};
+use druid::widget::{Label, Painter};
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::datas::Trader;
 
+/// function to create a custom button with color blue
+///
+/// **Federico Brancasi**
 pub(crate) fn custom_button(name: &str) -> impl Widget<TraderUi> {
     let painter = Painter::new(|ctx, _, env| {
         let bounds = ctx.size().to_rounded_rect(8.0);
@@ -22,11 +22,10 @@ pub(crate) fn custom_button(name: &str) -> impl Widget<TraderUi> {
             ctx.stroke(bounds, &Color::WHITE, 2.0);
         }
 
-        if ctx.is_active()  {
+        if ctx.is_active() {
             // ctx.fill(bounds, &Color::rgb8(0x71, 0x71, 0x71));
             ctx.fill(bounds, &Color::rgb8(0, 128, 255));
         }
-
     });
 
     Label::new(format!("{}", name))
@@ -35,28 +34,25 @@ pub(crate) fn custom_button(name: &str) -> impl Widget<TraderUi> {
         .center()
         .padding(5.0)
         .background(painter)
-        // .expand()
+    // .expand()
 }
 
+/// function to create a custom button with color white
+///
+/// **Federico Brancasi**
 pub(crate) fn custom_button_white(name: &str) -> impl Widget<TraderUi> {
     let painter = Painter::new(|ctx, _, env| {
         let bounds = ctx.size().to_rounded_rect(8.0);
-        // let bounds = ctx.size().to_rect();
 
-
-        // ctx.fill(bounds, &env.get(theme::BACKGROUND_LIGHT));
         ctx.fill(bounds, &env.get(theme::PRIMARY_LIGHT));
 
         if ctx.is_hot() {
-            // ctx.stroke(bounds.inset(-0.5), &Color::WHITE, 1.0);
             ctx.stroke(bounds, &Color::WHITE, 2.0);
         }
 
-        if ctx.is_active()  {
-            // ctx.fill(bounds, &Color::rgb8(0x71, 0x71, 0x71));
+        if ctx.is_active() {
             ctx.fill(bounds, &Color::rgb8(0, 128, 255));
         }
-
     });
 
     Label::new(format!("{}", name))
@@ -65,6 +61,5 @@ pub(crate) fn custom_button_white(name: &str) -> impl Widget<TraderUi> {
         .center()
         .padding(10.0)
         .background(painter)
-    // .expand()
 }
 

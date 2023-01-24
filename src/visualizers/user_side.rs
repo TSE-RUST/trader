@@ -1,17 +1,17 @@
-use colored::Color::Black;
 // library dependencies
-use druid::{Color, KeyOrValue, lens, RenderContext, theme, Widget, WidgetExt};
+use druid::{Color, theme, Widget, WidgetExt};
 use druid::im::Vector;
-use druid::widget::{Axis, Button, Container, CrossAxisAlignment, Flex, KnobStyle, Label, MainAxisAlignment, Painter, ProgressBar, Radio, Slider, Split, TextBox, ViewSwitcher};
+use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
 
 // local dependencies
 use crate::TraderUi;
 use crate::visualizers::datas::Trader;
 use crate::visualizers::custom_widget::{custom_button, custom_button_white};
-use crate::visualizers::datas::trader_ui_derived_lenses::trader;
 
 /// This function builds the widget that will be displayed
 /// on the user side of the application.
+///
+/// **Federico Brancasi**
 pub(crate) fn user_side() -> impl Widget<TraderUi> {
 
     // creates the chart for each market
@@ -34,6 +34,9 @@ pub(crate) fn user_side() -> impl Widget<TraderUi> {
     ).split_point(0.3)
 }
 
+/// This function builds the left side of the application.
+///
+/// **Federico Brancasi**
 fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // trader header
@@ -104,7 +107,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // market buttons
     let button_bfb = custom_button("BFB")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_market = "BFB".to_string();
             println!("BFB button clicked");
         });
@@ -120,7 +123,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_sol = custom_button("SOL")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_market = "SOL".to_string();
             println!("SOL button clicked");
         });
@@ -136,7 +139,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_parse = custom_button("PARSE")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_market = "PARSE".to_string();
             println!("PARSE button clicked");
         });
@@ -164,7 +167,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // good buttons
     let button_eur = custom_button("EUR")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_good = "EUR".to_string();
             println!("EUR button clicked");
         });
@@ -180,7 +183,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_yen = custom_button("YEN")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_good = "YEN".to_string();
             println!("YEN button clicked");
         });
@@ -196,7 +199,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_usd = custom_button("USD")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_good = "USD".to_string();
             println!("USD button clicked")
         });
@@ -212,7 +215,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_yuan = custom_button("YUAN")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_good = "YUAN".to_string();
             println!("YUAN button clicked");
         });
@@ -275,7 +278,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // trade buttons
     let button_buy = custom_button("BUY")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_method_of_trade = "BUY".to_string();
             println!("BUY button clicked")
         });
@@ -291,7 +294,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_sell = custom_button("SELL")
-        .on_click(|ctx, data: &mut TraderUi, _| {
+        .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_method_of_trade = "SELL".to_string();
             println!("SELL button clicked")
         });
@@ -318,7 +321,7 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
     // trade button
     let trade_button = Flex::row()
         .with_child(custom_button_white("TRADE")
-            .on_click(|ctx, data: &mut TraderUi, _| {
+            .on_click(|_ctx, data: &mut TraderUi, _| {
                 println!("TRADE button clicked");
                 println!("selected percentage: {}", data.percentage);
                 println!("quantity: {}", data.percentage * data.trader.money as f64);
@@ -387,7 +390,10 @@ fn create_chart_trader() -> impl Widget<TraderUi> {
     trader_ui
 }
 
-
+/// This function builds the bfb chart on the
+/// right side of the application
+///
+/// **Federico Brancasi**
 fn create_chart_bfb() -> impl Widget<TraderUi> {
     let label_name = Label::new("BFB".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
@@ -545,7 +551,10 @@ fn create_chart_bfb() -> impl Widget<TraderUi> {
     flex_column
 }
 
-
+/// This function builds the sol chart on the
+/// right side of the application
+///
+/// **Federico Brancasi**
 fn create_chart_sol() -> impl Widget<TraderUi> {
     let label_name = Label::new("SOL".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
@@ -703,6 +712,10 @@ fn create_chart_sol() -> impl Widget<TraderUi> {
     flex_column
 }
 
+/// This function builds the parse chart on the
+/// right side of the application
+///
+/// **Federico Brancasi**
 fn create_chart_parse() -> impl Widget<TraderUi> {
     let label_name = Label::new("PARSE".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
