@@ -22,7 +22,6 @@ pub fn build_ui() -> impl Widget<TraderUi> {
             _ => Box::new(Label::new("Error").center()),
         },
     );
-
     // returns the ui of the application
     view_switcher
 }
