@@ -1,3 +1,4 @@
+// use std::borrow::BorrowMut;
 // libraries dependencies
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -65,23 +66,26 @@ pub fn get_max_sell_quantity(market: &Rc<RefCell<dyn Market>>, quantity: f32, ki
     let mut max_quantity = quantity;
 
      for i in 0..goods.len() {
-
         if goods[i].good_kind == GoodKind::EUR {
             eur_quantity=goods[i].quantity;
         }
      }
     //look if the market has the amount of GoodKind::EUR to buy the quantity of the good
-    if eur_quantity > 0.0 && max_quantity > 0.0{
+    if max_quantity > 0.0{
+        println!("sono nell'if: {}", max_quantity);
         let mut sell_price = market.get_sell_price(kind, max_quantity).expect("Error in get_sell_price in the max_sell_quantity function");
         while eur_quantity < sell_price && max_quantity > 0.0 {
+
             //divido la quantità in 2 e ritento
             max_quantity = max_quantity/2.;
+            println!("sono nel while: {}", max_quantity);
             sell_price = market.get_sell_price(kind, max_quantity).expect("Error in get_sell_price in the max_sell_quantity function");
         }
     }
 
     max_quantity
 }
+
 
 ///get the average buy price for 1 quantity of the good taken by the maximum between the 1/3 of the trader budget and the good availability in the specific market
 ///
@@ -127,19 +131,19 @@ pub fn get_average_sell_price(trader: &mut Trader, kind: GoodKind,quantity:f32) 
     let mut price_bfb:f32 = 0.;
 
 
-    //get the sol maximum quantity that can be sold with the 1/3 of the budget
+    //get the sol maximum quantity that can be sold with the budget
     let max_quantity_sol = get_max_sell_quantity(&trader.sol, quantity, kind);
     if max_quantity_sol > 0.0 {
         price_sol = trader.sol.borrow().get_sell_price(kind, max_quantity_sol).unwrap();
     }
 
-    //get the parse maximum quantity that can be sold with the 1/3 of the budget
+    //get the parse maximum quantity that can be sold with the budget
     let max_quantity_parse = get_max_sell_quantity(&trader.parse, quantity, kind);
     if max_quantity_parse != 0.0{
         price_parse = trader.parse.borrow().get_sell_price(kind, max_quantity_parse).unwrap();
     }
 
-    //get the bfb maximum quantity that can be sold with the 1/3 of the budget
+    //get the bfb maximum quantity that can be sold with the budget
     let max_quantity_bfb = get_max_sell_quantity(&trader.bfb, quantity, kind);
     if max_quantity_bfb != 0.0{
         price_bfb = trader.bfb.borrow().get_sell_price(kind, max_quantity_bfb).unwrap();
@@ -155,7 +159,7 @@ pub fn get_average_sell_price(trader: &mut Trader, kind: GoodKind,quantity:f32) 
 /// get the best market to buy a specific good where the price is lower than the average price of the three markets and preferring the BFB market
 ///
 /// **Andrea Ballarini**
-pub fn get_best_buy_market<'a>(trader: &'a mut Trader, kind: GoodKind) -> (&'a mut Rc<RefCell<dyn Market>>, f32, f32) {
+pub fn get_best_buy_market(trader: &mut Trader, kind: GoodKind) -> (&mut Rc<RefCell<dyn Market>>, f32, f32) {
     let budget = trader._money / 3.;
     let average_price = get_average_buy_price(trader, kind);
     let mut best_price = 0.0;
@@ -208,7 +212,7 @@ pub fn get_best_buy_market<'a>(trader: &'a mut Trader, kind: GoodKind) -> (&'a m
 /// get the best market to sell a specific good where the price is higher than the average price of the three markets and preferring the PARSE market
 ///
 /// **Andrea Ballarini**
-pub fn get_best_sell_market<'a>(trader: &'a mut Trader, kind: GoodKind, quantity:f32) -> (&'a mut Rc<RefCell<dyn Market>>,f32,f32) {
+pub fn get_best_sell_market(trader: &mut Trader, kind: GoodKind, quantity:f32) -> (&mut Rc<RefCell<dyn Market>>,f32,f32) {
 
     let average_price = get_average_sell_price(trader, kind,quantity);
     let mut best_price = 0.0;
@@ -251,6 +255,61 @@ pub fn get_best_sell_market<'a>(trader: &'a mut Trader, kind: GoodKind, quantity
 
     (best_market, best_quantity, best_price)
 }
+
+// ///get the best buy trade for a trader
+// ///
+// /// **Andrea Ballarini**
+// pub fn get_best_buy_trade(trader: &mut Trader) -> String {
+//     let (_,yen_quantity,yen_price) = get_best_buy_market(trader, GoodKind::YEN);
+//     let average_yen= (yen_quantity/yen_price);
+//     let (_,usd_quantity,usd_price) = get_best_buy_market(trader, GoodKind::USD);
+//     let average_usd= (usd_quantity/usd_price);
+//     let (_,yuan_quantity,yuan_price) = get_best_buy_market(trader, GoodKind::YUAN);
+//     let average_yuan= (yuan_quantity/yuan_price);
+//
+//
+//     let mut res ="".to_string();
+//
+//     if (average_yuan > average_yen) && (average_yuan > average_usd) {
+//         let (yuan_market,yuan_quantity,yuan_price) = get_best_buy_market(trader, GoodKind::YUAN);
+//         res = format!("buy {} yuan from {} for {} each", yuan_quantity, yuan_market.borrow().get_name(), yuan_price/yuan_quantity);
+//     } else if (average_yen > average_usd) && (average_yen > average_yuan) {
+//         let (usd_market,usd_quantity,usd_price) = get_best_buy_market(trader, GoodKind::USD);
+//         res = format!("buy {} usd from {} for {} each", usd_quantity, usd_market.borrow().get_name(), usd_price/usd_quantity);
+//     } else {
+//         let (yen_market,yen_quantity,yen_price) = get_best_buy_market(trader, GoodKind::YEN);
+//         res = format!("buy {} yen from {} for {} each", yen_quantity, yen_market.borrow().get_name(), yen_price/yen_quantity);
+//     }
+//     res
+// }
+//
+// ///get the best sell trade for a trader
+// ///
+// /// **Andrea Ballarini**
+// pub fn get_best_sell_trade(trader: &mut Trader) -> String {
+//     let (_,yen_quantity,yen_price) = get_best_sell_market(trader, GoodKind::YEN,);
+//     let average_yen= (yen_quantity/yen_price);
+//     let (_,usd_quantity,usd_price) = get_best_sell_market(trader, GoodKind::USD);
+//     let average_usd= (usd_quantity/usd_price);
+//     let (_,yuan_quantity,yuan_price) = get_best_sell_market(trader, GoodKind::YUAN);
+//     let average_yuan= (yuan_quantity/yuan_price);
+//
+//
+//     let mut res ="".to_string();
+//
+//     if (average_yuan > average_yen) && (average_yuan > average_usd) {
+//         let (yuan_market,yuan_quantity,yuan_price) = get_best_sell_market(trader, GoodKind::YUAN);
+//         res = format!("sell {} yuan to {} for {} each", yuan_quantity, yuan_market.borrow().get_name(), yuan_price/yuan_quantity);
+//     } else if (average_yen > average_usd) && (average_yen > average_yuan) {
+//         let (usd_market,usd_quantity,usd_price) = get_best_sell_market(trader, GoodKind::USD);
+//         res = format!("sell {} usd to {} for {} each", usd_quantity, usd_market.borrow().get_name(), usd_price/usd_quantity);
+//     } else {
+//         let (yen_market,yen_quantity,yen_price) = get_best_sell_market(trader, GoodKind::YEN);
+//         res = format!("sell {} yen to {} for {} each", yen_quantity, yen_market.borrow().get_name(), yen_price/yen_quantity);
+//     }
+//     res
+// }
+
 
 // /// # The BUY Trade function
 // /// This function is used to buy a specific good from a specific market
@@ -315,8 +374,6 @@ pub fn bot(trader: &mut Trader, mut max:i32) {
                 println!("{}: {}", good.borrow().get_kind(), good.borrow().get_qty());
             }
             println!("{} money", trader._money);
-
-
 
             break;
         }

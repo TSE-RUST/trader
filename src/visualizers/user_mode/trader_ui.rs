@@ -444,6 +444,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         "YUAN" => GoodKind::YUAN,
                         _ => GoodKind::EUR
                     };
+                    println!("data quantity: {}", data.quantity);
                     let quantity = data.quantity * data.percentage as f32;
                     let price = match market.get_sell_price(good, quantity)
                     {
