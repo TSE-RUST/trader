@@ -146,21 +146,71 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
 
 /// the get_market_info function returns the market info in order to be used in the initialize_quantities function
 pub fn get_market_info(market: &Rc<RefCell<dyn Market>>) -> (Vector<String>, Vector<f32>, Vector<f32>, Vector<f32>) {
-    let mut buy_rates = Vector::new();
-    let mut sell_rates = Vector::new();
-    let mut good_kinds = Vector::new();
-    let mut quantities = Vector::new();
+    let mut buy_rates_temp = Vector::new();
+    let mut sell_rates_temp = Vector::new();
+    let mut good_kinds_temp = Vector::new();
+    let mut quantities_temp = Vector::new();
 
     for good in market.borrow().get_goods() {
         let buy_rate = good.exchange_rate_buy;
         let sell_rate = good.exchange_rate_sell;
         let quantity = good.quantity;
         let kind = good.good_kind.to_string();
-        buy_rates.push_back(buy_rate);
-        sell_rates.push_back(sell_rate);
-        good_kinds.push_back(kind);
-        quantities.push_back(quantity);
+        buy_rates_temp.push_back(buy_rate);
+        sell_rates_temp.push_back(sell_rate);
+        quantities_temp.push_back(quantity);
+        good_kinds_temp.push_back(kind);
+    }
+
+    let mut buy_rates = vector![0.0, 0.0, 0.0, 0.0];
+    let mut sell_rates = vector![0.0, 0.0, 0.0, 0.0];
+    let mut good_kinds = vector![" ".to_string(), " ".to_string(), " ".to_string(), " ".to_string()];
+    let mut quantities = vector![0.0, 0.0, 0.0, 0.0];
+
+    for i in 0..4 {
+        if good_kinds_temp[i] == "EUR".to_string() {
+            buy_rates[0] = buy_rates_temp[i];
+            sell_rates[0] = sell_rates_temp[i];
+            quantities[0] = quantities_temp[i];
+            good_kinds[0] = "EUR".to_string();
+        } else if good_kinds_temp[i] == "YEN".to_string() {
+            buy_rates[1] = buy_rates_temp[i];
+            sell_rates[1] = sell_rates_temp[i];
+            quantities[1] = quantities_temp[i];
+            good_kinds[1] = "YEN".to_string();
+        } else if good_kinds_temp[i] == "USD".to_string() {
+            buy_rates[2] = buy_rates_temp[i];
+            sell_rates[2] = sell_rates_temp[i];
+            quantities[2] = quantities_temp[i];
+            good_kinds[2] = "USD".to_string();
+        } else if good_kinds_temp[i] == "YUAN".to_string() {
+            buy_rates[3] = buy_rates_temp[i];
+            sell_rates[3] = sell_rates_temp[i];
+            quantities[3] = quantities_temp[i];
+            good_kinds[3] = "YUAN".to_string();
+        }
     }
 
     (good_kinds, quantities, buy_rates, sell_rates)
 }
+
+// old function
+// pub fn get_market_info(market: &Rc<RefCell<dyn Market>>) -> (Vector<String>, Vector<f32>, Vector<f32>, Vector<f32>) {
+//     let mut buy_rates = Vector::new();
+//     let mut sell_rates = Vector::new();
+//     let mut good_kinds = Vector::new();
+//     let mut quantities = Vector::new();
+//
+//     for good in market.borrow().get_goods() {
+//         let buy_rate = good.exchange_rate_buy;
+//         let sell_rate = good.exchange_rate_sell;
+//         let quantity = good.quantity;
+//         let kind = good.good_kind.to_string();
+//         buy_rates.push_back(buy_rate);
+//         sell_rates.push_back(sell_rate);
+//         good_kinds.push_back(kind);
+//         quantities.push_back(quantity);
+//     }
+//
+//     (good_kinds, quantities, buy_rates, sell_rates)
+// }

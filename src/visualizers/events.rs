@@ -5,11 +5,18 @@ use druid::{Data, KeyEvent, MouseEvent};
 use std::sync::Arc;
 use crate::visualizers::datas::TraderUi;
 
+/// the LoggedEvent struct is used to store the data of
+/// a single event
+///
+/// **Federico Brancasi**
 #[derive(Debug)]
 pub(crate) struct EventLogger<F: Fn(&Event) -> bool> {
     pub(crate) filter: F,
 }
 
+/// impl block of the LoggedEvent struct
+///
+/// **Federico Brancasi**
 impl<W: Widget<TraderUi>, F: Fn(&Event) -> bool> Controller<TraderUi, W> for EventLogger<F> {
     fn event(
         &mut self,
@@ -42,6 +49,8 @@ impl<W: Widget<TraderUi>, F: Fn(&Event) -> bool> Controller<TraderUi, W> for Eve
 }
 
 /// The types of events we display
+///
+/// **Federico Brancasi**
 #[derive(Clone, Copy, Data, PartialEq, Debug)]
 pub(crate) enum EventType {
     KeyDown,
@@ -52,6 +61,8 @@ pub(crate) enum EventType {
 }
 
 /// A type that represents any logged event shown in the list
+///
+/// **Federico Brancasi**
 #[derive(Clone, Data, Debug)]
 pub struct LoggedEvent {
     typ: EventType,
@@ -62,6 +73,9 @@ pub struct LoggedEvent {
     _key: Option<KeyEvent>,
 }
 
+/// impl block of the LoggedEvent struct
+///
+/// **Federico Brancasi**
 impl LoggedEvent {
     pub fn try_from_event(event: &Event, number: usize) -> Option<Self> {
         let to_log = match event {
