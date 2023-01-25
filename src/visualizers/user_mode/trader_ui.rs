@@ -19,7 +19,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(Label::new("Tokyo Stock Exchange Trader".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
         .with_text_size(35.0));
-    // .padding(5.0);
 
     let label_trader_eur = Flex::column()
         .with_child(Label::new("EUR".to_string())
@@ -79,7 +78,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(25.0);
-    // .center();
 
     // market buttons
     let button_bfb = custom_button("BFB")
@@ -166,7 +164,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0);
-    // .center();
 
     // good buttons
     let button_eur = custom_button("EUR")
@@ -280,7 +277,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0);
-    // .center();
 
     // quantity textbox
     // let textbox = TextBox::new().lens(TraderUi::quantity_str);
@@ -374,7 +370,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0);
-    // .center();
 
     // trade button
     let trade_button = Flex::row()
@@ -435,7 +430,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0)
         .padding(30.0);
-    // .center();
 
     // trader bottom panel
     let profit_sell_header = Label::new("best profit sell".to_string())

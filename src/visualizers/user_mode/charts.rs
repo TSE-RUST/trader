@@ -13,13 +13,15 @@ use crate::TraderUi;
 pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
     let label_name = Label::new("BFB".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(25.0);
-    // .with_text_color(Color::from_hex_str("#2d4ee0").unwrap());
+        .with_text_size(27.0);
+
 
     let name1 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[0];
-        format!("quantity: {name}")
-    }).lens(TraderUi::bfb_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::bfb_kinds);
 
     let quantity1 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[0];
@@ -37,20 +39,25 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart1 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name1)
+        .with_child(quantity1)
+        .with_child(buy1)
+        .with_child(sell1)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name1, 1.0)
-        .with_flex_child(quantity1, 1.0)
-        .with_flex_child(buy1, 1.0)
-        .with_flex_child(sell1, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name2 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[1];
-        format!("quantity: {name}")
-    }).lens(TraderUi::bfb_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::bfb_kinds);
 
     let quantity2 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[1];
@@ -68,20 +75,25 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart2 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name2)
+        .with_child(quantity2)
+        .with_child(buy2)
+        .with_child(sell2)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name2, 1.0)
-        .with_flex_child(quantity2, 1.0)
-        .with_flex_child(buy2, 1.0)
-        .with_flex_child(sell2, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name3 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[2];
-        format!("quantity: {name}")
-    }).lens(TraderUi::bfb_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::bfb_kinds);
 
     let quantity3 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[2];
@@ -99,20 +111,25 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart3 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name3)
+        .with_child(quantity3)
+        .with_child(buy3)
+        .with_child(sell3)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name3, 1.0)
-        .with_flex_child(quantity3, 1.0)
-        .with_flex_child(buy3, 1.0)
-        .with_flex_child(sell3, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name4 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[3];
-        format!("quantity: {name}")
-    }).lens(TraderUi::bfb_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::bfb_kinds);
 
     let quantity4 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[3];
@@ -130,39 +147,38 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart4 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name4)
+        .with_child(quantity4)
+        .with_child(buy4)
+        .with_child(sell4)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name4, 1.0)
-        .with_flex_child(quantity4, 1.0)
-        .with_flex_child(buy4, 1.0)
-        .with_flex_child(sell4, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let flex_row1 = Flex::row()
-        .with_flex_child(chart1, 1.0)
-        .with_default_spacer()
-        .with_flex_child(chart2, 1.0)
-        .padding(2.0);
+        .with_child(chart1)
+        .with_spacer(7.0)
+        .with_child(chart2);
 
     let flex_row2 = Flex::row()
-        .with_flex_child(chart3, 1.0)
-        .with_default_spacer()
-        .with_flex_child(chart4, 1.0)
-        .padding(2.0);
+        .with_child(chart3)
+        .with_spacer(7.0)
+        .with_child(chart4);
 
     let flex_column = Flex::column()
         .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(label_name, 1.0)
-        .with_default_spacer()
-        .with_flex_child(flex_row1, 1.0)
-        .with_default_spacer()
-        .with_flex_child(flex_row2, 1.0)
-        .with_default_spacer()
-        // .fix_width(300.0)
-        .padding(10.0);
+        .with_child(label_name)
+        .with_spacer(5.0)
+        .with_child(flex_row1)
+        .with_spacer(7.0)
+        .with_child(flex_row2)
+        .with_spacer(7.0);
 
     flex_column
 }
@@ -174,13 +190,15 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
 pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
     let label_name = Label::new("SOL".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(25.0);
-    // .with_text_color(Color::from_hex_str("#2d4ee0").unwrap());
+        .with_text_size(27.0);
+
 
     let name1 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[0];
-        format!("quantity: {name}")
-    }).lens(TraderUi::sol_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::sol_kinds);
 
     let quantity1 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[0];
@@ -198,20 +216,25 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart1 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name1)
+        .with_child(quantity1)
+        .with_child(buy1)
+        .with_child(sell1)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name1, 1.0)
-        .with_flex_child(quantity1, 1.0)
-        .with_flex_child(buy1, 1.0)
-        .with_flex_child(sell1, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name2 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[1];
-        format!("quantity: {name}")
-    }).lens(TraderUi::sol_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::sol_kinds);
 
     let quantity2 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[1];
@@ -229,20 +252,25 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart2 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name2)
+        .with_child(quantity2)
+        .with_child(buy2)
+        .with_child(sell2)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name2, 1.0)
-        .with_flex_child(quantity2, 1.0)
-        .with_flex_child(buy2, 1.0)
-        .with_flex_child(sell2, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name3 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[2];
-        format!("quantity: {name}")
-    }).lens(TraderUi::sol_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::sol_kinds);
 
     let quantity3 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[2];
@@ -260,20 +288,25 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart3 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name3)
+        .with_child(quantity3)
+        .with_child(buy3)
+        .with_child(sell3)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name3, 1.0)
-        .with_flex_child(quantity3, 1.0)
-        .with_flex_child(buy3, 1.0)
-        .with_flex_child(sell3, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name4 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[3];
-        format!("quantity: {name}")
-    }).lens(TraderUi::sol_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::sol_kinds);
 
     let quantity4 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[3];
@@ -291,39 +324,38 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart4 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name4)
+        .with_child(quantity4)
+        .with_child(buy4)
+        .with_child(sell4)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name4, 1.0)
-        .with_flex_child(quantity4, 1.0)
-        .with_flex_child(buy4, 1.0)
-        .with_flex_child(sell4, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let flex_row1 = Flex::row()
-        .with_flex_child(chart1, 1.0)
-        .with_default_spacer()
-        .with_flex_child(chart2, 1.0)
-        .padding(2.0);
+        .with_child(chart1)
+        .with_spacer(7.0)
+        .with_child(chart2);
 
     let flex_row2 = Flex::row()
-        .with_flex_child(chart3, 1.0)
-        .with_default_spacer()
-        .with_flex_child(chart4, 1.0)
-        .padding(2.0);
+        .with_child(chart3)
+        .with_spacer(7.0)
+        .with_child(chart4);
 
     let flex_column = Flex::column()
         .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(label_name, 1.0)
-        .with_default_spacer()
-        .with_flex_child(flex_row1, 1.0)
-        .with_default_spacer()
-        .with_flex_child(flex_row2, 1.0)
-        .with_default_spacer()
-        // .fix_width(300.0)
-        .padding(10.0);
+        .with_child(label_name)
+        .with_spacer(5.0)
+        .with_child(flex_row1)
+        .with_spacer(7.0)
+        .with_child(flex_row2)
+        .with_spacer(7.0);
 
     flex_column
 }
@@ -335,13 +367,15 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
 pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
     let label_name = Label::new("PARSE".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(25.0);
-    // .with_text_color(Color::from_hex_str("#2d4ee0").unwrap());
+        .with_text_size(27.0);
+
 
     let name1 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[0];
-        format!("quantity: {name}")
-    }).lens(TraderUi::parse_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::parse_kinds);
 
     let quantity1 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[0];
@@ -359,20 +393,25 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart1 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name1)
+        .with_child(quantity1)
+        .with_child(buy1)
+        .with_child(sell1)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name1, 1.0)
-        .with_flex_child(quantity1, 1.0)
-        .with_flex_child(buy1, 1.0)
-        .with_flex_child(sell1, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name2 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[1];
-        format!("quantity: {name}")
-    }).lens(TraderUi::parse_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::parse_kinds);
 
     let quantity2 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[1];
@@ -380,9 +419,9 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
     }).lens(TraderUi::parse_quantities);
 
     let buy2 = Label::dynamic(|data: &Vector<f32>, _| {
-        let rate = data[1];
-        format!("buy rate: {rate}")
-    }).lens(TraderUi::parse_exchange_rate_buy);
+            let rate = data[1];
+            format!("buy rate: {rate}")
+        }).lens(TraderUi::parse_exchange_rate_buy);
 
     let sell2 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[1];
@@ -390,20 +429,25 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart2 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name2)
+        .with_child(quantity2)
+        .with_child(buy2)
+        .with_child(sell2)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name2, 1.0)
-        .with_flex_child(quantity2, 1.0)
-        .with_flex_child(buy2, 1.0)
-        .with_flex_child(sell2, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name3 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[2];
-        format!("quantity: {name}")
-    }).lens(TraderUi::parse_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::parse_kinds);
 
     let quantity3 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[2];
@@ -421,20 +465,25 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart3 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name3)
+        .with_child(quantity3)
+        .with_child(buy3)
+        .with_child(sell3)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name3, 1.0)
-        .with_flex_child(quantity3, 1.0)
-        .with_flex_child(buy3, 1.0)
-        .with_flex_child(sell3, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let name4 = Label::dynamic(|data: &Vector<String>, _| {
         let name = &data[3];
-        format!("quantity: {name}")
-    }).lens(TraderUi::parse_kinds);
+        format!("{name}")
+    }).with_text_color(Color::rgb8(176, 196, 222))
+        .with_text_size(18.0)
+        .lens(TraderUi::parse_kinds);
 
     let quantity4 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[3];
@@ -452,39 +501,38 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart4 = Flex::column()
-        .main_axis_alignment(MainAxisAlignment::Start)
+        .with_spacer(6.0)
+        .with_child(name4)
+        .with_child(quantity4)
+        .with_child(buy4)
+        .with_child(sell4)
+        .with_spacer(6.0)
+        .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(name4, 1.0)
-        .with_flex_child(quantity4, 1.0)
-        .with_flex_child(buy4, 1.0)
-        .with_flex_child(sell4, 1.0)
-        .fix_width(300.0)
+        .fix_width(190.0)
         .border(Color::grey(0.6), 2.0)
         .rounded(5.0);
 
+
     let flex_row1 = Flex::row()
-        .with_flex_child(chart1, 1.0)
-        .with_default_spacer()
-        .with_flex_child(chart2, 1.0)
-        .padding(2.0);
+        .with_child(chart1)
+        .with_spacer(7.0)
+        .with_child(chart2);
 
     let flex_row2 = Flex::row()
-        .with_flex_child(chart3, 1.0)
-        .with_default_spacer()
-        .with_flex_child(chart4, 1.0)
-        .padding(2.0);
+        .with_child(chart3)
+        .with_spacer(7.0)
+        .with_child(chart4);
 
     let flex_column = Flex::column()
         .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
-        .with_flex_child(label_name, 1.0)
-        .with_default_spacer()
-        .with_flex_child(flex_row1, 1.0)
-        .with_default_spacer()
-        .with_flex_child(flex_row2, 1.0)
-        .with_default_spacer()
-        // .fix_width(300.0)
-        .padding(10.0);
+        .with_child(label_name)
+        .with_spacer(5.0)
+        .with_child(flex_row1)
+        .with_spacer(7.0)
+        .with_child(flex_row2)
+        .with_spacer(7.0);
 
     flex_column
 }
