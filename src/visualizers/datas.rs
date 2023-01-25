@@ -137,7 +137,7 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.parse_exchange_rate_buy = exchange_rate_buy_parse;
     app.parse_exchange_rate_sell = exchange_rate_sell_parse;
 
-    app.trader.goods = vector![40000.0, 0.0, 20000.0, 30000.0];
+    app.trader.goods = vector![100000.0, 100000.0, 100000.0, 0.0];
 
     app.quantity = app.trader.goods[0];
 

@@ -211,6 +211,7 @@ fn main() {
     // creation of the main window
     let main_window = WindowDesc::new(build_ui())
         .window_size((1400.0, 930.0))
+        .with_min_size((1400.0, 930.0))
         .menu(make_menu)
         .title("Trader TSE");
 
