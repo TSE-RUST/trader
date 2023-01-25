@@ -85,7 +85,7 @@ impl TraderUi {
             boolean: false,
             safe_mode: true,
             selected_market: "BFB".to_string(),
-            selected_good: "EUR".to_string(),
+            selected_good: "YEN".to_string(),
             selected_method_of_trade: "SELL".to_string(),
             events: Arc::new(Vec::new()),
         }
