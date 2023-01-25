@@ -23,7 +23,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
         if data.safe_mode{
             format!("safe mode attivo")
         }else{
-            format!("safe mode disattivo(!) ")
+            format!("safe mode disattivo(!)")
         }
     })
     .with_text_color(Color::rgb(0.0,0.0,0.0))
