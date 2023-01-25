@@ -4,6 +4,8 @@ use druid::{AppLauncher, WindowDesc};
 use gag::Gag;
 use std::cell::RefCell;
 use std::rc::Rc;
+use druid::{Data,Lens};
+use druid::im::{Vector};
 
 // market dependencies
 use unitn_market_2022::good::good::Good;
@@ -14,7 +16,7 @@ use unitn_market_2022::subscribe_each_other;
 // local dependencies
 mod bots;
 
-// todo()
+// the function to run the simulation in the trader
 use bots::bot::bot;
 // todo()
 use bots::arbitrager::Arbitrager;
@@ -41,16 +43,17 @@ use market_functions::init_with_quantity;
 // function that prints the goods of the markets
 use market_functions::print_values;
 
+
 ///the struct for the trader agent
+#[derive(Clone,Data, Lens)]
 pub struct Trader {
     name: String,
     _money: f32,
-    _goods: Vec<Good>,
+    _goods: Vector<Rc<RefCell<Good>>>,
     sol: Rc<RefCell<dyn Market>>,
     bfb: Rc<RefCell<dyn Market>>,
     parse: Rc<RefCell<dyn Market>>,
 }
-
 impl Trader {
     ///the constructor for the trader agent
     ///
@@ -65,7 +68,7 @@ impl Trader {
         Trader {
             name,
             _money: money,
-            _goods: initgoods(money, 0.0, 0.0, 0.0),
+            _goods: initgoods(0.0, 0.0, 0.0),
             sol,
             bfb,
             parse,
@@ -199,9 +202,9 @@ fn main() {
 
     //test_buy_kind(GoodKind::USD, &mut trader);
     //_test_sell_kind(GoodKind::YEN, &mut trader);
-    //bots(&mut trader);
+    bot(&mut trader,100);
 
-    /// UI
+    // UI
     // creation of the main window
     let main_window = WindowDesc::new(build_ui())
         .window_size((1400.0, 900.0))
