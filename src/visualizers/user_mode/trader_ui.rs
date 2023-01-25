@@ -477,15 +477,41 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         Err(e) => { panic!("Error in sell in {}: {:?}", market_name.to_string(), e); }
                     };
                     data.trader.goods[0] += price;
-                    data.trader.goods[
-                        match good {
-                            GoodKind::EUR => 0,
-                            GoodKind::YEN => 1,
-                            GoodKind::USD => 2,
-                            GoodKind::YUAN => 3,
-                        }
-                        ] -= decrease.get_qty();
+                    // data.trader.goods[
+                    //     match good {
+                    //         GoodKind::EUR => 0,
+                    //         GoodKind::YEN => 1,
+                    //         GoodKind::USD => 2,
+                    //         GoodKind::YUAN => 3,
+                    //     }
+                    //     ] -= decrease.get_qty();
                     println!("selling {} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
+
+                    if data.selected_good == "EUR" {
+                        if quantity >= data.trader.goods[0] {
+                            data.trader.goods[0] = 0.0;
+                        } else {
+                            data.trader.goods[0] -= quantity;
+                        }
+                    } else if data.selected_good == "YEN" {
+                        if quantity >= data.trader.goods[1] {
+                            data.trader.goods[1] = 0.0;
+                        } else {
+                            data.trader.goods[1] -= quantity;
+                        }
+                    } else if data.selected_good == "USD" {
+                        if quantity >= data.trader.goods[2] {
+                            data.trader.goods[2] = 0.0;
+                        } else {
+                            data.trader.goods[2] -= quantity;
+                        }
+                    } else if data.selected_good == "YUAN" {
+                        if quantity >= data.trader.goods[3] {
+                            data.trader.goods[3] = 0.0;
+                        } else {
+                            data.trader.goods[3] -= quantity;
+                        }
+                    }
                 }
 
                 // set values for bfb market
