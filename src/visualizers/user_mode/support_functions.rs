@@ -319,13 +319,13 @@ pub fn get_best_buy_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, qty: f32,) 
 
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market,yuan_quantity,yuan_price) = get_best_buy(markets, GoodKind::YUAN,qty);
-        res = format!("buy {} yuan from {} for {} each", yuan_quantity, yuan_market, yuan_price/yuan_quantity);
+        res = format!("buy {} yuan from {} for {} ", yuan_quantity, yuan_market, yuan_price);
     } else if (average_yen > average_usd) && (average_yen > average_yuan) {
         let (usd_market,usd_quantity,usd_price) = get_best_buy(markets, GoodKind::USD,qty);
-        res = format!("buy {} usd from {} for {} each", usd_quantity, usd_market, usd_price/usd_quantity);
+        res = format!("buy {} usd from {} for {} ", usd_quantity, usd_market, usd_price);
     } else {
         let (yen_market,yen_quantity,yen_price) = get_best_buy(markets, GoodKind::YEN,qty);
-        res = format!("buy {} yen from {} for {} each", yen_quantity, yen_market, yen_price/yen_quantity);
+        res = format!("buy {} yen from {} for {} ", yen_quantity, yen_market, yen_price);
     }
     res
 }
@@ -333,25 +333,25 @@ pub fn get_best_buy_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, qty: f32,) 
 ///get the best sell trade for a trader
 ///
 /// **Andrea Ballarini**
-pub fn get_best_sell_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, qty: f32,) -> String {
-    let (_,yen_quantity,yen_price) = get_best_sell(markets, GoodKind::YEN,qty);
+pub fn get_best_sell_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, goods: &Vector<f32>) -> String {
+    let (_,yen_quantity,yen_price) = get_best_sell(markets, GoodKind::YEN,goods[1]);
     let average_yen= yen_price/yen_quantity;
-    let (_,usd_quantity,usd_price) = get_best_sell(markets, GoodKind::USD,qty);
+    let (_,usd_quantity,usd_price) = get_best_sell(markets, GoodKind::USD,goods[2]);
     let average_usd= usd_price/usd_quantity;
-    let (_,yuan_quantity,yuan_price) = get_best_sell(markets, GoodKind::YUAN,qty);
+    let (_,yuan_quantity,yuan_price) = get_best_sell(markets, GoodKind::YUAN,goods[3]);
     let average_yuan= yuan_price/yuan_quantity;
 
     let mut res ="".to_string();
 
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
-        let (yuan_market,yuan_quantity,yuan_price) = get_best_sell(markets, GoodKind::YUAN,qty);
-        res = format!("sell {} yuan to {} for {} each", yuan_quantity, yuan_market, yuan_price/yuan_quantity);
+        let (yuan_market,yuan_quantity,yuan_price) = get_best_sell(markets, GoodKind::YUAN,goods[3]);
+        res = format!("sell {} yuan to {} for {} ", yuan_quantity, yuan_market, yuan_price);
     } else if (average_yen > average_usd) && (average_yen > average_yuan) {
-        let (usd_market,usd_quantity,usd_price) = get_best_sell(markets, GoodKind::USD,qty);
-        res = format!("sell {} usd to {} for {} each", usd_quantity, usd_market, usd_price/usd_quantity);
+        let (usd_market,usd_quantity,usd_price) = get_best_sell(markets, GoodKind::USD,goods[2]);
+        res = format!("sell {} usd to {} for {} ", usd_quantity, usd_market, usd_price);
     } else {
-        let (yen_market,yen_quantity,yen_price) = get_best_sell(markets, GoodKind::YEN,qty);
-        res = format!("sell {} yen to {} for {} each", yen_quantity, yen_market, yen_price/yen_quantity);
+        let (yen_market,yen_quantity,yen_price) = get_best_sell(markets, GoodKind::YEN,goods[1]);
+        res = format!("sell {} yen to {} for {} ", yen_quantity, yen_market, yen_price);
     }
     res
 }
