@@ -40,7 +40,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                 .padding(10.0)
                 .background(Color::rgb(0.0, 0.0, 255.0)),
 
-                Button::new("unsafe mode")
+                Button::new("unsafe mode (arbitrager)")
                 .on_click(|ctx, data: &mut TraderUi, _env| {
                      data.safe_mode=false;
                 })
@@ -118,11 +118,26 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                             format!("USD: 000")
                         }).center()
                 ).split_point(0.8)
-                ).split_point(0.66),
+                ).split_point(0.66).border(Color::grey(0.9), 1.0),
                 Split::rows(
-                    Label::dynamic(|data: &TraderUi, _| {
-                        format!("da implementare")
-                    }).center().center(),
+                    Split::rows(
+                        Split::columns(
+                            Split::columns(
+                                Button::new("1").on_click(|ctx, data: &mut TraderUi, _env| {
+                                    println!("1 move da fare")
+                                }),
+                                Button::new("10").on_click(|ctx, data: &mut TraderUi, _env| {
+                                    println!("10 move da fare")
+                                }),
+                            ),
+                            Button::new("30").on_click(|ctx, data: &mut TraderUi, _env| {
+                                println!("30 move da fare")
+                            }),
+                        ).split_point(0.66),
+                        Label::dynamic(|data: &TraderUi, _| {
+                            format!("Log del bot")
+                        }).center()
+                ).split_point(0.3),
                     label.background(Color::rgb(255.0,227.0,0.0))
                 ).split_point(0.95)
                 )
