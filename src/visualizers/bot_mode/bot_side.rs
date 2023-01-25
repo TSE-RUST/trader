@@ -126,14 +126,14 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                     Split::rows(
                         Split::columns(
                             Split::columns(
-                                Button::new("1").on_click(|ctx, data: &mut TraderUi, _env| {
+                                Button::new("Fai fare 1 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
                                     println!("1 move da fare")
                                 }),
-                                Button::new("10").on_click(|ctx, data: &mut TraderUi, _env| {
+                                Button::new("Fai fare 10 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
                                     println!("10 move da fare")
                                 }),
                             ),
-                            Button::new("30").on_click(|ctx, data: &mut TraderUi, _env| {
+                            Button::new("Fai fare 30 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
                                 println!("30 move da fare")
                             }),
                         ).split_point(0.66),
@@ -148,13 +148,4 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
 
     ).split_point(0.07)
 
-}
-
-
-fn big_text(text: &str) -> impl Widget<TraderUi> {
-    Label::new(text)
-        .with_text_size(20.0)
-        .with_text_color(Color::rgb(0.0, 0.0, 0.0))
-        .background(Color::rgb(255.0, 255.0, 255.0))
-        .center()
 }
