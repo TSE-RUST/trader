@@ -1,0 +1,574 @@
+// library dependencies
+use druid::{Color, theme, Widget, WidgetExt};
+use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
+use unitn_market_2022::good::good::Good;
+use unitn_market_2022::good::good_kind::GoodKind;
+
+// local dependencies
+use crate::TraderUi;
+use crate::visualizers::datas::Trader;
+use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
+use crate::visualizers::user_mode::support_functions::max_qt;
+
+/// This function builds the left side of the application.
+///
+/// **Federico Brancasi**
+pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
+
+    // trader header
+    let label_trader = Flex::column()
+        .with_spacer(8.0)
+        .with_child(Label::new("Tokyo Stock Exchange Trader".to_string())
+        .with_text_color(theme::PRIMARY_LIGHT)
+        .with_text_size(35.0));
+
+    let label_trader_eur = Flex::column()
+        .with_child(Label::new("EUR".to_string())
+            .with_text_color(theme::PRIMARY_LIGHT)
+            .with_text_size(26.0)
+            .center())
+        .with_child(Label::dynamic(|data: &Trader, _| {
+            let money = data.goods[0];
+            format!("{money}")
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let label_trader_yen = Flex::column()
+        .with_child(Label::new("YEN".to_string())
+            .with_text_color(theme::PRIMARY_LIGHT)
+            .with_text_size(26.0))
+        .with_child(Label::dynamic(|data: &Trader, _| {
+            let money = data.goods[1];
+            format!("{money}")
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let label_trader_usd = Flex::column()
+        .with_child(Label::new("USD".to_string())
+            .with_text_color(theme::PRIMARY_LIGHT)
+            .with_text_size(26.0))
+        .with_child(Label::dynamic(|data: &Trader, _| {
+            let money = data.goods[2];
+            format!("{money}")
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let label_trader_yuan = Flex::column()
+        .with_child(Label::new("YUAN".to_string())
+            .with_text_color(theme::PRIMARY_LIGHT)
+            .with_text_size(26.0))
+        .with_child(Label::dynamic(|data: &Trader, _| {
+            let money = data.goods[3];
+            format!("{money}")
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let header = Flex::row()
+        .with_child(label_trader)
+        .with_spacer(40.0)
+        .with_child(label_trader_eur)
+        .with_spacer(40.0)
+        .with_child(label_trader_yen)
+        .with_spacer(40.0)
+        .with_child(label_trader_usd)
+        .with_spacer(40.0)
+        .with_child(label_trader_yuan)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(25.0);
+
+    // market buttons
+    let button_bfb = custom_button("BFB")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_market = "BFB".to_string();
+            println!("BFB button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let bfb_flex = Flex::column()
+        .with_child(button_bfb)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_market == "BFB" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let button_sol = custom_button("SOL")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_market = "SOL".to_string();
+            println!("SOL button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let sol_flex = Flex::column()
+        .with_child(button_sol)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_market == "SOL" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let button_parse = custom_button("PARSE")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_market = "PARSE".to_string();
+            println!("PARSE button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let parse_flex = Flex::column()
+        .with_child(button_parse)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_market == "PARSE" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let flex_buttons_markets = Flex::row()
+        .with_child(bfb_flex)
+        .with_spacer(40.0)
+        .with_child(sol_flex)
+        .with_spacer(40.0)
+        .with_child(parse_flex)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(5.0);
+
+    // good buttons
+    let button_eur = custom_button("EUR")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_good = "EUR".to_string();
+            println!("EUR button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let eur_flex = Flex::column()
+        .with_child(button_eur)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_good == "EUR" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let button_yen = custom_button("YEN")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_good = "YEN".to_string();
+            println!("YEN button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let yen_flex = Flex::column()
+        .with_child(button_yen)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_good == "YEN" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let button_usd = custom_button("USD")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_good = "USD".to_string();
+            println!("USD button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let usd_flex = Flex::column()
+        .with_child(button_usd)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_good == "USD" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let button_yuan = custom_button("YUAN")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_good = "YUAN".to_string();
+            println!("YUAN button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let yuan_flex = Flex::column()
+        .with_child(button_yuan)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_good == "YUAN" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let flex_buttons_goods = Flex::row()
+        .with_child(eur_flex)
+        .with_spacer(40.0)
+        .with_child(yen_flex)
+        .with_spacer(40.0)
+        .with_child(usd_flex)
+        .with_spacer(40.0)
+        .with_child(yuan_flex)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(5.0);
+
+    // quantity textbox
+    // let textbox = TextBox::new().lens(TraderUi::quantity_str);
+
+    // quantity slider
+    let slider = Flex::row()
+        .with_child(
+            Slider::new()
+                .with_range(0.0, 1.0)
+                // .with_step(0.10)
+                .lens(TraderUi::percentage)
+                .fix_width(180.0)
+                .disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0),
+        )
+        .with_spacer(8.0)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            format!("{:.2}", data.percentage * data.quantity as f64)
+        }).with_text_size(20.0))
+        .with_spacer(8.0)
+        .with_child(
+            Flex::row()
+                .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
+                    data.percentage = (data.percentage - 0.005).max(0.0);
+                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+                .with_spacer(4.0)
+                .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
+                    data.percentage = (data.percentage + 0.005).min(1.0);
+                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
+        );
+
+    // quantity progressbar
+    let progressbar = Flex::column()
+        .with_child(ProgressBar::new().lens(TraderUi::percentage).fix_width(380.0))
+        .with_spacer(4.0);
+
+    // trade buttons
+    let button_buy = custom_button("BUY")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_method_of_trade = "BUY".to_string();
+            println!("BUY button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let buy_flex = Flex::column()
+        .with_child(button_buy)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_method_of_trade == "BUY" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let button_sell = custom_button("SELL")
+        .on_click(|_ctx, data: &mut TraderUi, _| {
+            data.selected_method_of_trade = "SELL".to_string();
+            println!("SELL button clicked");
+            data.quantity = max_qt(&data.markets,
+                                   &data.trader.goods,
+                                   &data.selected_method_of_trade,
+                                   &data.selected_market,
+                                   &data.selected_good,
+                                   &data.bfb_quantities.clone(),
+                                   &data.sol_quantities.clone(),
+                                   &data.parse_quantities.clone());
+            println!("max quantity: {}", data.quantity);
+        });
+
+    let sell_flex = Flex::column()
+        .with_child(button_sell)
+        .with_child(Label::new(|data: &TraderUi, _: &_| {
+            if data.selected_method_of_trade == "SELL" {
+                format!("selected")
+            } else {
+                format!("")
+            }
+        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+
+    let flex_buttons_trades = Flex::row()
+        .with_child(sell_flex)
+        .with_spacer(40.0)
+        .with_child(buy_flex)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(5.0);
+
+    // trade button
+    let trade_button = Flex::row()
+        .with_child(custom_button_white("TRADE")
+            .on_click(|_ctx, data: &mut TraderUi, _| {
+                println!("TRADE button clicked");
+                println!("selected percentage: {}", data.percentage);
+                println!("quantity: {}", data.percentage * data.quantity as f64);
+
+                if data.selected_method_of_trade == "BUY"{
+                    //DO A BUY - Andrea Ballarini
+                    let trader_name = data.trader.name.clone();
+                    let selected_market =
+                        match &data.selected_market[0..] {
+                            "BFB" => 0,
+                            "SOL" => 1,
+                            "PARSE" => 2,
+                            _ => 0,
+                        };
+                    let mut market =data.markets[selected_market].borrow_mut();
+                    let market_name = market.get_name().clone();
+                    let good = match &data.selected_good[0..] {
+                        "EUR" => GoodKind::EUR,
+                        "YEN" => GoodKind::YEN,
+                        "USD" => GoodKind::USD,
+                        "YUAN" => GoodKind::YUAN,
+                        _ => GoodKind::EUR
+                    };
+                    let quantity = data.quantity*data.percentage as f32;
+                    let price = match market.get_buy_price(good,quantity)
+                    {
+                        Ok(price) => price,
+                        Err(e) => panic!("Error: in get_buy_price {:?}", e),
+                    };
+                    let mut cash = Good::new(GoodKind::EUR, price);
+                    let token  = match market.lock_buy(good, quantity, price,trader_name.clone()) {
+                        Ok(token) => token,
+                        Err(e) => { panic!("Error in lock_buy in {}: {:?}", market_name.to_string(), e); },
+                    };
+                    let increase= match market.buy(token, &mut cash){
+                        Ok(increase) => increase,
+                        Err(e) => {panic!("Error in buy in {}: {:?}", market_name.to_string(),e);},
+                    };
+                    data.trader.goods[0] -= price;
+                    data.trader.goods[
+                        match good {
+                            GoodKind::EUR => 0,
+                            GoodKind::YEN => 1,
+                            GoodKind::USD => 2,
+                            GoodKind::YUAN => 3,
+                        }
+                    ] += increase.get_qty();
+                    println!("buying {} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
+                } else if data.selected_method_of_trade == "SELL"{
+                    //DO A SELL - Andrea Ballarini
+                    let trader_name = data.trader.name.clone();
+                    let selected_market =
+                        match &data.selected_market[0..] {
+                            "BFB" => 0,
+                            "SOL" => 1,
+                            "PARSE" => 2,
+                            _ => 0,
+                        };
+                    let mut market =data.markets[selected_market].borrow_mut();
+                    let market_name = market.get_name().clone();
+                    let good = match &data.selected_good[0..] {
+                        "EUR" => GoodKind::EUR,
+                        "YEN" => GoodKind::YEN,
+                        "USD" => GoodKind::USD,
+                        "YUAN" => GoodKind::YUAN,
+                        _ => GoodKind::EUR
+                    };
+                    let quantity = data.quantity*data.percentage as f32;
+                    let price = match market.get_sell_price(good,quantity)
+                    {
+                        Ok(price) => price,
+                        Err(e) => panic!("Error: in get_sell_price {:?}", e),
+                    };
+                    let token = match market.lock_sell(good, quantity, price,trader_name) {
+                        Ok(token) => token,
+                        Err(e) => {panic!("Error in lock_sell in {}: {:?}", market_name.to_string(),e);},
+                    };
+                    let mut cash = Good::new(good, quantity);
+                    let decrease = match market.sell(token, &mut cash){
+                        Ok(decrease) => decrease,
+                        Err(e) => {panic!("Error in sell in {}: {:?}", market_name.to_string(),e);},
+                    };
+                    data.trader.goods[0] += price;
+                    data.trader.goods[
+                        match good {
+                            GoodKind::EUR => 0,
+                            GoodKind::YEN => 1,
+                            GoodKind::USD => 2,
+                            GoodKind::YUAN => 3,
+                        }
+                        ] -= decrease.get_qty();
+                    println!("selling {} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
+                }
+
+                // now update all the labels etc TODO
+
+            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+        .align_right();
+
+    //recap label
+    let recap_label = Label::new(|data: &TraderUi, _: &_| {
+        if data.selected_method_of_trade == "SELL" {
+            format!("Sell {:.2} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
+        } else {
+            format!("Buy {:.2} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
+        }
+    }).with_text_size(28.0)
+        .with_text_color(Color::from_hex_str("#a1dcff").unwrap());
+
+    // trader central panel
+    let centralpanel = Flex::column()
+        .with_child(Label::new(" Choose a market".to_string())
+            .with_text_color(Color::rgb8(176, 196, 222))
+            .with_text_size(26.0))
+        .with_child(flex_buttons_markets)
+        .with_spacer(5.0)
+        .with_child(Label::new(" Choose a good".to_string())
+            .with_text_color(Color::rgb8(176, 196, 222))
+            .with_text_size(26.0))
+        .with_child(flex_buttons_goods)
+        .with_spacer(5.0)
+        .with_child(Label::new(" Choose how to trade".to_string())
+            .with_text_color(Color::rgb8(176, 196, 222))
+            .with_text_size(26.0))
+        .with_child(flex_buttons_trades)
+        .with_spacer(15.0)
+        .with_child(slider)
+        .with_spacer(20.0)
+        // .with_child(textbox.center())
+        // .with_spacer(20.0)
+        .with_child(progressbar)
+        .with_spacer(30.0)
+        .with_child(recap_label)
+        .with_child(trade_button)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(5.0)
+        .padding(30.0);
+
+    // trader bottom panel
+    let profit_sell_header = Label::new("best profit sell".to_string())
+        .with_text_color(theme::PRIMARY_LIGHT)
+        .with_text_size(30.0)
+        .center();
+
+    let profit_sell_desc = Label::new("eh non lo so".to_string())
+        .with_text_color(Color::from_hex_str("#ffffff").unwrap())
+        .with_text_size(25.0)
+        .center();
+
+    let sell_bottompanel = Flex::column()
+        .with_child(profit_sell_header)
+        .with_child(profit_sell_desc)
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::Center);
+
+    let profit_buy_header = Label::new("best profit buy".to_string())
+        .with_text_color(theme::PRIMARY_LIGHT)
+        .with_text_size(30.0)
+        .center();
+
+    let profit_buy_desc = Label::new("booooh".to_string())
+        .with_text_color(Color::from_hex_str("#ffffff").unwrap())
+        .with_text_size(25.0)
+        .center();
+
+    let buy_bottompanel = Flex::column()
+        .with_child(profit_buy_header)
+        .with_child(profit_buy_desc)
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::Center);
+
+    let bottompanel = Flex::row()
+        .with_child(sell_bottompanel)
+        .with_spacer(140.0)
+        .with_child(buy_bottompanel)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(30.0)
+        .center();
+
+    // union between central panel and bottom panel
+    let centralpanel_bottompanel = Split::rows(
+        centralpanel,
+        bottompanel,
+    ).split_point(0.80);
+
+    // union header and central panel
+    let trader_ui = Split::rows(
+        header,
+        centralpanel_bottompanel,
+    ).split_point(0.13);
+
+    trader_ui
+}

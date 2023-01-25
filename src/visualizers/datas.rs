@@ -9,13 +9,15 @@ use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
-use unitn_market_2022::good::good::Good;
 
-#[path = "../bots/mod.rs"]
-mod bots;
+// local dependencies
+// #[path = "../bots/mod.rs"]
+// mod bots;
 
 /// the TraderUi struct is the main struct which
 /// contains the data of the application
+///
+/// **Federico Brancasi**
 #[derive(Clone, Data, Lens)]
 pub struct TraderUi {
     pub current_view: u32,
@@ -33,23 +35,29 @@ pub struct TraderUi {
     pub parse_exchange_rate_sell: Vector<f32>,
     pub markets: Vector<Rc<RefCell<dyn Market>>>,
     pub trader: Trader,
-    pub quantity: f64,
-    pub current_trade: u32,
-    pub quantity_str: String,
+    pub quantity: f32,
+    pub percentage: f64,
     pub boolean: bool,
     pub safe_mode: bool,
+    pub selected_market: String,
+    pub selected_good: String,
+    pub selected_method_of_trade: String,
 }
 
 /// the SingleMarket struct is used to store the data of
 /// a single market
+///
+/// **Federico Brancasi**
 #[derive(Clone, Data, Lens)]
 pub struct Trader {
     pub(crate) name: String,
-    pub(crate) money: f32,
     pub(crate) goods: Vector<f32>,
 }
 
 /// impl block of the TraderUi struct
+///
+///
+/// **Federico Brancasi**
 impl TraderUi {
     /// the new function creates a new instance of the TraderUi struct
     pub fn new() -> Self {
@@ -68,23 +76,23 @@ impl TraderUi {
             parse_exchange_rate_buy: vector![0.0, 0.0, 0.0, 0.0],
             parse_exchange_rate_sell: vector![0.0, 0.0, 0.0, 0.0],
             markets: vector![bfb::new_random(), sol::new_random(), parse::new_random(),],
-            trader: Trader { name: "TRADER TSE".to_string(), money: 0.0, goods: vector![0.0, 0.0, 0.0] },
+            trader: Trader { name: "TRADER TSE".to_string(), goods: vector![0.0, 0.0, 0.0, 0.0] },
             quantity: 0.0,
-            current_trade: 0,
-            quantity_str: " ".to_string(),
+            percentage: 1.0,
             boolean: false,
             safe_mode: true,
+            selected_market: "BFB".to_string(),
+            selected_good: "EUR".to_string(),
+            selected_method_of_trade: "SELL".to_string(),
         }
-    }
-
-    pub fn return_quantity(&self) -> f64 {
-        self.quantity
     }
 }
 
 /// support functions of the TraderUi struct:
 
 /// the get_market_index function returns the index of the market from the name
+///
+/// **Federico Brancasi**
 // pub fn get_market_index(market_name: &str) -> usize {
 //     match market_name.to_lowercase().as_str() {
 //         "bfb" => 0,
@@ -97,6 +105,8 @@ impl TraderUi {
 /// initializer of the TraderUi struct
 /// this function is called when the TraderUi is created and it
 /// initializes the TraderUi struct datas when the program starts
+///
+/// **Federico Brancasi**
 pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
 
     // set values for bfb market
@@ -123,8 +133,9 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.parse_exchange_rate_buy = exchange_rate_buy_parse;
     app.parse_exchange_rate_sell = exchange_rate_sell_parse;
 
-    app.trader.money = 40000.0;
-    app.trader.goods = vector![10000.0, 20000.0, 30000.0];
+    app.trader.goods = vector![40000.0, 0.0, 20000.0, 30000.0];
+
+    app.quantity = app.trader.goods[0];
 
     app
 }

@@ -1,6 +1,6 @@
 pub(crate) mod app_menu;
-pub(crate) mod bot_side;
 pub(crate) mod build_ui;
 pub(crate) mod datas;
-pub(crate) mod user_side;
-pub(crate) mod custom_widget;
+pub(crate) mod custom_widgets;
+pub(crate) mod user_mode;
+pub(crate) mod bot_mode;
