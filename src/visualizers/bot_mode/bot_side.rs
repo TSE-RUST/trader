@@ -134,7 +134,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                                 }),
                             ),
                             Button::new("30").on_click(|ctx, data: &mut TraderUi, _env| {
-                                println!("30 move da faare")
+                                println!("30 move da fare")
                             }),
                         ).split_point(0.66),
                         Label::dynamic(|data: &TraderUi, _| {
