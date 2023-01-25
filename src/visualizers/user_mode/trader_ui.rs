@@ -1,6 +1,8 @@
 // library dependencies
 use druid::{Color, theme, Widget, WidgetExt};
 use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
+use unitn_market_2022::good::good::Good;
+use unitn_market_2022::good::good_kind::GoodKind;
 
 // local dependencies
 use crate::TraderUi;
@@ -380,10 +382,92 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 println!("quantity: {}", data.percentage * data.quantity as f64);
 
                 if data.selected_method_of_trade == "BUY"{
-                    //DO A BUY TODO
+                    //DO A BUY - Andrea Ballarini
+                    let trader_name = data.trader.name.clone();
+                    let selected_market =
+                        match &data.selected_market[0..] {
+                            "BFB" => 0,
+                            "SOL" => 1,
+                            "PARSE" => 2,
+                            _ => 0,
+                        };
+                    let mut market =data.markets[selected_market].borrow_mut();
+                    let market_name = market.get_name().clone();
+                    let good = match &data.selected_good[0..] {
+                        "EUR" => GoodKind::EUR,
+                        "YEN" => GoodKind::YEN,
+                        "USD" => GoodKind::USD,
+                        "YUAN" => GoodKind::YUAN,
+                        _ => GoodKind::EUR
+                    };
+                    let quantity = data.quantity*data.percentage as f32;
+                    let price = match market.get_buy_price(good,quantity)
+                    {
+                        Ok(price) => price,
+                        Err(e) => panic!("Error: in get_buy_price {:?}", e),
+                    };
+                    let mut cash = Good::new(GoodKind::EUR, price);
+                    let token  = match market.lock_buy(good, quantity, price,trader_name.clone()) {
+                        Ok(token) => token,
+                        Err(e) => { panic!("Error in lock_buy in {}: {:?}", market_name.to_string(), e); },
+                    };
+                    let increase= match market.buy(token, &mut cash){
+                        Ok(increase) => increase,
+                        Err(e) => {panic!("Error in buy in {}: {:?}", market_name.to_string(),e);},
+                    };
+                    data.trader.goods[0] -= price;
+                    data.trader.goods[
+                        match good {
+                            GoodKind::EUR => 0,
+                            GoodKind::YEN => 1,
+                            GoodKind::USD => 2,
+                            GoodKind::YUAN => 3,
+                        }
+                    ] += increase.get_qty();
                     println!("buying {} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 } else if data.selected_method_of_trade == "SELL"{
-                    //DO A SELL TODO
+                    //DO A SELL - Andrea Ballarini
+                    let trader_name = data.trader.name.clone();
+                    let selected_market =
+                        match &data.selected_market[0..] {
+                            "BFB" => 0,
+                            "SOL" => 1,
+                            "PARSE" => 2,
+                            _ => 0,
+                        };
+                    let mut market =data.markets[selected_market].borrow_mut();
+                    let market_name = market.get_name().clone();
+                    let good = match &data.selected_good[0..] {
+                        "EUR" => GoodKind::EUR,
+                        "YEN" => GoodKind::YEN,
+                        "USD" => GoodKind::USD,
+                        "YUAN" => GoodKind::YUAN,
+                        _ => GoodKind::EUR
+                    };
+                    let quantity = data.quantity*data.percentage as f32;
+                    let price = match market.get_sell_price(good,quantity)
+                    {
+                        Ok(price) => price,
+                        Err(e) => panic!("Error: in get_sell_price {:?}", e),
+                    };
+                    let token = match market.lock_sell(good, quantity, price,trader_name) {
+                        Ok(token) => token,
+                        Err(e) => {panic!("Error in lock_sell in {}: {:?}", market_name.to_string(),e);},
+                    };
+                    let mut cash = Good::new(good, quantity);
+                    let decrease = match market.sell(token, &mut cash){
+                        Ok(decrease) => decrease,
+                        Err(e) => {panic!("Error in sell in {}: {:?}", market_name.to_string(),e);},
+                    };
+                    data.trader.goods[0] += price;
+                    data.trader.goods[
+                        match good {
+                            GoodKind::EUR => 0,
+                            GoodKind::YEN => 1,
+                            GoodKind::USD => 2,
+                            GoodKind::YUAN => 3,
+                        }
+                        ] -= decrease.get_qty();
                     println!("selling {} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 }
 

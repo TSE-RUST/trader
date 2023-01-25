@@ -39,9 +39,7 @@ pub fn get_max_buy_quantity(market: &Rc<RefCell<dyn Market>>, money: f32, kind: 
     let mut max_quantity = 0.0;
     for i in 0..goods.len() {
         if goods[i].good_kind == kind {
-
             max_quantity = goods[i].quantity;
-
         }
     }
     if max_quantity > 0.0{
