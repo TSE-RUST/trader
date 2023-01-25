@@ -1,8 +1,8 @@
 
 // libraries dependencies
-use druid::{Widget, WidgetExt, Color, lens, Env};
+use druid::{Widget, WidgetExt, Color};
 use druid::widget::{Label, Button, Container};
-use druid::widget::{Split};
+use druid::widget::Split;
 
 // market dependencies
 use unitn_market_2022::good::good_kind::GoodKind;
@@ -12,7 +12,7 @@ use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 
 // local dependencies
-use crate::{TraderUi};
+use crate::TraderUi;
 
 /// This function builds the widget that will be displayed
 /// on the bots side of the application.
