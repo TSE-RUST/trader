@@ -1,4 +1,4 @@
-use druid::piet::dwrite::TextLayout;
+
 // libraries dependencies
 use druid::{Widget, WidgetExt, Color, lens, Env};
 use druid::widget::{Label, Button, Container};
@@ -17,8 +17,6 @@ use crate::{TraderUi};
 /// This function builds the widget that will be displayed
 /// on the bots side of the application.
 pub(crate) fn bot_side() -> impl Widget<TraderUi>{
-
-    let str="safe mode";
     let label = Label::dynamic(move |data: &TraderUi, _| {
         if data.safe_mode{
             format!("safe mode attivo")
@@ -55,23 +53,72 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
         Container::new(
             Split::rows(
                 Split::columns(
-                    Split::columns(
-                        Label::dynamic(|data: &TraderUi, _| {
-                            format!("Yen")
-                        }).center(),
-                        Label::dynamic(|data: &TraderUi, _| {
-                            format!("Eur")
-                        }).center()
+                        Split::columns(
+                         Split::rows(
+                                Split::rows(
+                                    Split::rows(
+                                        big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0))
+                                        ,
+                                        Label::dynamic(|data: &TraderUi, _| {
+                                            format!("Eur: 000")
+                                        }).center()
+                                    ).split_point(0.5),
+                                    Split::rows(
+                                        Label::dynamic(|data: &TraderUi, _| {
+                                            format!("Yen: 000")
+                                        }).center(),
+                                        Label::dynamic(|data: &TraderUi, _| {
+                                            format!("Yuan: 000")
+                                        }).center()
+                                    )),
+                                Label::dynamic(|data: &TraderUi, _| {
+                                    format!("USD: 000")
+                                }).center()
+                        ).split_point(0.8)
+                        ,Split::rows(
+                            Split::rows(
+                                Split::rows(
+                                    big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0))
+                                    ,
+                                    Label::dynamic(|data: &TraderUi, _| {
+                                        format!("Eur: 000")
+                                    }).center()
+                                ).split_point(0.5),
+                                Split::rows(
+                                    Label::dynamic(|data: &TraderUi, _| {
+                                        format!("Yen: 000")
+                                    }).center(),
+                                    Label::dynamic(|data: &TraderUi, _| {
+                                        format!("Yuan: 000")
+                                    }).center()
+                                )),
+                            Label::dynamic(|data: &TraderUi, _| {
+                                format!("USD: 000")
+                            }).center()
+                    ).split_point(0.8)
                     ),
-                    Split::columns(
+                    Split::rows(
+                        Split::rows(
+                            Split::rows(
+                                big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0))
+                                ,
+                                Label::dynamic(|data: &TraderUi, _| {
+                                    format!("Eur: 000")
+                                }).center()
+                            ).split_point(0.5),
+                            Split::rows(
+                                Label::dynamic(|data: &TraderUi, _| {
+                                    format!("Yen: 000")
+                                }).center(),
+                                Label::dynamic(|data: &TraderUi, _| {
+                                    format!("Yuan: 000")
+                                }).center()
+                            )),
                         Label::dynamic(|data: &TraderUi, _| {
-                            format!("Usd")
-                        }).center(),
-                        Label::dynamic(|data: &TraderUi, _| {
-                            format!("Yuan")
+                            format!("USD: 000")
                         }).center()
-                    )
-                ),
+                ).split_point(0.8)
+                ).split_point(0.66),
                 Split::rows(
                     Label::dynamic(|data: &TraderUi, _| {
                         format!("da implementare")
@@ -83,4 +130,12 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
 
     ).split_point(0.07)
 
+}
+
+fn big_text(text: &str) -> impl Widget<TraderUi> {
+    Label::new(text)
+        .with_text_size(20.0)
+        .with_text_color(Color::rgb(0.0, 0.0, 0.0))
+        .background(Color::rgb(255.0, 255.0, 255.0))
+        .center()
 }
