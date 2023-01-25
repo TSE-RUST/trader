@@ -1,17 +1,9 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 // library dependencies
-use druid::{Color, theme, Widget, WidgetExt};
 use druid::im::Vector;
-use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
-
-// local dependencies
-use crate::TraderUi;
-use crate::visualizers::datas::Trader;
-use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
-use crate::visualizers::datas::trader_ui_derived_lenses::{bfb_quantities, parse_quantities, sol_quantities};
 
 fn get_good(good: &String) -> GoodKind {
     if good == "EUR" {
@@ -37,43 +29,43 @@ fn get_index(string: &String) -> usize {
     }
 }
 
-fn get_index_bfb(string: &String) -> usize {
-    if string == "EUR" {
-        3
-    } else if string == "YEN" {
-        1
-    } else if string == "USD" {
-        0
-    } else {
-        2
-    }
-}
+// fn get_index_bfb(string: &String) -> usize {
+//     if string == "EUR" {
+//         3
+//     } else if string == "YEN" {
+//         1
+//     } else if string == "USD" {
+//         0
+//     } else {
+//         2
+//     }
+// }
 
-fn get_index_sol(string: &String) -> usize {
-    if string == "EUR" {
-        1
-    } else if string == "YEN" {
-        2
-    } else if string == "USD" {
-        3
-    } else {
-        0
-    }
-}
+// fn get_index_sol(string: &String) -> usize {
+//     if string == "EUR" {
+//         1
+//     } else if string == "YEN" {
+//         2
+//     } else if string == "USD" {
+//         3
+//     } else {
+//         0
+//     }
+// }
 
-fn get_index_parse(string: &String) -> usize {
-    if string == "EUR" {
-        3
-    } else if string == "YEN" {
-        1
-    } else if string == "USD" {
-        0
-    } else {
-        2
-    }
-}
+// fn get_index_parse(string: &String) -> usize {
+//     if string == "EUR" {
+//         3
+//     } else if string == "YEN" {
+//         1
+//     } else if string == "USD" {
+//         0
+//     } else {
+//         2
+//     }
+// }
 
-pub(crate) fn max_qt(markets: &Vector<Rc<RefCell<dyn Market>>>, goods_trader: &Vector<f32>, method: &String, market: &String, good: &String, bfb: &Vector<f32>, sol: &Vector<f32>, parse: &Vector<f32>) -> f32 {
+pub(crate) fn max_qt(markets: &Vector<Rc<RefCell<dyn Market>>>, goods_trader: &Vector<f32>, method: &String, market: &String, good: &String, _bfb: &Vector<f32>, _sol: &Vector<f32>, _parse: &Vector<f32>) -> f32 {
     let goodkind = get_good(&good);
     let mut ret = 0.0 as f32;
     if method == "SELL" {

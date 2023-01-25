@@ -1,18 +1,10 @@
-use std::cell::RefCell;
-use std::rc::Rc;
 // library dependencies
 use druid::{Color, theme, Widget, WidgetExt};
 use druid::im::Vector;
-use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
-use unitn_market_2022::good::good_kind::GoodKind;
-use unitn_market_2022::market::Market;
+use druid::widget::{CrossAxisAlignment, Flex, Label, MainAxisAlignment};
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::datas::Trader;
-use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
-use crate::visualizers::datas::trader_ui_derived_lenses::{bfb_quantities, parse_quantities, sol_quantities};
-use crate::visualizers::user_mode::support_functions::max_qt;
 
 /// This function builds the bfb chart on the
 /// right side of the application

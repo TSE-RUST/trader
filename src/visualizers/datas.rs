@@ -11,8 +11,8 @@ use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 
 // local dependencies
-#[path = "../bots/mod.rs"]
-mod bots;
+// #[path = "../bots/mod.rs"]
+// mod bots;
 
 /// the TraderUi struct is the main struct which
 /// contains the data of the application

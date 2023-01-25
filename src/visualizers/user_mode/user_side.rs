@@ -1,18 +1,9 @@
-use std::cell::RefCell;
-use std::rc::Rc;
 // library dependencies
-use druid::{Color, theme, Widget, WidgetExt};
-use druid::im::Vector;
-use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
-use unitn_market_2022::good::good_kind::GoodKind;
-use unitn_market_2022::market::Market;
+use druid::Widget;
+use druid::widget::Split;
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::datas::Trader;
-use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
-use crate::visualizers::datas::trader_ui_derived_lenses::{bfb_quantities, parse_quantities, sol_quantities};
-use crate::visualizers::user_mode::support_functions::max_qt;
 use crate::visualizers::user_mode::charts::{create_chart_bfb, create_chart_parse, create_chart_sol};
 use crate::visualizers::user_mode::trader_ui::create_chart_trader;
 
