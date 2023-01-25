@@ -350,6 +350,7 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
     let flex_column = Flex::column()
         .main_axis_alignment(MainAxisAlignment::Center)
         .cross_axis_alignment(CrossAxisAlignment::Center)
+        .with_spacer(30.0)
         .with_child(label_name)
         .with_spacer(5.0)
         .with_child(flex_row1)
