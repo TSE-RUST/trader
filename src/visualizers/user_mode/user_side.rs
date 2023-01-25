@@ -1,5 +1,5 @@
 // library dependencies
-use druid::Widget;
+use druid::{Widget};
 use druid::widget::Split;
 
 // local dependencies

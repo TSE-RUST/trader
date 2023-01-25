@@ -1,11 +1,12 @@
 // libraries dependencies
-use druid::{Widget, WidgetExt};
+use druid::{Widget, WidgetExt, Event};
 use druid::widget::{Label, ViewSwitcher};
 
 // local dependencies
 use crate::visualizers::bot_mode::bot_side;
 use crate::visualizers::user_mode::user_side;
 use crate::visualizers::datas::TraderUi;
+use crate::visualizers::events::EventLogger;
 
 /// the build_ui function creates the main ui of the application
 ///
@@ -24,6 +25,9 @@ pub fn build_ui() -> impl Widget<TraderUi> {
             _ => Box::new(Label::new("Error").center()),
         },
     );
+
     // returns the ui of the application
-    view_switcher
+    view_switcher.controller(EventLogger {
+        filter: |event| matches!(event, Event::KeyDown(_) | Event::KeyUp(_) | Event::MouseDown(_) | Event::MouseUp(_) | Event::Wheel(_)),
+    })
 }

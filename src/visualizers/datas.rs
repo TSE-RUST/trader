@@ -1,6 +1,7 @@
 // libraries dependencies
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::sync::Arc;
 use druid::im::{Vector, vector};
 use druid::{Data, Lens};
 
@@ -9,6 +10,7 @@ use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
+use crate::visualizers::events::{LoggedEvent};
 
 // local dependencies
 // #[path = "../bots/mod.rs"]
@@ -42,6 +44,7 @@ pub struct TraderUi {
     pub selected_market: String,
     pub selected_good: String,
     pub selected_method_of_trade: String,
+    pub events: Arc<Vec<LoggedEvent>>,
 }
 
 /// the SingleMarket struct is used to store the data of
@@ -84,6 +87,7 @@ impl TraderUi {
             selected_market: "BFB".to_string(),
             selected_good: "EUR".to_string(),
             selected_method_of_trade: "SELL".to_string(),
+            events: Arc::new(Vec::new()),
         }
     }
 }

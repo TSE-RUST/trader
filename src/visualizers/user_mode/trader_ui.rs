@@ -19,8 +19,8 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
     let label_trader = Flex::column()
         .with_spacer(8.0)
         .with_child(Label::new("Tokyo Stock Exchange Trader".to_string())
-        .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(35.0));
+            .with_text_color(theme::PRIMARY_LIGHT)
+            .with_text_size(35.0));
 
     let label_trader_eur = Flex::column()
         .with_child(Label::new("EUR".to_string())
@@ -381,7 +381,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 println!("selected percentage: {}", data.percentage);
                 println!("quantity: {}", data.percentage * data.quantity as f64);
 
-                if data.selected_method_of_trade == "BUY"{
+                if data.selected_method_of_trade == "BUY" {
                     //DO A BUY - Andrea Ballarini
                     let trader_name = data.trader.name.clone();
                     let selected_market =
@@ -425,7 +425,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         }
                     ] += increase.get_qty();
                     println!("buying {} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
-                } else if data.selected_method_of_trade == "SELL"{
+                } else if data.selected_method_of_trade == "SELL" {
                     //DO A SELL - Andrea Ballarini
                     let trader_name = data.trader.name.clone();
                     let selected_market =
@@ -472,16 +472,19 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 }
 
                 // now update all the labels etc TODO
-
             }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
         .align_right();
 
     //recap label
     let recap_label = Label::new(|data: &TraderUi, _: &_| {
-        if data.selected_method_of_trade == "SELL" {
-            format!("Sell {:.2} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
+        if data.quantity != 0.0 {
+            if data.selected_method_of_trade == "SELL" {
+                format!("Sell {:.2} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
+            } else {
+                format!("Buy {:.2} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
+            }
         } else {
-            format!("Buy {:.2} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
+            format!("The quantity of the good selected is zero!")
         }
     }).with_text_size(28.0)
         .with_text_color(Color::from_hex_str("#a1dcff").unwrap());
