@@ -5,6 +5,9 @@ use druid::im::Vector;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
+/// returns the GoodKind of a given good
+///
+/// **Federico Brancasi**
 fn get_good(good: &String) -> GoodKind {
     if good == "EUR" {
         GoodKind::EUR
@@ -17,6 +20,9 @@ fn get_good(good: &String) -> GoodKind {
     }
 }
 
+/// returns the index of a given good
+///
+/// **Federico Brancasi**
 fn get_index(string: &String) -> usize {
     if string == "EUR" {
         0
@@ -65,6 +71,9 @@ fn get_index(string: &String) -> usize {
 //     }
 // }
 
+/// returns the max quantity of a given good that can be bought or sold
+///
+/// **Federico Brancasi**
 pub(crate) fn max_qt(markets: &Vector<Rc<RefCell<dyn Market>>>, goods_trader: &Vector<f32>, method: &String, market: &String, good: &String, _bfb: &Vector<f32>, _sol: &Vector<f32>, _parse: &Vector<f32>) -> f32 {
     let goodkind = get_good(&good);
     let mut ret = 0.0 as f32;
