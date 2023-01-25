@@ -472,7 +472,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         Err(e) => { panic!("Error in lock_sell in {}: {:?}", market_name.to_string(), e); }
                     };
                     let mut cash = Good::new(good, quantity);
-                    let decrease = match market.sell(token, &mut cash) {
+                    let _decrease = match market.sell(token, &mut cash) {
                         Ok(decrease) => decrease,
                         Err(e) => { panic!("Error in sell in {}: {:?}", market_name.to_string(), e); }
                     };

@@ -72,13 +72,13 @@ pub fn get_max_sell_quantity(market: &Rc<RefCell<dyn Market>>, quantity: f32, ki
      }
     //look if the market has the amount of GoodKind::EUR to buy the quantity of the good
     if max_quantity > 0.0{
-        println!("sono nell'if: {}", max_quantity);
+        // println!("sono nell'if: {}", max_quantity);
         let mut sell_price = market.get_sell_price(kind, max_quantity).expect("Error in get_sell_price in the max_sell_quantity function");
         while eur_quantity < sell_price && max_quantity > 0.0 {
 
             //divido la quantità in 2 e ritento
             max_quantity = max_quantity/2.;
-            println!("sono nel while: {}", max_quantity);
+            // println!("sono nel while: {}", max_quantity);
             sell_price = market.get_sell_price(kind, max_quantity).expect("Error in get_sell_price in the max_sell_quantity function");
         }
     }
