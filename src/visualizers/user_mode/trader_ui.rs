@@ -471,7 +471,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                     println!("selling {} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 }
 
-                // now update all the labels etc TODO
                 // set values for bfb market
                 let (good_kinds_bfb, quantities_bfb, exchange_rate_buy_bfb, exchange_rate_sell_bfb) = get_market_info(&data.markets[0]);
 
@@ -495,6 +494,15 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 data.parse_quantities = quantities_parse;
                 data.parse_exchange_rate_buy = exchange_rate_buy_parse;
                 data.parse_exchange_rate_sell = exchange_rate_sell_parse;
+
+                data.quantity = max_qt(&data.markets,
+                                       &data.trader.goods,
+                                       &data.selected_method_of_trade,
+                                       &data.selected_market,
+                                       &data.selected_good,
+                                       &data.bfb_quantities.clone(),
+                                       &data.sol_quantities.clone(),
+                                       &data.parse_quantities.clone());
 
             }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 || data.percentage == 0.0 || (data.quantity == 0.0 && data.percentage == 0.0)))
         .align_right();
@@ -553,10 +561,9 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_text_size(30.0)
         .center();
 
-    let profit_sell_desc = Label::new("eh non lo so".to_string())
-        .with_text_color(Color::from_hex_str("#ffffff").unwrap())
-        .with_text_size(25.0)
-        .center();
+    let profit_sell_desc = Label::dynamic(|data: &TraderUi, _| {
+        format!("{}", data.string_best_profit_sell)
+    }).with_text_size(20.0).center();
 
     let sell_bottompanel = Flex::column()
         .with_child(profit_sell_header)
@@ -569,10 +576,9 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_text_size(30.0)
         .center();
 
-    let profit_buy_desc = Label::new("booooh".to_string())
-        .with_text_color(Color::from_hex_str("#ffffff").unwrap())
-        .with_text_size(25.0)
-        .center();
+    let profit_buy_desc = Label::dynamic(|data: &TraderUi, _| {
+        format!("{}", data.string_best_profit_buy)
+    }).with_text_size(20.0).center();
 
     let buy_bottompanel = Flex::column()
         .with_child(profit_buy_header)
