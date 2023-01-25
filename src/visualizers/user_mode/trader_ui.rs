@@ -382,15 +382,14 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 println!("quantity: {}", data.percentage * data.quantity as f64);
 
                 if data.selected_method_of_trade == "BUY"{
-                    //DO A BUY
-                    todo!("buy")
+                    //DO A BUY TODO
+                    println!("buying {} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 } else if data.selected_method_of_trade == "SELL"{
-                    //DO A SELL
-                    todo!("sell")
+                    //DO A SELL TODO
+                    println!("selling {} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 }
 
-                // now update all the labels etc
-                todo!("update")
+                // now update all the labels etc TODO
 
             })).align_right();
 
