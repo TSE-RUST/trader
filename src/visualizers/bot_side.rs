@@ -1,3 +1,4 @@
+use druid::piet::dwrite::TextLayout;
 // libraries dependencies
 use druid::{Widget, WidgetExt, Color, lens, Env};
 use druid::widget::{Label, Button, Container};
@@ -16,24 +17,24 @@ use crate::{TraderUi};
 /// This function builds the widget that will be displayed
 /// on the bots side of the application.
 pub(crate) fn bot_side() -> impl Widget<TraderUi>{
-    
 
-    let mut label=Label::dynamic(|data: &TraderUi, _| {
-        if data.safe_mode {
-            format!("safe mode")
-        } else {
-            format!("unsafe mode")
+    let str="safe mode";
+    let label = Label::dynamic(move |data: &TraderUi, _| {
+        if data.safe_mode{
+            format!("safe mode attivo")
+        }else{
+            format!("safe mode disattivo(!)")
         }
     })
-        .center()
-        .padding(10.0)
-        .background(Color::grey(0.1));
+    .center()
+    .background(Color::rgb(255.0,227.0,0.0))
+    .with_text_color(Color::rgb(0.0,0.0,0.0));
     Split::rows(
         Split::columns(
             //PULSANTE PER ATTIVARE BOT SAFE MODE
             Button::new("safe mode")
                 .on_click(|ctx, data: &mut TraderUi, _env| {
-                    let _ = data.safe_mode==true;
+                    data.safe_mode=true;
                     //mi servirebbe una mano sull'implementazione dello switch, non so come fare 
                     //a far in modo che dopo il click venga settato il colore sotto, mi da problemi col static
                 })
@@ -45,7 +46,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
 
                 Button::new("unsafe mode")
                 .on_click(|ctx, data: &mut TraderUi, _env| {
-                    let _ = data.safe_mode==false;
+                     data.safe_mode=false;
                 //todo
                 })
                 .expand_height()
@@ -78,11 +79,10 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                     Label::dynamic(|data: &TraderUi, _| {
                         format!("da implementare")
                     }).center(),
-                    Label::dynamic(|data: &TraderUi, _| {
-                        format!("")
-                    }).background(Color::rgb(200.0,0.0,0.0))
+                    label
                 ).split_point(0.95)
-            ))
+                )
+            )
 
     ).split_point(0.07)
 
