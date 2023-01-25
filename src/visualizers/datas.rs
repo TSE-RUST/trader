@@ -46,6 +46,7 @@ pub struct TraderUi {
     pub selected_good: String,
     pub selected_method_of_trade: String,
     pub events: Arc<Vec<LoggedEvent>>,
+    pub events_number: usize,
     pub string_best_profit_sell: String,
     pub string_best_profit_buy: String,
 }
@@ -91,6 +92,7 @@ impl TraderUi {
             selected_good: "YEN".to_string(),
             selected_method_of_trade: "SELL".to_string(),
             events: Arc::new(Vec::new()),
+            events_number: 0,
             string_best_profit_sell: "sdrumpx morto".to_string(),
             string_best_profit_buy: "stypox figlio di puttana".to_string(),
         }

@@ -28,6 +28,6 @@ pub fn build_ui() -> impl Widget<TraderUi> {
 
     // returns the ui of the application
     view_switcher.controller(EventLogger {
-        filter: |event| matches!(event, Event::KeyDown(_) | Event::KeyUp(_) | Event::MouseDown(_) | Event::MouseUp(_) | Event::Wheel(_)),
+        filter: |event| matches!(event, Event::MouseDown(_))
     })
 }

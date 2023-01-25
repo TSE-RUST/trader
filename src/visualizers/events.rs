@@ -1,8 +1,8 @@
 use std::ops::Deref;
 use druid::widget::prelude::*;
 use druid::widget::Controller;
-use druid::{Data, KeyEvent, MouseEvent};
-use std::sync::Arc;
+use druid::{Data, KeyEvent, MouseButton, MouseEvent};
+// use std::sync::Arc;
 use crate::visualizers::datas::TraderUi;
 
 /// the LoggedEvent struct is used to store the data of
@@ -30,15 +30,22 @@ impl<W: Widget<TraderUi>, F: Fn(&Event) -> bool> Controller<TraderUi, W> for Eve
         // If `f()` returns true it means that we can add it to the log,
         // if not then we can skip it.
         if (self.filter)(event) {
-            // println!("1 Event logged: {:?}", data.events.deref().last());
+            println!("Event logged: {:?}", event);
             if let Some(to_log) = LoggedEvent::try_from_event(event, data.events.len()) {
-                Arc::make_mut(&mut data.events).push(to_log);
-                if data.events.last().unwrap().typ == EventType::KeyUp {
-                    println!("2 Event logged: {:?}", data.events.deref().last());
-                    if data.current_view == 0 {
-                        data.current_view = 1;
-                    } else if data.current_view == 1 {
-                        data.current_view = 0;
+                // Arc::make_mut(&mut data.events).push(to_log);
+                if to_log.typ == EventType::MouseDown {
+                    if to_log.mouse_button() == "Right" {
+                        data.events_number += 1;
+
+                        if data.events_number == 2 {
+                            if data.current_view == 0 {
+                                data.current_view = 1;
+                            } else if data.current_view == 1 {
+                                data.current_view = 0;
+                            }
+                            data.events_number = 0;
+                            println!("!!!current_view: {}", data.current_view);
+                        }
                     }
                 }
             }
@@ -47,6 +54,7 @@ impl<W: Widget<TraderUi>, F: Fn(&Event) -> bool> Controller<TraderUi, W> for Eve
         child.event(ctx, event, data, env)
     }
 }
+
 
 /// The types of events we display
 ///
@@ -68,7 +76,7 @@ pub struct LoggedEvent {
     typ: EventType,
     number: usize,
     #[data(ignore)]
-    _mouse: Option<MouseEvent>,
+    mouse: Option<MouseEvent>,
     #[data(ignore)]
     _key: Option<KeyEvent>,
 }
@@ -90,8 +98,26 @@ impl LoggedEvent {
         to_log.map(|(typ, mouse, key)| LoggedEvent {
             typ,
             number,
-            _mouse: mouse,
+            mouse: mouse,
             _key: key,
         })
+    }
+
+    fn mouse_button(&self) -> String {
+        self.mouse
+            .as_ref()
+            .map(|m| {
+                match m.button {
+                    // MouseButton::Left => "Left",
+                    MouseButton::Right => "Right",
+                    // MouseButton::X1 => "X1",
+                    // MouseButton::X2 => "X2",
+                    // MouseButton::None => "",
+                    // MouseButton::Middle => "Middle",
+                    _ => "Unknown",
+                }
+                    .into()
+            })
+            .unwrap_or_default()
     }
 }
