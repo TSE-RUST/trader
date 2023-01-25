@@ -4,7 +4,6 @@ use std::rc::Rc;
 use druid::im::Vector;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
-use crate::visualizers::datas::trader_ui_derived_lenses::quantity;
 
 /// returns the GoodKind of a given good
 ///
@@ -315,7 +314,7 @@ pub fn get_best_buy_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, qty: f32,) 
     let average_yuan= yuan_quantity/yuan_price;
 
 
-    let mut res ="".to_string();
+    let res;
 
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market,yuan_quantity,yuan_price) = get_best_buy(markets, GoodKind::YUAN,qty);
@@ -341,7 +340,7 @@ pub fn get_best_sell_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, goods: &Ve
     let (_,yuan_quantity,yuan_price) = get_best_sell(markets, GoodKind::YUAN,goods[3]);
     let average_yuan= yuan_price/yuan_quantity;
 
-    let mut res ="".to_string();
+    let res;
 
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market,yuan_quantity,yuan_price) = get_best_sell(markets, GoodKind::YUAN,goods[3]);
