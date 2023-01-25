@@ -14,53 +14,55 @@ use crate::visualizers::user_mode::support_functions::max_qt;
 pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // trader header
-    let label_trader = Label::new("Tokyo Stock Exchange Trader".to_string())
+    let label_trader = Flex::column()
+        .with_spacer(8.0)
+        .with_child(Label::new("Tokyo Stock Exchange Trader".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(35.0);
+        .with_text_size(35.0));
     // .padding(5.0);
 
     let label_trader_eur = Flex::column()
         .with_child(Label::new("EUR".to_string())
             .with_text_color(theme::PRIMARY_LIGHT)
-            .with_text_size(20.0)
+            .with_text_size(26.0)
             .center())
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[0];
             format!("{money}")
-        }).lens(TraderUi::trader).center())
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
 
     let label_trader_yen = Flex::column()
         .with_child(Label::new("YEN".to_string())
             .with_text_color(theme::PRIMARY_LIGHT)
-            .with_text_size(20.0))
+            .with_text_size(26.0))
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[1];
             format!("{money}")
-        }).lens(TraderUi::trader))
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
 
     let label_trader_usd = Flex::column()
         .with_child(Label::new("USD".to_string())
             .with_text_color(theme::PRIMARY_LIGHT)
-            .with_text_size(20.0))
+            .with_text_size(26.0))
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[2];
             format!("{money}")
-        }).lens(TraderUi::trader))
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
 
     let label_trader_yuan = Flex::column()
         .with_child(Label::new("YUAN".to_string())
             .with_text_color(theme::PRIMARY_LIGHT)
-            .with_text_size(20.0))
+            .with_text_size(26.0))
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[3];
             format!("{money}")
-        }).lens(TraderUi::trader))
+        }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
 
@@ -290,22 +292,23 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 .with_range(0.0, 1.0)
                 // .with_step(0.10)
                 .lens(TraderUi::percentage)
-                .fix_width(180.0),
+                .fix_width(180.0)
+                .disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0),
         )
-        .with_spacer(4.0)
+        .with_spacer(8.0)
         .with_child(Label::new(|data: &TraderUi, _: &_| {
             format!("{:.2}", data.percentage * data.quantity as f64)
-        }))
-        .with_spacer(4.0)
+        }).with_text_size(20.0))
+        .with_spacer(8.0)
         .with_child(
             Flex::row()
                 .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
                     data.percentage = (data.percentage - 0.005).max(0.0);
-                }))
+                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
                 .with_spacer(4.0)
                 .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
                     data.percentage = (data.percentage + 0.005).min(1.0);
-                })),
+                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
         );
 
     // quantity progressbar
@@ -435,23 +438,58 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
     // .center();
 
     // trader bottom panel
-    let bottompanel = Label::new("Consigli interessanti su cosa acquistare".to_string())
+    let profit_sell_header = Label::new("best profit sell".to_string())
         .with_text_color(theme::PRIMARY_LIGHT)
-        .with_text_size(35.0)
-        .padding(5.0)
+        .with_text_size(30.0)
+        .center();
+
+    let profit_sell_desc = Label::new("eh non lo so".to_string())
+        .with_text_color(Color::from_hex_str("#ffffff").unwrap())
+        .with_text_size(25.0)
+        .center();
+
+    let sell_bottompanel = Flex::column()
+        .with_child(profit_sell_header)
+        .with_child(profit_sell_desc)
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::Center);
+
+    let profit_buy_header = Label::new("best profit buy".to_string())
+        .with_text_color(theme::PRIMARY_LIGHT)
+        .with_text_size(30.0)
+        .center();
+
+    let profit_buy_desc = Label::new("booooh".to_string())
+        .with_text_color(Color::from_hex_str("#ffffff").unwrap())
+        .with_text_size(25.0)
+        .center();
+
+    let buy_bottompanel = Flex::column()
+        .with_child(profit_buy_header)
+        .with_child(profit_buy_desc)
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::Center);
+
+    let bottompanel = Flex::row()
+        .with_child(sell_bottompanel)
+        .with_spacer(140.0)
+        .with_child(buy_bottompanel)
+        .cross_axis_alignment(CrossAxisAlignment::Start)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween)
+        .padding(30.0)
         .center();
 
     // union between central panel and bottom panel
     let centralpanel_bottompanel = Split::rows(
         centralpanel,
         bottompanel,
-    ).split_point(0.75);
+    ).split_point(0.80);
 
     // union header and central panel
     let trader_ui = Split::rows(
         header,
         centralpanel_bottompanel,
-    ).split_point(0.1);
+    ).split_point(0.13);
 
     trader_ui
 }
