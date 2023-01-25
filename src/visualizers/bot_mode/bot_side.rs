@@ -63,19 +63,19 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                                         big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0))
                                         ,
                                         Label::dynamic(|data: &TraderUi, _| {
-                                            format!("Eur: 000")
+                                            format!("EUR: {}",get_quantity_market(GoodKind::EUR, data.bfb_quantities.clone()))
                                         }).center()
                                     ).split_point(0.5),
                                     Split::rows(
                                         Label::dynamic(|data: &TraderUi, _| {
-                                            format!("Yen: 000")
+                                            format!("YEN: {}",get_quantity_market(GoodKind::YEN, data.bfb_quantities.clone()))
                                         }).center(),
                                         Label::dynamic(|data: &TraderUi, _| {
-                                            format!("Yuan: 000")
+                                            format!("YUAN: {}",get_quantity_market(GoodKind::YUAN, data.bfb_quantities.clone()))
                                         }).center()
                                     )),
                                 Label::dynamic(|data: &TraderUi, _| {
-                                    format!("USD: 000")
+                                    format!("USD: {}",get_quantity_market(GoodKind::YUAN, data.bfb_quantities.clone()))
                                 }).center()
                         ).split_point(0.8)
                         ,Split::rows(
@@ -84,19 +84,19 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                                     big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0))
                                     ,
                                     Label::dynamic(|data: &TraderUi, _| {
-                                        format!("Eur: 000")
+                                        format!("EUR: {}",get_quantity_market(GoodKind::EUR, data.parse_quantities.clone()))
                                     }).center()
                                 ).split_point(0.5),
                                 Split::rows(
                                     Label::dynamic(|data: &TraderUi, _| {
-                                        format!("Yen: 000")
+                                        format!("YEN: {}",get_quantity_market(GoodKind::YEN, data.parse_quantities.clone()))
                                     }).center(),
                                     Label::dynamic(|data: &TraderUi, _| {
-                                        format!("Yuan: 000")
+                                        format!("YUAN: {}",get_quantity_market(GoodKind::YUAN, data.parse_quantities.clone()))
                                     }).center()
                                 )),
                             Label::dynamic(|data: &TraderUi, _| {
-                                format!("USD: 000")
+                                format!("USD: {}",get_quantity_market(GoodKind::USD, data.parse_quantities.clone()))
                             }).center()
                     ).split_point(0.8)
                     ),
@@ -106,22 +106,22 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                                 big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0))
                                 ,
                                 Label::dynamic(|data: &TraderUi, _| {
-                                    format!("Eur: 000")
+                                    format!("EUR: {}",get_quantity_market(GoodKind::EUR, data.sol_quantities.clone()))
                                 }).center()
                             ).split_point(0.5),
                             Split::rows(
                                 Label::dynamic(|data: &TraderUi, _| {
-                                    format!("Yen: 000")
+                                    format!("YEN: {}",get_quantity_market(GoodKind::YEN, data.sol_quantities.clone()))
                                 }).center(),
                                 Label::dynamic(|data: &TraderUi, _| {
-                                    format!("Yuan: 000")
+                                    format!("YUAN: {}",get_quantity_market(GoodKind::YUAN, data.sol_quantities.clone()))
                                 }).center()
                             )),
                         Label::dynamic(|data: &TraderUi, _| {
-                            format!("USD: 000")
+                            format!("USD: {}",get_quantity_market(GoodKind::USD, data.sol_quantities.clone()))
                         }).center()
                 ).split_point(0.8)
-                ).split_point(0.66).border(Color::grey(0.9), 1.0),
+                ).split_point(0.66).border(Color::grey(0.9), 3.0),
                 Split::rows(
                     Split::rows(
                         Split::columns(

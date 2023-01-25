@@ -1,42 +1,26 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use druid::im::Vector;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
-fn get_quantity_market(gk:GoodKind,market: &Rc<RefCell<dyn Market>>) -> String{
+pub fn get_quantity_market(gk:GoodKind,market: Vector<f32>) -> String{
     let mut quantity = 0.0;
-    let market = market.borrow();
-    let goods = market.get_goods();
     match gk{
         GoodKind::YEN => {
-            for i in 0..goods.len() {
-                if goods[i].good_kind == gk {
-                    quantity = goods[i].quantity;
-                }
-            }
+            quantity = market[1];
         },
         GoodKind::USD => {
-            for i in 0..goods.len() {
-                if goods[i].good_kind == gk {
-                    quantity = goods[i].quantity;
-                }
-            }
+            quantity = market[2];
         },
         GoodKind::YUAN => {
-            for i in 0..goods.len() {
-                if goods[i].good_kind == gk {
-                    quantity = goods[i].quantity;
-                }
-            }
+            quantity = market[3];
         },
         GoodKind::EUR=>{
-            for i in 0..goods.len() {
-                if goods[i].good_kind == gk {
-                    quantity = goods[i].quantity;
-                }
-            }
+            quantity = market[0];
         },
         }
     quantity.to_string()
 }
+
