@@ -46,13 +46,23 @@ pub(crate) fn custom_button_white(name: &str) -> impl Widget<TraderUi> {
 
         ctx.fill(bounds, &env.get(theme::PRIMARY_LIGHT));
 
-        if ctx.is_hot() {
+        if ctx.is_disabled() && ctx.is_hot(){
+            ctx.fill(bounds, &Color::rgb8(83, 83, 80));
+            ctx.stroke(bounds, &Color::rgb8(41, 41, 41), 0.0);
+        }
+
+        if !ctx.is_disabled() && ctx.is_hot() {
             ctx.stroke(bounds, &Color::WHITE, 2.0);
         }
 
         if ctx.is_active() {
             ctx.fill(bounds, &Color::rgb8(0, 128, 255));
         }
+
+        if ctx.is_disabled(){
+            ctx.fill(bounds, &Color::rgb8(83, 83, 80));
+        }
+
     });
 
     Label::new(format!("{}", name))
