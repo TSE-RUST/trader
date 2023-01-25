@@ -3,7 +3,8 @@ use druid::{Widget, WidgetExt};
 use druid::widget::{Label, ViewSwitcher};
 
 // local dependencies
-use crate::visualizers::{bot_side, user_side};
+use crate::visualizers::bot_mode::bot_side;
+use crate::visualizers::user_mode::user_side;
 use crate::visualizers::datas::TraderUi;
 
 /// the build_ui function creates the main ui of the application

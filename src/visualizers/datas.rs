@@ -83,7 +83,7 @@ impl TraderUi {
             safe_mode: true,
             selected_market: "BFB".to_string(),
             selected_good: "EUR".to_string(),
-            selected_method_of_trade: "BUY".to_string(),
+            selected_method_of_trade: "SELL".to_string(),
         }
     }
 }
