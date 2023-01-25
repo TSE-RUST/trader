@@ -26,17 +26,15 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
             format!("safe mode disattivo(!)")
         }
     })
-    .center()
+    .with_text_color(Color::rgb(0.0,0.0,0.0))
     .background(Color::rgb(255.0,227.0,0.0))
-    .with_text_color(Color::rgb(0.0,0.0,0.0));
+    .center();
     Split::rows(
         Split::columns(
             //PULSANTE PER ATTIVARE BOT SAFE MODE
             Button::new("safe mode")
                 .on_click(|ctx, data: &mut TraderUi, _env| {
                     data.safe_mode=true;
-                    //mi servirebbe una mano sull'implementazione dello switch, non so come fare 
-                    //a far in modo che dopo il click venga settato il colore sotto, mi da problemi col static
                 })
                 .expand_height()
                 .expand_width()
@@ -47,7 +45,6 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                 Button::new("unsafe mode")
                 .on_click(|ctx, data: &mut TraderUi, _env| {
                      data.safe_mode=false;
-                //todo
                 })
                 .expand_height()
                 .expand_width()
@@ -61,24 +58,24 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                     Split::columns(
                         Label::dynamic(|data: &TraderUi, _| {
                             format!("Yen")
-                        }),
+                        }).center(),
                         Label::dynamic(|data: &TraderUi, _| {
                             format!("Eur")
-                        })
+                        }).center()
                     ),
                     Split::columns(
                         Label::dynamic(|data: &TraderUi, _| {
                             format!("Usd")
-                        }),
+                        }).center(),
                         Label::dynamic(|data: &TraderUi, _| {
                             format!("Yuan")
-                        })
+                        }).center()
                     )
                 ),
                 Split::rows(
                     Label::dynamic(|data: &TraderUi, _| {
                         format!("da implementare")
-                    }).center(),
+                    }).center().center(),
                     label
                 ).split_point(0.95)
                 )
