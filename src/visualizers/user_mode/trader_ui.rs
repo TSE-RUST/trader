@@ -6,7 +6,7 @@ use unitn_market_2022::good::good_kind::GoodKind;
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::datas::Trader;
+use crate::visualizers::datas::{get_market_info, Trader};
 use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
 use crate::visualizers::user_mode::support_functions::max_qt;
 
@@ -168,30 +168,30 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .padding(5.0);
 
     // good buttons
-    let button_eur = custom_button("EUR")
-        .on_click(|_ctx, data: &mut TraderUi, _| {
-            data.selected_good = "EUR".to_string();
-            println!("EUR button clicked");
-            data.quantity = max_qt(&data.markets,
-                                   &data.trader.goods,
-                                   &data.selected_method_of_trade,
-                                   &data.selected_market,
-                                   &data.selected_good,
-                                   &data.bfb_quantities.clone(),
-                                   &data.sol_quantities.clone(),
-                                   &data.parse_quantities.clone());
-            println!("max quantity: {}", data.quantity);
-        });
-
-    let eur_flex = Flex::column()
-        .with_child(button_eur)
-        .with_child(Label::new(|data: &TraderUi, _: &_| {
-            if data.selected_good == "EUR" {
-                format!("selected")
-            } else {
-                format!("")
-            }
-        }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
+    // let button_eur = custom_button("EUR")
+    //     .on_click(|_ctx, data: &mut TraderUi, _| {
+    //         data.selected_good = "EUR".to_string();
+    //         println!("EUR button clicked");
+    //         data.quantity = max_qt(&data.markets,
+    //                                &data.trader.goods,
+    //                                &data.selected_method_of_trade,
+    //                                &data.selected_market,
+    //                                &data.selected_good,
+    //                                &data.bfb_quantities.clone(),
+    //                                &data.sol_quantities.clone(),
+    //                                &data.parse_quantities.clone());
+    //         println!("max quantity: {}", data.quantity);
+    //     });
+    //
+    // let eur_flex = Flex::column()
+    //     .with_child(button_eur)
+    //     .with_child(Label::new(|data: &TraderUi, _: &_| {
+    //         if data.selected_good == "EUR" {
+    //             format!("selected")
+    //         } else {
+    //             format!("")
+    //         }
+    //     }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let button_yen = custom_button("YEN")
         .on_click(|_ctx, data: &mut TraderUi, _| {
@@ -269,8 +269,8 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let flex_buttons_goods = Flex::row()
-        .with_child(eur_flex)
-        .with_spacer(40.0)
+        // .with_child(eur_flex)
+        // .with_spacer(40.0)
         .with_child(yen_flex)
         .with_spacer(40.0)
         .with_child(usd_flex)
@@ -391,7 +391,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                             "PARSE" => 2,
                             _ => 0,
                         };
-                    let mut market =data.markets[selected_market].borrow_mut();
+                    let mut market = data.markets[selected_market].borrow_mut();
                     let market_name = market.get_name().clone();
                     let good = match &data.selected_good[0..] {
                         "EUR" => GoodKind::EUR,
@@ -400,20 +400,20 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         "YUAN" => GoodKind::YUAN,
                         _ => GoodKind::EUR
                     };
-                    let quantity = data.quantity*data.percentage as f32;
-                    let price = match market.get_buy_price(good,quantity)
+                    let quantity = data.quantity * data.percentage as f32;
+                    let price = match market.get_buy_price(good, quantity)
                     {
                         Ok(price) => price,
                         Err(e) => panic!("Error: in get_buy_price {:?}", e),
                     };
                     let mut cash = Good::new(GoodKind::EUR, price);
-                    let token  = match market.lock_buy(good, quantity, price,trader_name.clone()) {
+                    let token = match market.lock_buy(good, quantity, price, trader_name.clone()) {
                         Ok(token) => token,
-                        Err(e) => { panic!("Error in lock_buy in {}: {:?}", market_name.to_string(), e); },
+                        Err(e) => { panic!("Error in lock_buy in {}: {:?}", market_name.to_string(), e); }
                     };
-                    let increase= match market.buy(token, &mut cash){
+                    let increase = match market.buy(token, &mut cash) {
                         Ok(increase) => increase,
-                        Err(e) => {panic!("Error in buy in {}: {:?}", market_name.to_string(),e);},
+                        Err(e) => { panic!("Error in buy in {}: {:?}", market_name.to_string(), e); }
                     };
                     data.trader.goods[0] -= price;
                     data.trader.goods[
@@ -423,7 +423,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                             GoodKind::USD => 2,
                             GoodKind::YUAN => 3,
                         }
-                    ] += increase.get_qty();
+                        ] += increase.get_qty();
                     println!("buying {} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 } else if data.selected_method_of_trade == "SELL" {
                     //DO A SELL - Andrea Ballarini
@@ -435,7 +435,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                             "PARSE" => 2,
                             _ => 0,
                         };
-                    let mut market =data.markets[selected_market].borrow_mut();
+                    let mut market = data.markets[selected_market].borrow_mut();
                     let market_name = market.get_name().clone();
                     let good = match &data.selected_good[0..] {
                         "EUR" => GoodKind::EUR,
@@ -444,20 +444,20 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         "YUAN" => GoodKind::YUAN,
                         _ => GoodKind::EUR
                     };
-                    let quantity = data.quantity*data.percentage as f32;
-                    let price = match market.get_sell_price(good,quantity)
+                    let quantity = data.quantity * data.percentage as f32;
+                    let price = match market.get_sell_price(good, quantity)
                     {
                         Ok(price) => price,
                         Err(e) => panic!("Error: in get_sell_price {:?}", e),
                     };
-                    let token = match market.lock_sell(good, quantity, price,trader_name) {
+                    let token = match market.lock_sell(good, quantity, price, trader_name) {
                         Ok(token) => token,
-                        Err(e) => {panic!("Error in lock_sell in {}: {:?}", market_name.to_string(),e);},
+                        Err(e) => { panic!("Error in lock_sell in {}: {:?}", market_name.to_string(), e); }
                     };
                     let mut cash = Good::new(good, quantity);
-                    let decrease = match market.sell(token, &mut cash){
+                    let decrease = match market.sell(token, &mut cash) {
                         Ok(decrease) => decrease,
-                        Err(e) => {panic!("Error in sell in {}: {:?}", market_name.to_string(),e);},
+                        Err(e) => { panic!("Error in sell in {}: {:?}", market_name.to_string(), e); }
                     };
                     data.trader.goods[0] += price;
                     data.trader.goods[
@@ -472,19 +472,47 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 }
 
                 // now update all the labels etc TODO
-            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+                // set values for bfb market
+                let (good_kinds_bfb, quantities_bfb, exchange_rate_buy_bfb, exchange_rate_sell_bfb) = get_market_info(&data.markets[0]);
+
+                data.bfb_kinds = good_kinds_bfb;
+                data.bfb_quantities = quantities_bfb;
+                data.bfb_exchange_rate_buy = exchange_rate_buy_bfb;
+                data.bfb_exchange_rate_sell = exchange_rate_sell_bfb;
+
+                // set values for sol market
+                let (good_kinds_sol, quantities_sol, exchange_rate_buy_sol, exchange_rate_sell_sol) = get_market_info(&data.markets[1]);
+
+                data.sol_kinds = good_kinds_sol;
+                data.sol_quantities = quantities_sol;
+                data.sol_exchange_rate_buy = exchange_rate_buy_sol;
+                data.sol_exchange_rate_sell = exchange_rate_sell_sol;
+
+                // set values for parse market
+                let (good_kinds_parse, quantities_parse, exchange_rate_buy_parse, exchange_rate_sell_parse) = get_market_info(&data.markets[2]);
+
+                data.parse_kinds = good_kinds_parse;
+                data.parse_quantities = quantities_parse;
+                data.parse_exchange_rate_buy = exchange_rate_buy_parse;
+                data.parse_exchange_rate_sell = exchange_rate_sell_parse;
+
+            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 || data.percentage == 0.0 || (data.quantity == 0.0 && data.percentage == 0.0)))
         .align_right();
 
     //recap label
     let recap_label = Label::new(|data: &TraderUi, _: &_| {
-        if data.quantity != 0.0 {
+        if data.quantity == 0.0 {
+            format!("The quantity of the good selected is zero!")
+        } else if data.percentage == 0.0 {
+            format!("The quantity of the good selected is zero!")
+        } else if data.quantity == 0.0 && data.percentage == 0.0 {
+            format!("The quantity of the good selected is zero!")
+        } else {
             if data.selected_method_of_trade == "SELL" {
                 format!("Sell {:.2} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
             } else {
                 format!("Buy {:.2} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
             }
-        } else {
-            format!("The quantity of the good selected is zero!")
         }
     }).with_text_size(28.0)
         .with_text_color(Color::from_hex_str("#a1dcff").unwrap());
