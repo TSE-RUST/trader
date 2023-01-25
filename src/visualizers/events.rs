@@ -1,4 +1,3 @@
-use std::ops::Deref;
 use druid::widget::prelude::*;
 use druid::widget::Controller;
 use druid::{Data, KeyEvent, MouseButton, MouseEvent};
