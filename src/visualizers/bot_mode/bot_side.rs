@@ -13,10 +13,12 @@ use parse_market::ParseMarket as parse;
 
 // local dependencies
 use crate::TraderUi;
+use crate::visualizers::bot_mode::data_bot::*;
 
 /// This function builds the widget that will be displayed
 /// on the bots side of the application.
 pub(crate) fn bot_side() -> impl Widget<TraderUi>{
+    //declares the last label that will be displayed, used for let the user know which bot is running 
     let label = Label::dynamic(move |data: &TraderUi, _| {
         if data.safe_mode{
             format!("safe mode attivo")
@@ -27,6 +29,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
     .with_text_color(Color::rgb(0.0,0.0,0.0))
     .background(Color::rgb(255.0,227.0,0.0))
     .center();
+
     Split::rows(
         Split::columns(
             //PULSANTE PER ATTIVARE BOT SAFE MODE
@@ -146,6 +149,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
     ).split_point(0.07)
 
 }
+
 
 fn big_text(text: &str) -> impl Widget<TraderUi> {
     Label::new(text)
