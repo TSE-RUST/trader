@@ -33,7 +33,7 @@ pub fn get_trader_quantity(trader: &Trader, kind: GoodKind) -> f32 {
 ///get the maximum quantity of a good that can be bought from a market with a specific quantity of money
 ///
 /// **Andrea Ballarini**
-fn get_max_buy_quantity(market: &Rc<RefCell<dyn Market>>, money: f32, kind: GoodKind) -> f32 {
+pub(crate) fn get_max_buy_quantity(market: &Rc<RefCell<dyn Market>>, money: f32, kind: GoodKind) -> f32 {
     let market = market.borrow();
     let goods = market.get_goods();
     let mut max_quantity = 0.0;

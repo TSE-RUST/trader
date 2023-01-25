@@ -35,6 +35,7 @@ pub struct TraderUi {
     pub parse_exchange_rate_sell: Vector<f32>,
     pub markets: Vector<Rc<RefCell<dyn Market>>>,
     pub trader: Trader,
+    pub quantity: f32,
     pub percentage: f64,
     pub boolean: bool,
     pub safe_mode: bool,
@@ -50,7 +51,6 @@ pub struct TraderUi {
 #[derive(Clone, Data, Lens)]
 pub struct Trader {
     pub(crate) name: String,
-    pub(crate) money: f32,
     pub(crate) goods: Vector<f32>,
 }
 
@@ -76,7 +76,8 @@ impl TraderUi {
             parse_exchange_rate_buy: vector![0.0, 0.0, 0.0, 0.0],
             parse_exchange_rate_sell: vector![0.0, 0.0, 0.0, 0.0],
             markets: vector![bfb::new_random(), sol::new_random(), parse::new_random(),],
-            trader: Trader { name: "TRADER TSE".to_string(), money: 0.0, goods: vector![0.0, 0.0, 0.0] },
+            trader: Trader { name: "TRADER TSE".to_string(), goods: vector![0.0, 0.0, 0.0, 0.0] },
+            quantity: 0.0,
             percentage: 1.0,
             boolean: false,
             safe_mode: true,
@@ -132,8 +133,9 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.parse_exchange_rate_buy = exchange_rate_buy_parse;
     app.parse_exchange_rate_sell = exchange_rate_sell_parse;
 
-    app.trader.money = 40000.0;
-    app.trader.goods = vector![10000.0, 20000.0, 30000.0];
+    app.trader.goods = vector![40000.0, 10000.0, 20000.0, 30000.0];
+
+    app.quantity = app.trader.goods[0];
 
     app
 }
