@@ -3,10 +3,10 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 // market dependencies
+use market_sol::SOLMarket as sol;
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::{Market, MarketGetterError};
-use market_sol::SOLMarket as sol;
 
 pub struct Arbitrager {
     sol: Rc<RefCell<dyn Market>>,
@@ -41,10 +41,6 @@ impl Arbitrager {
         }
     }
 
-    // Pass the eur you want to invest, and returns:
-    // 1. eur returned back (could be with 0 quantity)
-    // 2. optional good as rest as the arbitrage
-    // 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the second returned parameter is None
     pub fn arbitrage(&self, mut eur: Good) -> (Good, Option<Good>, Option<ArbitrageResult>) {
         if eur.get_qty() <= 0. {
             return (eur, None, None);
@@ -54,9 +50,11 @@ impl Arbitrager {
 
         let markets = vec![self.sol.clone(), self.bfb.clone(), self.parse.clone()];
 
+        // they are used to "hardcompute" stuff later
         const F32SMALL: f32 = 0.01;
         const F32LARGE: f32 = 1000000000000.;
 
+        // These are the informations to make the best trade
         let mut best_buy_market = sol::new_random();
         let mut best_sell_market = sol::new_random();
         let mut best_alt_to_receive: f32 = 0.0;
@@ -64,15 +62,17 @@ impl Arbitrager {
         let mut best_kind_alt_to_receive: GoodKind = GoodKind::EUR;
         let mut best_profit = 0.;
         // Try to arbitrage over all currencies
-        for goodKind in good_kinds {
+        for good_kind in good_kinds {
+            // Try to arbitrage over all markets as sell_market
             for _sell_market in &markets {
+                // Try to arbitrage over all markets as buy_market
                 for _buy_market in &markets {
                     let buy_market = (**_buy_market).borrow();
                     let sell_market = (**_sell_market).borrow();
 
                     // Trying to get the max good (aka goodKind or altcoin or alt) quantity to buy, such as the eur to send is less or equal than the ones I have
                     let mut max_alt_to_receive =
-                        match buy_market.get_buy_price(goodKind, F32LARGE).unwrap_err() {
+                        match buy_market.get_buy_price(good_kind, F32LARGE).unwrap_err() {
                             MarketGetterError::NonPositiveQuantityAsked => unimplemented!(),
                             MarketGetterError::InsufficientGoodQuantityAvailable {
                                 requested_good_kind: _requested_good_kind,
@@ -80,63 +80,62 @@ impl Arbitrager {
                                 available_good_quantity,
                             } => available_good_quantity,
                         };
-
                     if max_alt_to_receive <= F32SMALL {
                         continue;
                     }
 
+                    // Compute the max quantity of eur to send to the buy_market
                     let mut max_eur_to_send = buy_market
-                        .get_buy_price(goodKind, max_alt_to_receive)
+                        .get_buy_price(good_kind, max_alt_to_receive)
                         .unwrap();
-
                     while max_eur_to_send > eur.get_qty() {
                         max_alt_to_receive /= 2.;
                         max_eur_to_send = buy_market
-                            .get_buy_price(goodKind, max_alt_to_receive)
+                            .get_buy_price(good_kind, max_alt_to_receive)
                             .unwrap();
                         if max_alt_to_receive <= F32SMALL {
                             continue;
                         }
                     }
 
-                    // bounds for prices
-
+                    // get bounds for prices (see documentation)
                     let mut buy_min_price =
-                        buy_market.get_buy_price(goodKind, F32SMALL).unwrap() / F32SMALL;
+                        buy_market.get_buy_price(good_kind, F32SMALL).unwrap() / F32SMALL;
                     let sell_max_price =
-                        sell_market.get_sell_price(goodKind, F32SMALL).unwrap() / F32SMALL;
+                        sell_market.get_sell_price(good_kind, F32SMALL).unwrap() / F32SMALL;
 
                     let buy_max_price = (max_eur_to_send
                         - (buy_market
-                            .get_buy_price(goodKind, max_alt_to_receive - F32SMALL)
+                            .get_buy_price(good_kind, max_alt_to_receive - F32SMALL)
                             .unwrap()))
                         / F32SMALL;
                     let mut sell_min_price = (sell_market
-                        .get_sell_price(goodKind, max_alt_to_receive)
+                        .get_sell_price(good_kind, max_alt_to_receive)
                         .unwrap()
                         - sell_market
-                            .get_sell_price(goodKind, max_alt_to_receive - F32SMALL)
+                            .get_sell_price(good_kind, max_alt_to_receive - F32SMALL)
                             .unwrap())
                         / F32SMALL;
 
+                    // fix some strange prices
                     if buy_min_price > buy_max_price {
                         buy_min_price = buy_max_price;
                     }
-
                     if sell_min_price > sell_max_price {
                         sell_min_price = sell_max_price;
                     }
 
+                    // Skip if there isn't margin of profit
                     if buy_min_price >= sell_max_price {
                         continue;
                     }
 
-                    // Compute profit
+                    // Compute profit (in 2 cases, like the ones explained in the documentation)
                     let (profit, x) = if buy_max_price <= sell_min_price {
                         // First case
                         (
                             sell_market
-                                .get_sell_price(goodKind, max_alt_to_receive)
+                                .get_sell_price(good_kind, max_alt_to_receive)
                                 .unwrap()
                                 - max_eur_to_send,
                             1.,
@@ -147,17 +146,18 @@ impl Arbitrager {
                         // Second case
                         (
                             sell_market
-                                .get_sell_price(goodKind, x * max_alt_to_receive)
+                                .get_sell_price(good_kind, x * max_alt_to_receive)
                                 .unwrap()
                                 - max_eur_to_send,
                             x,
                         )
                     };
 
+                    // Update current best profit settings
                     if profit > best_profit {
                         best_profit = profit;
                         best_alt_to_receive = x * max_alt_to_receive;
-                        best_kind_alt_to_receive = goodKind;
+                        best_kind_alt_to_receive = good_kind;
                         best_eur_to_send = x * max_eur_to_send;
                         best_buy_market = (*_buy_market).clone();
                         best_sell_market = (*_sell_market).clone();
@@ -166,12 +166,14 @@ impl Arbitrager {
             }
         }
 
+        // Skip in there's no profit
         if best_profit <= 0. {
             return (eur, None, None);
         }
 
-        let mut alt_coin = Good::new(GoodKind::EUR, 100.);
+        let mut alt_coin: Good;
 
+        // Buy
         {
             let mut best_buy_market_deref = (*best_buy_market).borrow_mut();
 
@@ -197,8 +199,10 @@ impl Arbitrager {
             return (eur, None, None);
         }
 
-        let mut rest = None;
-        let mut eur_received = Good::new(GoodKind::EUR, 100.);
+        let rest: Option<Good>;
+        let eur_received: Good;
+
+        // Sell
         {
             let mut best_sell_market_deref = (*best_sell_market).borrow_mut();
 
@@ -227,6 +231,7 @@ impl Arbitrager {
                 return (eur, Some(alt_coin), None);
             }
 
+            // Split the rest and the good to actually send to sell_market
             let mut alt_coin_to_send: Good;
             if qty_to_send == alt_coin.get_qty() {
                 alt_coin_to_send = alt_coin;
@@ -253,6 +258,8 @@ impl Arbitrager {
         }
 
         let eur_quantity_received = eur_received.get_qty();
+
+        // Merge with initial eur
         eur.merge(eur_received);
 
         return (
