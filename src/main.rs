@@ -1,11 +1,11 @@
 // libraries dependencies
 use colored::*;
+use druid::im::Vector;
 use druid::{AppLauncher, WindowDesc};
+use druid::{Data, Lens};
 use gag::Gag;
 use std::cell::RefCell;
 use std::rc::Rc;
-use druid::{Data,Lens};
-use druid::im::{Vector};
 
 // market dependencies
 use unitn_market_2022::good::good::Good;
@@ -18,7 +18,11 @@ mod bots;
 
 // the function to run the simulation in the trader
 use bots::bot::bot;
-// todo()
+// When you want to invest some money in arbitrage you can create an arbitrager passing the 3 markets
+// then call his main function "arbitrage" passing the eur you want to invest, and returns:
+// 1. eur returned back (could be with 0 quantity)
+// 2. optional good as rest as the arbitrage
+// 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the second returned parameter is None
 use bots::arbitrager::Arbitrager;
 
 mod visualizers;
@@ -43,9 +47,8 @@ use market_functions::init_with_quantity;
 // function that prints the goods of the markets
 use market_functions::print_values;
 
-
 ///the struct for the trader agent
-#[derive(Clone,Data, Lens)]
+#[derive(Clone, Data, Lens)]
 pub struct Trader {
     name: String,
     _money: f32,
@@ -128,11 +131,11 @@ fn main() {
 
     //initialize the trader
     let mut trader = Trader::new(
-       trader_name,
-       1000.00,
-       sol.clone(),
-       bfb.clone(),
-       parse.clone(),
+        trader_name,
+        1000.00,
+        sol.clone(),
+        bfb.clone(),
+        parse.clone(),
     );
 
     // test arbitrager
@@ -180,7 +183,7 @@ fn main() {
     //        match tmp.2 {
     //            Some(res) => {
     //                println!();
-//
+    //
     //                println!(
     //                    "😉 {}......{}......{}",
     //                    res.buy_market_name,
@@ -202,7 +205,7 @@ fn main() {
 
     //test_buy_kind(GoodKind::USD, &mut trader);
     //_test_sell_kind(GoodKind::YEN, &mut trader);
-    bot(&mut trader,100);
+    bot(&mut trader, 100);
 
     // UI
     // creation of the main window
