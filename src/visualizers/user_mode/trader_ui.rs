@@ -389,7 +389,8 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
 
                 // now update all the labels etc TODO
 
-            })).align_right();
+            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+        .align_right();
 
     //recap label
     let recap_label = Label::new(|data: &TraderUi, _: &_| {
