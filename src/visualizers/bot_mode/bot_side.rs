@@ -123,7 +123,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                     Label::dynamic(|data: &TraderUi, _| {
                         format!("da implementare")
                     }).center().center(),
-                    label
+                    label.background(Color::rgb(255.0,227.0,0.0))
                 ).split_point(0.95)
                 )
             )
