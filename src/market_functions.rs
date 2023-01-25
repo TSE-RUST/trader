@@ -1,6 +1,7 @@
 // libraries dependencies
 use std::cell::RefCell;
 use std::rc::Rc;
+use druid::im::{Vector, vector};
 
 // market dependencies
 use bfb::bfb_market::Bfb as bfb;
@@ -16,12 +17,11 @@ use crate::Trader;
 ///initialize the goods for the trader
 ///
 /// **Andrea Ballarini**
-pub(crate) fn initgoods(eur: f32, usd: f32, yen: f32, yuan: f32) -> Vec<Good> {
-    let mut goods: Vec<Good> = Vec::new();
-    goods.push(Good::new(GoodKind::EUR, eur));
-    goods.push(Good::new(GoodKind::USD, usd));
-    goods.push(Good::new(GoodKind::YEN, yen));
-    goods.push(Good::new(GoodKind::YUAN, yuan));
+pub(crate) fn initgoods( usd: f32, yen: f32, yuan: f32) -> Vector<Rc<RefCell<Good>>> {
+    let mut goods = vector![];
+    goods.push_back(Rc::new(RefCell::new(Good::new(GoodKind::USD,usd))));
+    goods.push_back(Rc::new(RefCell::new(Good::new(GoodKind::YEN,yen))));
+    goods.push_back(Rc::new(RefCell::new(Good::new(GoodKind::YUAN,yuan))));
     goods
 }
 
