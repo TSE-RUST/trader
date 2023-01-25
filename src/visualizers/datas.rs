@@ -11,6 +11,7 @@ use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 use crate::visualizers::events::{LoggedEvent};
+use crate::visualizers::user_mode::support_functions::get_best_buy_trade;
 
 // local dependencies
 // #[path = "../bots/mod.rs"]
@@ -144,6 +145,8 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.trader.goods = vector![100000.0, 100000.0, 100000.0, 0.0];
 
     app.quantity = app.trader.goods[0];
+
+    app.string_best_profit_buy = get_best_buy_trade(&app.markets, app.trader.goods[0]);
 
     app
 }

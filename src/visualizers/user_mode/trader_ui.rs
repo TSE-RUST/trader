@@ -3,12 +3,13 @@ use druid::{Color, theme, Widget, WidgetExt};
 use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
+use crate::bots::bot::get_best_sell_market;
 
 // local dependencies
 use crate::TraderUi;
 use crate::visualizers::datas::{get_market_info, Trader};
 use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
-use crate::visualizers::user_mode::support_functions::max_qt;
+use crate::visualizers::user_mode::support_functions::{get_best_buy_trade, get_best_sell_trade, max_qt};
 
 /// This function builds the left side of the application.
 ///
@@ -95,6 +96,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let bfb_flex = Flex::column()
@@ -120,6 +122,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let sol_flex = Flex::column()
@@ -145,6 +148,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let parse_flex = Flex::column()
@@ -206,6 +210,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let yen_flex = Flex::column()
@@ -231,6 +236,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let usd_flex = Flex::column()
@@ -256,6 +262,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let yuan_flex = Flex::column()
@@ -328,6 +335,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let buy_flex = Flex::column()
@@ -353,6 +361,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                    &data.sol_quantities.clone(),
                                    &data.parse_quantities.clone());
             println!("max quantity: {}", data.quantity);
+            data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
         });
 
     let sell_flex = Flex::column()
@@ -504,6 +513,8 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                                        &data.bfb_quantities.clone(),
                                        &data.sol_quantities.clone(),
                                        &data.parse_quantities.clone());
+
+                data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
 
             }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 || data.percentage == 0.0 || (data.quantity == 0.0 && data.percentage == 0.0)))
         .align_right();
