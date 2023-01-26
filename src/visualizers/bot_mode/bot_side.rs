@@ -1,7 +1,7 @@
 
 // libraries dependencies
 use druid::{Widget, WidgetExt, Color};
-use druid::widget::{Label, Button, Container};
+use druid::widget::{Label, Button, Container, Flex, Slider};
 use druid::widget::Split;
 
 // market dependencies
@@ -19,6 +19,9 @@ use crate::visualizers::bot_mode::support_functions::*;
 /// on the bots side of the application.
 pub(crate) fn bot_side() -> impl Widget<TraderUi>{
     //declares the last label that will be displayed, used for let the user know which bot is running 
+
+    let logs=bot_log::new();
+
     let label = Label::dynamic(move |data: &TraderUi, _| {
         if data.safe_mode{
             format!("safe mode attivo")
@@ -60,36 +63,47 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                         Split::rows(
                             big_text("BFB").background(Color::rgb(255.0,255.0,255.0)),
                             Label::dynamic(move |data: &TraderUi, _| {
-                                format!("Log BFB")
+                                format!("{}",logs.bfb_log)
                             }).center()
                         ).split_point(0.10),
                         Split::rows(
                             big_text("PARSE").background(Color::rgb(255.0,255.0,255.0)),
                             Label::dynamic(move |data: &TraderUi, _| {
-                                format!("Log PARSE")
+                                format!("{}",logs.parse_log)
                             }).center()
                         ).split_point(0.10),
                     ),
                     Split::rows(
                         big_text("SOL").background(Color::rgb(255.0,255.0,255.0)),
                         Label::dynamic(move |data: &TraderUi, _| {
-                            format!("Log SOL")
+                            format!("{}",logs.sol_log)
                         }).center()
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0),
-                        Split::columns(
-                                Split::columns(
-                                        Button::new("Fai fare 1 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
-                                            println!("1 move da fare, chiamo il bot log {}", string_log(1))
-                                        }),
-                                        Button::new("Fai fare 10 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
-                                            println!("10 move da fare")
-                                        }),
-                                ),
-                                Button::new("Fai fare 30 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
-                                    println!("30 move da fare")
-                                }),
-                            ).split_point(0.66),
+                Flex::row()
+                        .main_axis_alignment(druid::widget::MainAxisAlignment::Center)
+                        .with_child(
+                            Slider::new()
+                            .with_range(0.0, 1.0)
+                        // .with_step(0.10)
+                            .lens(TraderUi::percentage)
+                            .fix_width(700.0),
+                    )
+                    .with_spacer(8.0)
+                    .with_child(Label::new(|data: &TraderUi, _: &_| {
+                        format!("{:.2}", data.percentage * data.quantity as f64)
+                    }).with_text_size(20.0))
+                    .with_spacer(8.0)
+                    .with_child(
+                        Flex::row()
+                            .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
+                                data.percentage = (data.percentage - 0.005).max(0.0);
+                            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+                        .with_spacer(4.0)
+                        .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
+                            data.percentage = (data.percentage + 0.005).min(1.0);
+                        }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
+                            )
                         ).split_point(0.9),
             label.background(Color::rgb(255.0,227.0,0.0))
             ).split_point(0.95)
