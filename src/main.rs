@@ -1,5 +1,6 @@
 // libraries dependencies
 use druid::{AppLauncher, WindowDesc};
+use gag::Gag;
 
 // local dependencies
 mod bots;
@@ -17,7 +18,7 @@ fn main() {
 
     // for blocking the stdout of the application
     // no messages from the markets will be printed
-    // let _block_stdout = Gag::stdout().unwrap();
+    let _block_stdout = Gag::stdout().unwrap();
 
     // creation of the main window
     let main_window = WindowDesc::new(build_ui())

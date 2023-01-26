@@ -328,7 +328,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
 
     // quantity progressbar
     let progressbar = Flex::column()
-        .with_child(ProgressBar::new().lens(TraderUi::percentage_bot).fix_width(380.0))
+        .with_child(ProgressBar::new().lens(TraderUi::percentage).fix_width(380.0))
         .with_spacer(4.0);
 
     // trade buttons
