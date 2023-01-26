@@ -43,7 +43,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     } else {
                                         format!("NO BUY")
                                     }
-                                })).lens(TraderUi::buy_or_sell_string)
+                                })).lens(TraderUi::bfb_logs_bot)
                             ).vertical()                            ,
                         ).split_point(0.10),
                         Split::rows(
@@ -55,7 +55,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     } else {
                                         format!("NO BUY")
                                     }
-                                })).lens(TraderUi::buy_or_sell_string)
+                                })).lens(TraderUi::parse_logs_bot)
                             ).vertical(),
                         ).split_point(0.10),
                     ),
@@ -68,7 +68,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 } else {
                                     format!("NO BUY")
                                 }
-                            })).lens(TraderUi::buy_or_sell_string)
+                            })).lens(TraderUi::sol_logs_bot)
                         ).vertical(),
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0)
@@ -86,7 +86,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     } else {
                                         format!("NO BUY")
                                     }
-                                })).lens(TraderUi::buy_or_sell_string)
+                                })).lens(TraderUi::bfb_logs_arb)
                             ).vertical()                            ,
                         ).split_point(0.10),
                         Split::rows(
@@ -98,7 +98,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     } else {
                                         format!("NO BUY")
                                     }
-                                })).lens(TraderUi::buy_or_sell_string)
+                                })).lens(TraderUi::parse_logs_arb)
                             ).vertical(),
                         ).split_point(0.10),
                     ),
@@ -111,7 +111,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 } else {
                                     format!("NO BUY")
                                 }
-                            })).lens(TraderUi::buy_or_sell_string)
+                            })).lens(TraderUi::sol_logs_arb)
                         ).vertical(),
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0)
