@@ -18,8 +18,8 @@ use crate::bots::bot_strategy::market_functions::initgoods;
 #[derive(Clone, Data, Lens)]
 pub struct TraderBot {
     pub(crate) name: String,
-    _money: f32,
-    _goods: Vector<Rc<RefCell<Good>>>,
+    pub money: f32,
+    pub goods: Vector<Rc<RefCell<Good>>>,
     pub sol: Rc<RefCell<dyn Market>>,
     pub bfb: Rc<RefCell<dyn Market>>,
     pub parse: Rc<RefCell<dyn Market>>,
@@ -38,8 +38,8 @@ impl TraderBot {
     ) -> Self {
         TraderBot {
             name,
-            _money: money,
-            _goods: initgoods(0.0, 0.0, 0.0),
+            money: money,
+            goods: initgoods(0.0, 0.0, 0.0),
             sol,
             bfb,
             parse,
@@ -57,7 +57,7 @@ fn get_good_kinds() -> Vec<GoodKind> {
 /// get the quantity of the kind in the trader
 pub fn get_trader_quantity(trader: &TraderBot, kind: GoodKind) -> f32 {
     let mut quantity = 0.0;
-    for good in &trader._goods {
+    for good in &trader.goods {
         if good.borrow().get_kind() == kind {
             quantity = good.borrow().get_qty();
         }
@@ -135,8 +135,8 @@ pub fn get_max_sell_quantity(
 ///
 /// **Andrea Ballarini**
 pub fn get_average_buy_price(trader: &mut TraderBot, kind: GoodKind) -> f32 {
-    //the budget is 1/3 of the trader.budget (trader._money)
-    let budget = trader._money / 3.;
+    //the budget is 1/3 of the trader.budget (trader.money)
+    let budget = trader.money / 3.;
 
     let mut price_sol: f32 = 0.;
     let mut price_parse: f32 = 0.;
@@ -232,7 +232,7 @@ pub fn get_best_buy_market(
     trader: &mut TraderBot,
     kind: GoodKind,
 ) -> (&mut Rc<RefCell<dyn Market>>, f32, f32) {
-    let budget = trader._money / 3.;
+    let budget = trader.money / 3.;
     let average_price = get_average_buy_price(trader, kind);
     let mut best_price = 0.0;
     let mut best_quantity = 0.0;
@@ -415,8 +415,8 @@ pub fn get_best_sell_market(
 //         Ok(increase) => increase,
 //         Err(e) => {panic!("Error in buy in {}: {:?}", market_name.to_string(),e);},
 //     };
-//     trader._money -= price;
-//     for kind in trader._goods.iter_mut() {
+//     trader.money -= price;
+//     for kind in trader.goods.iter_mut() {
 //         if kind.borrow().get_kind() == good {
 //             match kind.borrow_mut().merge(increase.clone()){
 //                 Ok(_) => (),
@@ -439,8 +439,8 @@ pub fn get_best_sell_market(
 //         Ok(decrease) => decrease,
 //         Err(e) => {panic!("Error in sell in {}: {:?}", market_name.to_string(),e);},
 //     };
-//     trader._money += price;
-//     for kind in trader._goods.iter_mut(){
+//     trader.money += price;
+//     for kind in trader.goods.iter_mut(){
 //         if kind.borrow().get_kind() == good {
 //             match kind.borrow_mut().split(quantity){
 //                 Ok(_) => (),
@@ -477,7 +477,9 @@ pub fn get_best_buy_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market
 /// # GET THE BEST SELL TRADE MARKET, GOODKIND AND QUANTITY/// get the best sell trade for a trader
 ///
 /// Andrea Ballarini
-pub fn get_best_sell_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
+pub fn get_best_sell_trade(
+    trader: &mut TraderBot,
+) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
     let yen_trader = get_trader_quantity(trader, GoodKind::YEN) / 3.;
     let (_, yen_quantity, yen_price) = get_best_sell_market(trader, GoodKind::YEN, yen_trader);
     let average_yen = yen_price / yen_quantity;
@@ -507,17 +509,18 @@ pub fn get_best_sell_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Marke
 ///Loop infinitely to buy and sell goods in the three markets and to print the money of the trader at the end of each day
 ///
 /// **Andrea Ballarini**
-pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<(String, String, String)> {
-    let mut res: Vector<(String, String, String)> = Vector::new();
+pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
+    // let mut res: Vector<(String, String, String,String)> = Vector::new();
+    let mut res_string: Vector<String> = Vector::new();
 
     loop {
-        if max < 0 {
+        if max <= 0 {
             //log all the goods and the money of the trader
             // println!("The Trader has:");
-            // for good in &trader._goods {
+            // for good in &trader.goods {
             //     println!("{}: {}", good.borrow().get_kind(), good.borrow().get_qty());
             // }
-            // println!("{} money", trader._money);
+            // println!("{} money", trader.money);
             break;
         }
 
@@ -557,8 +560,8 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<(String, String, Stri
                     panic!("Error in buy in {}: {:?}", market_name.to_string(), e);
                 }
             };
-            trader._money -= price;
-            for kind in trader._goods.iter_mut() {
+            trader.money -= price;
+            for kind in trader.goods.iter_mut() {
                 if kind.borrow().get_kind() == good {
                     match kind.borrow_mut().merge(increase.clone()) {
                         Ok(_) => (),
@@ -575,10 +578,27 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<(String, String, Stri
             //     market_name,
             //     price
             // );
-            res.push_back(("BUY".to_string(), good.to_string(), quantity.to_string()));
-            // println!("Money: {}", trader._money);
+            // res.push_back(("BUY".to_string(), good.to_string(), quantity.to_string(),market_name.clone()));
+            max -= 1;
+            res_string.push_back(format!(
+                "{} {} {} {}",
+                trader_name,
+                good.to_string(),
+                quantity.to_string(),
+                market_name
+            ));
+            // println!("Money: {}", trader.money);
         } else {
             // println!("No quantity to buy");
+        }
+        if max <= 0 {
+            //log all the goods and the money of the trader
+            // println!("The Trader has:");
+            // for good in &trader.goods {
+            //     println!("{}: {}", good.borrow().get_kind(), good.borrow().get_qty());
+            // }
+            // println!("{} money", trader.money);
+            break;
         }
 
         //# make the best sell trade
@@ -611,8 +631,8 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<(String, String, Stri
                     panic!("Error in sell in {}: {:?}", market_name.to_string(), e);
                 }
             };
-            trader._money += price;
-            for kind in trader._goods.iter_mut() {
+            trader.money += price;
+            for kind in trader.goods.iter_mut() {
                 if kind.borrow().get_kind() == good {
                     match kind.borrow_mut().split(quantity) {
                         Ok(_) => (),
@@ -629,16 +649,22 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<(String, String, Stri
             //     market_name,
             //     price
             // );
-            res.push_back(("SELL".to_string(), good.to_string(), quantity.to_string()));
+            // res.push_back(("SELL".to_string(), good.to_string(), quantity.to_string(),market_name.clone()));
+            res_string.push_back(format!(
+                "{} {} {} {}",
+                good.to_string(),
+                quantity.to_string(),
+                market_name.clone(),
+                price.to_string()
+            ));
+            max -= 1;
         } else {
             //log of no sell action
             // println!("No quantity to sell");
         }
 
-        // println!("Money: {}", trader._money);
+        // println!("Money: {}", trader.money);
         // }
-
-        max -= 1;
     }
-    res
+    res_string
 }
