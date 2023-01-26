@@ -91,3 +91,4 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
         ).split_point(0.95),
     ).split_point(0.07)
 }
+
