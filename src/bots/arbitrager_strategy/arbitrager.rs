@@ -1,11 +1,14 @@
+// library dependencies
+use druid::im::Vector;
+
 // market dependencies
 use market_sol::SOLMarket as sol;
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::{Market, MarketGetterError};
 
+// local dependencies
 use crate::bots::bot_strategy::bot::TraderBot;
-use druid::im::Vector;
 
 fn kind_to_string(gk: GoodKind) -> String {
     match gk {
@@ -26,6 +29,14 @@ fn merge_good(trader: &mut &mut TraderBot, good: Good) {
     }
 }
 
+/// When you want to invest some money in arbitrage you can create an arbitrager passing the 3 markets
+/// then call his main function "arbitrage" passing the eur you want to invest, and returns:
+/// 1. eur returned back (could be with 0 quantity)
+/// 2. optional good as rest as the arbitrage
+/// 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the
+/// second returned parameter is None
+///
+/// **Lorenzo Tinfena**
 pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<String> {
     //let mut resultsTuple: Vector<(String, String, String, String)> = Vector::new();
     let mut results: Vector<String> = Vector::new();
@@ -64,12 +75,12 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
                     // Trying to get the max good (aka goodKind or altcoin or alt) quantity to buy, such as the eur to send is less or equal than the ones I have
                     let mut max_alt_to_receive =
                         match buy_market.get_buy_price(good_kind, F32LARGE).unwrap_err() {
-                            MarketGetterError::NonPositiveQuantityAsked => unimplemented!(),
                             MarketGetterError::InsufficientGoodQuantityAvailable {
                                 requested_good_kind: _requested_good_kind,
                                 requested_good_quantity: _requested_good_quantity,
                                 available_good_quantity,
                             } => available_good_quantity,
+                            MarketGetterError::NonPositiveQuantityAsked => continue,
                         };
                     if max_alt_to_receive <= F32SMALL {
                         continue;
@@ -178,15 +189,12 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
             }
 
             // Do actual trade
-            let buy_token = match best_buy_market_deref.lock_buy(
+            let buy_token = best_buy_market_deref.lock_buy(
                 best_kind_alt_to_receive,
                 best_alt_to_receive,
                 best_eur_to_send,
                 trader.name.clone(),
-            ) {
-                Ok(token) => token,
-                Err(_) => unimplemented!(),
-            };
+            ).unwrap();
 
             alt_coin = best_buy_market_deref
                 .buy(buy_token, &mut eur.split(best_eur_to_send).unwrap())
@@ -263,15 +271,12 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
             };
 
             // Do actual trade
-            let sell_token = match best_sell_market_deref.lock_sell(
+            let sell_token = best_sell_market_deref.lock_sell(
                 best_kind_alt_to_receive,
                 alt_coin_to_send.get_qty(),
                 offer,
                 trader.name.clone(),
-            ) {
-                Ok(token) => token,
-                Err(_) => unimplemented!(),
-            };
+            ).unwrap();
 
             eur_received = best_sell_market_deref
                 .sell(sell_token, &mut alt_coin_to_send)
@@ -318,10 +323,9 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
     for good in trader.goods.iter_mut() {
         let tmp = good.borrow_mut();
         match tmp.get_kind() {
-            GoodKind::EUR => todo!(),
             GoodKind::YEN => yen_qty = tmp.get_qty(),
             GoodKind::USD => usd_qty = tmp.get_qty(),
-            GoodKind::YUAN => yuan_qty = tmp.get_qty(),
+            _ => yuan_qty = tmp.get_qty(), // assumed that is yuan
         }
     }
     results.push_back(format!(

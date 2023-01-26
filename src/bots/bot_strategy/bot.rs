@@ -1,7 +1,5 @@
-// use std::borrow::BorrowMut;
 // libraries dependencies
 use druid::im::Vector;
-
 use druid::{Data, Lens};
 use std::cell::RefCell;
 use std::rc::Rc;

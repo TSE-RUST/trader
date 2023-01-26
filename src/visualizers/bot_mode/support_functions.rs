@@ -1,6 +1,9 @@
+// library dependencies
 use druid::{Widget, Color, WidgetExt};
 use druid::im::Vector;
 use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider, CrossAxisAlignment, MainAxisAlignment};
+
+// local dependencies
 use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
 use crate::bots::bot_strategy::bot::bot;
 use crate::visualizers::datas::TraderUi;
