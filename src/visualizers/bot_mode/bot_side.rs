@@ -1,6 +1,6 @@
 // libraries dependencies
 use druid::{Widget, WidgetExt, Color, lens};
-use druid::widget::{Label, Button, Container, Flex, Slider, List, LensWrap, Scroll};
+use druid::widget::{Label, Button, Container, Flex, Slider, List, LensWrap, Scroll, ViewSwitcher};
 use druid::widget::Split;
 
 // market dependencies
@@ -56,37 +56,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
         ),
         Split::rows(
             Split::rows(
-                Split::columns(
-                    Split::columns(
-                        Split::rows(
-                            big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
-                            Scroll::new(
-                                List::new(|| Label::dynamic(|data: &String, _| {
-                                    if data.as_str().contains("BUY") {
-                                        format!("List item: {data}")
-                                    } else {
-                                        format!("NO BUY")
-                                    }
-                                }))
-                                    .lens(TraderUi::buy_or_sell_string)
-                            ).vertical()                            ,
-                        ).split_point(0.10),
-                        Split::rows(
-                            big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
-                            Scroll::new(
-                                List::new(|| Label::dynamic(|data, _| format!("List item: {:?}",data)))
-                                    .lens(TraderUi::logs)
-                            ).vertical(),
-                        ).split_point(0.10),
-                    ),
-                    Split::rows(
-                        big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
-                        Scroll::new(
-                            List::new(|| Label::dynamic(|data, _| format!("List item: {data}")))
-                                .lens(TraderUi::buy_or_sell_string)
-                        ).vertical(),
-                    ).split_point(0.10),
-                ).split_point(0.66).border(Color::WHITE, 1.0),
+                view_switcher(),
                 Split::columns(
                     Flex::row()
                         .main_axis_alignment(druid::widget::MainAxisAlignment::Center)
