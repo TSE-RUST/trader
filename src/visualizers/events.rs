@@ -2,7 +2,7 @@ use druid::widget::prelude::*;
 use druid::widget::Controller;
 use druid::{Data, KeyEvent, MouseButton, MouseEvent};
 // use std::sync::Arc;
-use crate::visualizers::datas::TraderUi;
+use crate::visualizers::user_mode::datas::TraderUi;
 
 /// the LoggedEvent struct is used to store the data of
 /// a single event

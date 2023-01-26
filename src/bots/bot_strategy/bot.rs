@@ -2,6 +2,8 @@
 // libraries dependencies
 use std::cell::RefCell;
 use std::rc::Rc;
+use druid::im::Vector;
+use druid::{Data, Lens};
 
 // market dependencies
 use unitn_market_2022::good::good::Good;
@@ -10,7 +12,39 @@ use unitn_market_2022::market::Market;
 // use unitn_market_2022::wait_one_day;
 
 // local dependencies
-use crate::Trader;
+use crate::bots::bot_strategy::market_functions::initgoods;
+
+///the struct for the trader agent
+#[derive(Clone, Data, Lens)]
+pub struct Trader {
+    pub(crate) name: String,
+    _money: f32,
+    _goods: Vector<Rc<RefCell<Good>>>,
+    pub sol: Rc<RefCell<dyn Market>>,
+    pub bfb: Rc<RefCell<dyn Market>>,
+    pub parse: Rc<RefCell<dyn Market>>,
+}
+impl Trader {
+    ///the constructor for the trader agent
+    ///
+    /// **Andrea Ballarini**
+    fn new(
+        name: String,
+        money: f32,
+        sol: Rc<RefCell<dyn Market>>,
+        bfb: Rc<RefCell<dyn Market>>,
+        parse: Rc<RefCell<dyn Market>>,
+    ) -> Self {
+        Trader {
+            name,
+            _money: money,
+            _goods: initgoods(0.0, 0.0, 0.0),
+            sol,
+            bfb,
+            parse,
+        }
+    }
+}
 
 
 ///return a vector for iterating through the GoodKinds without the EUR

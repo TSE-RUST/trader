@@ -1,14 +1,16 @@
 // library dependencies
 use druid::{Color, theme, Widget, WidgetExt};
 use druid::widget::{Button, CrossAxisAlignment, Flex, Label, MainAxisAlignment, ProgressBar, Slider, Split};
+
+// market dependencies
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::datas::{get_market_info, Trader};
+use crate::visualizers::user_mode::datas::Trader;
 use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
-use crate::visualizers::user_mode::support_functions::{get_best_buy_trade, get_best_sell_trade, max_qt};
+use crate::visualizers::user_mode::support_functions::{get_best_buy_trade, get_best_sell_trade, get_market_info, max_qt};
 
 /// This function builds the left side of the application.
 ///

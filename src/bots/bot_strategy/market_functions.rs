@@ -12,7 +12,7 @@ use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
 // local dependencies
-use crate::Trader;
+use crate::bots::bot_strategy::bot::Trader;
 
 ///initialize the goods for the trader
 ///
