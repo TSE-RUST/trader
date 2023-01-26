@@ -16,7 +16,7 @@ use crate::bots::bot_strategy::market_functions::initgoods;
 
 ///the struct for the trader agent
 #[derive(Clone, Data, Lens)]
-pub struct Trader {
+pub struct TraderBot {
     pub(crate) name: String,
     _money: f32,
     _goods: Vector<Rc<RefCell<Good>>>,
@@ -25,18 +25,18 @@ pub struct Trader {
     pub parse: Rc<RefCell<dyn Market>>,
 }
 
-impl Trader {
+impl TraderBot {
     ///the constructor for the trader agent
     ///
     /// **Andrea Ballarini**
-    fn new(
+    pub(crate) fn new(
         name: String,
         money: f32,
         sol: Rc<RefCell<dyn Market>>,
         bfb: Rc<RefCell<dyn Market>>,
         parse: Rc<RefCell<dyn Market>>,
     ) -> Self {
-        Trader {
+        TraderBot {
             name,
             _money: money,
             _goods: initgoods(0.0, 0.0, 0.0),
@@ -55,7 +55,7 @@ fn get_good_kinds() -> Vec<GoodKind> {
 }
 
 /// get the quantity of the kind in the trader
-pub fn get_trader_quantity(trader: &Trader, kind: GoodKind) -> f32 {
+pub fn get_trader_quantity(trader: &TraderBot, kind: GoodKind) -> f32 {
     let mut quantity = 0.0;
     for good in &trader._goods {
         if good.borrow().get_kind() == kind {
@@ -134,7 +134,7 @@ pub fn get_max_sell_quantity(
 ///get the average buy price for 1 quantity of the good taken by the maximum between the 1/3 of the trader budget and the good availability in the specific market
 ///
 /// **Andrea Ballarini**
-pub fn get_average_buy_price(trader: &mut Trader, kind: GoodKind) -> f32 {
+pub fn get_average_buy_price(trader: &mut TraderBot, kind: GoodKind) -> f32 {
     //the budget is 1/3 of the trader.budget (trader._money)
     let budget = trader._money / 3.;
 
@@ -182,7 +182,7 @@ pub fn get_average_buy_price(trader: &mut Trader, kind: GoodKind) -> f32 {
 ///get the average sell price taken by the maximum between the 1/3 of the trader.budget and the good availability in the market
 ///
 /// **Andrea Ballarini**
-pub fn get_average_sell_price(trader: &mut Trader, kind: GoodKind, quantity: f32) -> f32 {
+pub fn get_average_sell_price(trader: &mut TraderBot, kind: GoodKind, quantity: f32) -> f32 {
     let mut price_sol: f32 = 0.;
     let mut price_parse: f32 = 0.;
     let mut price_bfb: f32 = 0.;
@@ -229,7 +229,7 @@ pub fn get_average_sell_price(trader: &mut Trader, kind: GoodKind, quantity: f32
 ///
 /// **Andrea Ballarini**
 pub fn get_best_buy_market(
-    trader: &mut Trader,
+    trader: &mut TraderBot,
     kind: GoodKind,
 ) -> (&mut Rc<RefCell<dyn Market>>, f32, f32) {
     let budget = trader._money / 3.;
@@ -291,7 +291,7 @@ pub fn get_best_buy_market(
 ///
 /// **Andrea Ballarini**
 pub fn get_best_sell_market(
-    trader: &mut Trader,
+    trader: &mut TraderBot,
     kind: GoodKind,
     quantity: f32,
 ) -> (&mut Rc<RefCell<dyn Market>>, f32, f32) {
@@ -453,7 +453,7 @@ pub fn get_best_sell_market(
 /// # GET THE BEST BUY TRADE MARKET, GOODKIND AND QUANTITY/// get the best buy trade for a trader
 ///
 /// Andrea Ballarini
-pub fn get_best_buy_trade(trader: &mut Trader) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
+pub fn get_best_buy_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
     let (_, yen_quantity, yen_price) = get_best_buy_market(trader, GoodKind::YEN);
     let average_yen = yen_quantity / yen_price;
     let (_, usd_quantity, usd_price) = get_best_buy_market(trader, GoodKind::USD);
@@ -477,7 +477,7 @@ pub fn get_best_buy_trade(trader: &mut Trader) -> (&mut Rc<RefCell<dyn Market>>,
 /// # GET THE BEST SELL TRADE MARKET, GOODKIND AND QUANTITY/// get the best sell trade for a trader
 ///
 /// Andrea Ballarini
-pub fn get_best_sell_trade(trader: &mut Trader) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
+pub fn get_best_sell_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
     let yen_trader = get_trader_quantity(trader, GoodKind::YEN) / 3.;
     let (_, yen_quantity, yen_price) = get_best_sell_market(trader, GoodKind::YEN, yen_trader);
     let average_yen = yen_price / yen_quantity;
@@ -507,7 +507,7 @@ pub fn get_best_sell_trade(trader: &mut Trader) -> (&mut Rc<RefCell<dyn Market>>
 ///Loop infinitely to buy and sell goods in the three markets and to print the money of the trader at the end of each day
 ///
 /// **Andrea Ballarini**
-pub fn bot(trader: &mut Trader, mut max: i32) -> Vector<(String, String, String)> {
+pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<(String, String, String)> {
     let mut res: Vector<(String, String, String)> = Vector::new();
 
     loop {
