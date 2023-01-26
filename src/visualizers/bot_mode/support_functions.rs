@@ -77,7 +77,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         .with_spacer(4.0)
                                         .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
                                             data.percentage_bot = (data.percentage_bot + 0.001);
-                                        }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 100.0)),
+                                        }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
                                 println!("oooo");
@@ -142,7 +142,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         .with_spacer(4.0)
                                         .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
                                             data.percentage_bot = (data.percentage_bot + 0.001);
-                                        }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 100.0)),
+                                        }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
                                 println!("oooo");
