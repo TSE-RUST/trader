@@ -80,7 +80,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                         Split::columns(
                                 Split::columns(
                                         Button::new("Fai fare 1 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
-                                            println!("1 move da fare")
+                                            println!("1 move da fare, chiamo il bot log {}", string_log(1))
                                         }),
                                         Button::new("Fai fare 10 trade al bot").on_click(|ctx, data: &mut TraderUi, _env| {
                                             println!("10 move da fare")
