@@ -162,9 +162,20 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
         parse.clone(),
     );
 
-    app.logs = bot(&mut traderbot, 100);
+    app.logs = bot(&mut traderbot, 1000);
+
+    println!("lengt logs: {}", app.logs.len());
+
+    for i in 0..app.logs.len() {
+        app.buy_or_sell_string.push_back(app.logs[i].0.clone());
+        app.goodkinds_string.push_back(app.logs[i].1.clone());
+        app.quantity_string.push_back(app.logs[i].2.clone());
+    }
 
     println!("logs: {:?}", app.logs);
+    println!("buy_or_sell_string: {:?}", app.buy_or_sell_string);
+    println!("goodkinds_string: {:?}", app.goodkinds_string);
+    println!("quantity_string: {:?}", app.quantity_string);
 
     app
 }
