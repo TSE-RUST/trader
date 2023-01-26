@@ -7,21 +7,30 @@ use unitn_market_2022::market::{Market, MarketGetterError};
 use crate::bots::bot_strategy::bot::TraderBot;
 use druid::im::Vector;
 
+fn kind_to_string(gk: GoodKind) -> String {
+    match gk {
+        GoodKind::USD => "USD".to_string(),
+        GoodKind::YEN => "YEN".to_string(),
+        GoodKind::YUAN => "YUAN".to_string(),
+        GoodKind::EUR => "EUR".to_string(),
+    }
+}
+
+fn merge_good(trader: &mut &mut TraderBot, good: Good) {
+    for g in trader.goods.iter_mut() {
+        let mut tmp = g.borrow_mut();
+        if tmp.get_kind() == good.get_kind() {
+            let _ = tmp.merge(good);
+            break;
+        }
+    }
+}
+
 pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<String> {
     //let mut resultsTuple: Vector<(String, String, String, String)> = Vector::new();
     let mut results: Vector<String> = Vector::new();
 
     let mut eur = Good::new(GoodKind::EUR, trader.money);
-
-    fn merge_good(trader: &mut &mut TraderBot, good: Good) {
-        for g in trader.goods.iter_mut() {
-            let mut tmp = g.borrow_mut();
-            if tmp.get_kind() == good.get_kind() {
-                tmp.merge(good);
-                break;
-            }
-        }
-    }
 
     for _ in 0..max_arbitrages {
         if eur.get_qty() <= 0. {
@@ -76,8 +85,11 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
                             .get_buy_price(good_kind, max_alt_to_receive)
                             .unwrap();
                         if max_alt_to_receive <= F32SMALL {
-                            continue;
+                            break;
                         }
+                    }
+                    if max_alt_to_receive <= F32SMALL {
+                        continue;
                     }
 
                     // get bounds for prices (see documentation)
@@ -155,9 +167,15 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
 
         let mut alt_coin: Good;
 
+        let mut buy_market_name;
+
         // Buy
         {
             let mut best_buy_market_deref = (*best_buy_market).borrow_mut();
+            buy_market_name = best_buy_market_deref.get_name().to_string();
+            if buy_market_name != "SOL".to_string() && buy_market_name != "PARSE".to_string() {
+                buy_market_name = "BFB".to_string();
+            }
 
             // Do actual trade
             let buy_token = match best_buy_market_deref.lock_buy(
@@ -186,9 +204,15 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
 
         let mut qty_to_send: f32;
 
+        let mut sell_market_name;
+
         // Sell
         {
             let mut best_sell_market_deref = (*best_sell_market).borrow_mut();
+            sell_market_name = best_sell_market_deref.get_name().to_string();
+            if sell_market_name != "SOL".to_string() && sell_market_name != "PARSE".to_string() {
+                sell_market_name = "BFB".to_string();
+            }
 
             let mut eur_budget = 0.;
             for good in best_sell_market_deref.get_goods() {
@@ -196,7 +220,6 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
                     eur_budget = good.quantity;
                 }
             }
-
             // Compute actual qty_to_send and offer
             qty_to_send = alt_coin.get_qty();
             let mut offer = best_sell_market_deref
@@ -212,7 +235,21 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
                 }
             }
             if offer <= F32SMALL {
-                break;
+                // Merge goods with initial eur
+                merge_good(&mut trader, alt_coin);
+
+                // Push results in results array
+                let mut market_name_tmp = (*best_buy_market).borrow().get_name().to_string();
+                if market_name_tmp != "SOL".to_string() && market_name_tmp != "Parse".to_string() {
+                    market_name_tmp = "BFB".to_string();
+                }
+                results.push_back(format!(
+                    "BUY {} {} {}",
+                    kind_to_string(best_kind_alt_to_receive),
+                    alt_coin_quantity_received,
+                    market_name_tmp
+                ));
+                continue; // Skip the sell trade
             }
 
             // Split the rest and the good to actually send to sell_market
@@ -244,26 +281,12 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
         //let eur_quantity_received = eur_received.get_qty();
 
         // Merge goods with initial eur
-        eur.merge(eur_received);
+        let _ = eur.merge(eur_received);
         if rest.is_some() {
             merge_good(&mut trader, rest.take().unwrap());
         }
 
-        // support function
-        fn kind_to_string(gk: GoodKind) -> String {
-            match gk {
-                GoodKind::USD => "USD".to_string(),
-                GoodKind::YEN => "YEN".to_string(),
-                GoodKind::YUAN => "YUAN".to_string(),
-                GoodKind::EUR => "EUR".to_string(),
-            }
-        }
-
         // Push results in results array
-        let mut market_name_tmp = (*best_buy_market).borrow().get_name().to_string();
-        if market_name_tmp != "SOL".to_string() && market_name_tmp != "Parse".to_string() {
-            market_name_tmp = "BFB".to_string();
-        }
         /*results.push_back((
             "BUY".to_string(),
             kind_to_string(best_kind_alt_to_receive),
@@ -274,12 +297,8 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
             "BUY {} {} {}",
             kind_to_string(best_kind_alt_to_receive),
             alt_coin_quantity_received,
-            market_name_tmp
+            buy_market_name
         ));
-        market_name_tmp = (*best_sell_market).borrow().get_name().to_string();
-        if market_name_tmp != "SOL".to_string() && market_name_tmp != "Parse".to_string() {
-            market_name_tmp = "BFB".to_string();
-        }
         /*results.push_back((
             "SELL".to_string(),
             kind_to_string(best_kind_alt_to_receive),
@@ -290,8 +309,27 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
             "SELL {} {} {}",
             kind_to_string(best_kind_alt_to_receive),
             qty_to_send,
-            market_name_tmp
+            sell_market_name
         ));
     }
+    let mut yen_qty = -1.;
+    let mut usd_qty = -1.;
+    let mut yuan_qty = -1.;
+    for good in trader.goods.iter_mut() {
+        let tmp = good.borrow_mut();
+        match tmp.get_kind() {
+            GoodKind::EUR => todo!(),
+            GoodKind::YEN => yen_qty = tmp.get_qty(),
+            GoodKind::USD => usd_qty = tmp.get_qty(),
+            GoodKind::YUAN => yuan_qty = tmp.get_qty(),
+        }
+    }
+    results.push_back(format!(
+        "{} {} {} {}",
+        eur.get_qty(),
+        yen_qty,
+        usd_qty,
+        yuan_qty
+    ));
     return results;
 }
