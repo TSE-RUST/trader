@@ -22,7 +22,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
 
     Split::rows(
         Split::rows(
-            trader_quantities(),
+            switcher_header(),
         Split::columns(
             //PULSANTE PER ATTIVARE BOT SAFE MODE
             Button::new("safe mode")

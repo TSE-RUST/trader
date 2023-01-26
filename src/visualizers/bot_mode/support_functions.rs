@@ -10,7 +10,7 @@ use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
 use crate::bots::bot_strategy::bot::bot;
 use crate::visualizers::datas::trader_ui_derived_lenses::percentage_bot;
 
-use crate::visualizers::datas::TraderUi;
+use crate::visualizers::datas::{TraderUi, Trader};
 
 pub fn big_text(text: &str) -> impl Widget<TraderUi> {
     Label::new(text)
@@ -20,7 +20,17 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
-pub fn trader_quantities() -> impl Widget<TraderUi> {
+pub fn switcher_header()-> impl Widget<TraderUi> {
+    let switch= ViewSwitcher::new(
+        |data: &TraderUi, _| data.safe_mode,
+        |selector, data, _| match data.safe_mode {
+            true => Box::new(trader_quantities(Color::rgb(0.0,0.0,255.0),true)),
+            false=> Box::new(trader_quantities(Color::rgb(204.0,0.0,0.0),false)),
+        },
+    );
+    switch
+}
+pub fn trader_quantities(color: Color, safe:bool) -> impl Widget<TraderUi> {
 
     // trader header
     let label_trader = Flex::column()
@@ -31,13 +41,16 @@ pub fn trader_quantities() -> impl Widget<TraderUi> {
 
     let label_trader_eur = Flex::column()
         .with_child(Label::new("EUR".to_string())
-            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_color(color)
             .with_text_size(26.0)
             .center())
         .with_child(Label::new("1000.0")
             .with_text_size(20.0).center())
-        .with_child(Label::dynamic(|data: &TraderUi, _| {
-            let money = data.logs_bot.last();
+        .with_child(Label::dynamic(move |data: &TraderUi, _| {
+            let money = match safe {
+                true => data.logs_bot.last(),
+                false => data.logs_arb.last(),
+            };
             if money.is_none() {
                 return "0.0".to_string();
             } else {
@@ -56,12 +69,15 @@ pub fn trader_quantities() -> impl Widget<TraderUi> {
 
     let label_trader_yen = Flex::column()
         .with_child(Label::new("YEN".to_string())
-            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_color(color)
             .with_text_size(26.0))
         .with_child(Label::new("0.0")
             .with_text_size(20.0).center())
-        .with_child(Label::dynamic(|data: &TraderUi, _| {
-            let money = data.logs_bot.last();
+        .with_child(Label::dynamic(move |data: &TraderUi, _| {
+            let money = match safe {
+                true => data.logs_bot.last(),
+                false => data.logs_arb.last(),
+            };
             if money.is_none() {
                 return "0.0".to_string();
             } else {
@@ -80,12 +96,15 @@ pub fn trader_quantities() -> impl Widget<TraderUi> {
 
     let label_trader_usd = Flex::column()
         .with_child(Label::new("USD".to_string())
-            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_color(color)
             .with_text_size(26.0))
         .with_child(Label::new("0.0")
             .with_text_size(20.0).center())
-        .with_child(Label::dynamic(|data: &TraderUi, _| {
-            let money = data.logs_bot.last();
+        .with_child(Label::dynamic(move |data: &TraderUi, _| {
+            let money = match &safe {
+                true => data.logs_bot.last(),
+                false => data.logs_arb.last(),
+            };
             if money.is_none() {
                 return "0.0".to_string();
             } else {
@@ -104,12 +123,15 @@ pub fn trader_quantities() -> impl Widget<TraderUi> {
 
     let label_trader_yuan = Flex::column()
         .with_child(Label::new("YUAN".to_string())
-            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_color(color)
             .with_text_size(26.0))
         .with_child(Label::new("0.0")
             .with_text_size(20.0).center())
-        .with_child(Label::dynamic(|data: &TraderUi, _| {
-            let money = data.logs_bot.last();
+        .with_child(Label::dynamic(move |data: &TraderUi, _| {
+            let money = match safe {
+                true => data.logs_bot.last(),
+                false => data.logs_arb.last(),
+            };
             if money.is_none() {
                 return "0.0".to_string();
             } else {
