@@ -162,13 +162,14 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
         parse.clone(),
     );
 
+
     app.logs.push_back(bot(&mut traderbot, 1000));
     // app.logs.push_back(BOT_LORENZO);
 
     println!("lengt logs: {}", app.logs.len());
 
-    app.buy_or_sell_string.push_back("dicoanagliaunaBUY".to_string());
-    app.buy_or_sell_string.push_back("dicoanagliaunaSELL".to_string());
+    // app.buy_or_sell_string.push_back("dicoanagliaunaBUY".to_string());
+    // app.buy_or_sell_string.push_back("dicoanagliaunaSELL".to_string());
 
     for i in 0..app.logs.len() {
         app.buy_or_sell_string.push_back(app.logs[0][i].0.clone());
