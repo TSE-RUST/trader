@@ -557,7 +557,11 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
         let trader_name = trader.name.clone();
         // let (market, quantity, price) = get_best_buy_market(trader, good);
         let (market, good, quantity) = get_best_buy_trade(trader);
-        let market_name = market.borrow().get_name().to_string();
+        let market_name = match market.borrow().get_name() {
+            "SOL" => "SOL",
+            "PARSE" => "PARSE",
+            _ => "BFB",
+        };
 
         if quantity > 0.1 {
             let price = match market.borrow().get_buy_price(good, quantity) {
@@ -609,7 +613,7 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
             max -= 1;
             res_string.push_back(format!(
                 "{} {} {} {}",
-                trader_name,
+                "BUY".to_string(),
                 good.to_string(),
                 quantity.to_string(),
                 market_name
@@ -631,6 +635,11 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
         //# make the best sell trade
 
         let (market, good, quantity) = get_best_sell_trade(trader);
+        let market_name = match market.borrow().get_name() {
+            "SOL" => "SOL",
+            "PARSE" => "PARSE",
+            _ => "BFB",
+        };
         if quantity > 0.0 {
             let price = match market.borrow().get_sell_price(good, quantity) {
                 Ok(price) => price,
@@ -679,10 +688,10 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
             // res.push_back(("SELL".to_string(), good.to_string(), quantity.to_string(),market_name.clone()));
             res_string.push_back(format!(
                 "{} {} {} {}",
+                "SELL".to_string(),
                 good.to_string(),
                 quantity.to_string(),
-                market_name.clone(),
-                price.to_string()
+                market_name.clone()
             ));
             max -= 1;
         } else {
