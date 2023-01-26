@@ -61,29 +61,23 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
                         Split::rows(
                             big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
-                                List::new(|| Label::dynamic(|data: &String, _| {
-                                    if data.as_str().contains("BUY") {
-                                        format!("List item: {data}")
-                                    } else {
-                                        format!("NO BUY")
-                                    }
-                                }))
-                                    .lens(TraderUi::buy_or_sell_string)
-                            ).vertical()                            ,
+                                List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                                    .lens(TraderUi::bfb_logs)
+                            ).vertical(),
                         ).split_point(0.10),
                         Split::rows(
                             big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
-                                List::new(|| Label::dynamic(|data, _| format!("List item: {:?}",data)))
-                                    .lens(TraderUi::logs)
+                                List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                                    .lens(TraderUi::parse_logs)
                             ).vertical(),
                         ).split_point(0.10),
                     ),
                     Split::rows(
                         big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
                         Scroll::new(
-                            List::new(|| Label::dynamic(|data, _| format!("List item: {data}")))
-                                .lens(TraderUi::buy_or_sell_string)
+                            List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                                .lens(TraderUi::sol_logs)
                         ).vertical(),
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0),
