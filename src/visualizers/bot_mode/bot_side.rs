@@ -79,7 +79,8 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                         }).center()
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0),
-                Flex::row()
+                Split::columns(
+                    Flex::row()
                         .main_axis_alignment(druid::widget::MainAxisAlignment::Center)
                         .with_child(
                             Slider::new()
@@ -90,19 +91,23 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                     )
                     .with_spacer(8.0)
                     .with_child(Label::new(|data: &TraderUi, _: &_| {
-                        format!("{:.2}", data.percentage_bot * data.quantity as f64)
+                        format!("{:.2}", (data.percentage_bot * 100.0) as i32)
                     }).with_text_size(20.0))
                     .with_spacer(8.0)
                     .with_child(
                         Flex::row()
                             .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
-                                data.percentage_bot = (data.percentage_bot - 0.005).max(0.0);
-                            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+                                data.percentage_bot = (data.percentage_bot - 0.01);
+                            }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 100.0 == 0.0))
                         .with_spacer(4.0)
                         .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                            data.percentage_bot = (data.percentage_bot + 0.005).min(1.0);
-                        }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
-                            )
+                            data.percentage_bot = (data.percentage_bot + 0.01);
+                        }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 100.0 == 100.0)),
+                            ),
+                            Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
+                                println!("{}", string_log(data.percentage_bot * 100.0));
+                            })
+                        ).split_point(0.8)
                         ).split_point(0.9),
             label.background(Color::rgb(255.0,227.0,0.0))
             ).split_point(0.95)

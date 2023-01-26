@@ -17,8 +17,8 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
-pub fn string_log(hml: i32) -> String {
+pub fn string_log(hml: f64) -> String {
     
-    "log riuscito".to_string()
+    (hml as i32).to_string()
 }
 
