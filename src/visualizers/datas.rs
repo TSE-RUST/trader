@@ -175,24 +175,24 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
 
 
     app.logs_bot = bot(&mut traderbot, 1000);
-
+    println!("start logs andrea\n");
     for elem in app.logs_bot.iter() {
         println!("elem: {:?}", elem);
     }
     println!("\nlengt logs andrea: {}", app.logs_bot.len());
-    println!("end logs andrea");
+    println!("end logs andrea\n");
 
 
-    // app.logs_arb = arbitrage(&mut traderbot, 1000);
+    app.logs_arb = arbitrage(&mut traderbot, 1000);
+    println!("start logs lorenzo\n");
+    for elem in app.logs_arb.iter() {
+        println!("elem: {:?}", elem);
+    }
+    println!("\nlengt logs lorenzo: {}", app.logs_arb.len());
+    println!("end logs andrea\n");
 
-    // for elem in app.logs_arb.iter() {
-    //     println!("elem: {:?}", elem);
-    // }
-    // println!("\nlengt logs lorenzo: {}", app.logs_arb.len());
-    // println!("end logs andrea");
 
-
-    // CREAZIONE LOGS PER SAFE MODE
+    // CREAZIONE LOGS PER SAFE MODE SE NON VA BOT ANDREA
     // let mut counter = 0;
     // for i in 0..1000 {
     //     if counter == 0 {
@@ -217,20 +217,20 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
         }
     }
 
-    // CREAZIONE LOGS PER UNSAFE MODE
-    let mut counter = 0;
-    for i in 0..1000 {
-        if counter == 0 {
-            app.logs_arb.push_back("BFB HA FATTO LA COMPERA".to_string() + "    unsafe mode bro");
-            counter = 1;
-        } else if counter == 1 {
-            app.logs_arb.push_back("SOL HA FATTO LA VENDITA".to_string() + "    unsafe mode bro");
-            counter = 2;
-        } else {
-            app.logs_arb.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  unsafe mode bro");
-            counter = 0;
-        }
-    }
+    // CREAZIONE LOGS PER UNSAFE MODE SE NON VA BOT LORENZO
+    // let mut counter = 0;
+    // for i in 0..1000 {
+    //     if counter == 0 {
+    //         app.logs_arb.push_back("BFB HA FATTO LA COMPERA".to_string() + "    unsafe mode bro");
+    //         counter = 1;
+    //     } else if counter == 1 {
+    //         app.logs_arb.push_back("SOL HA FATTO LA VENDITA".to_string() + "    unsafe mode bro");
+    //         counter = 2;
+    //     } else {
+    //         app.logs_arb.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  unsafe mode bro");
+    //         counter = 0;
+    //     }
+    // }
 
     for elem in app.logs_arb.iter() {
         if elem.as_str().contains("BFB") {
