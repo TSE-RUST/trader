@@ -207,10 +207,6 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
 
         let alt_coin_quantity_received = alt_coin.get_qty();
 
-        //if alt_coin_quantity_received <= 0. {
-        //    continue;
-        //}
-
         let mut rest: Option<Good>;
         let eur_received: Good;
 
