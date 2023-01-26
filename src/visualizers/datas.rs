@@ -52,10 +52,14 @@ pub struct TraderUi {
     // BOT MODE
     pub safe_mode: bool,
     pub logs: Vector<Vector<(String, String, String)>>,
-    pub logss: Vector<String>,
-    pub bfb_logs: Vector<String>,
-    pub sol_logs: Vector<String>,
-    pub parse_logs: Vector<String>,
+    pub logs_bot: Vector<String>,
+    pub bfb_logs_bot: Vector<String>,
+    pub sol_logs_bot: Vector<String>,
+    pub parse_logs_bot: Vector<String>,
+    pub logs_ard: Vector<String>,
+    pub bfb_logs_arb: Vector<String>,
+    pub sol_logs_arb: Vector<String>,
+    pub parse_logs_arb: Vector<String>,
     pub percentage_bot: f64,
 }
 
@@ -106,10 +110,14 @@ impl TraderUi {
             // BOT MODE
             safe_mode: false,
             logs: vector![],
-            logss: vector![],
-            bfb_logs: vector![],
-            sol_logs: vector![],
-            parse_logs: vector![],
+            logs_bot: vector![],
+            bfb_logs_bot: vector![],
+            sol_logs_bot: vector![],
+            parse_logs_bot: vector![],
+            logs_ard: vector![],
+            bfb_logs_arb: vector![],
+            sol_logs_arb: vector![],
+            parse_logs_arb: vector![],
             percentage_bot: 1.0,
         }
     }
@@ -165,11 +173,11 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     );
 
 
-    app.logs.push_back(bot(&mut traderbot, 100));
+    app.logs_bot = bot(&mut traderbot, 100);
     // app.logs.push_back(BOT_LORENZO);
 
-    println!("lengt logs: {}", app.logs[0].len());
-    for elem in app.logs[0].iter() {
+    println!("lengt logs: {}", app.logs_bot.len());
+    for elem in app.logs_bot.iter() {
         println!("elem: {:?}", elem);
     }
 
@@ -177,24 +185,14 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     let mut counter = 0;
     for i in 0..1000 {
         if counter == 0 {
-            app.logss.push_back("BFB HA FATTO LA COMPERA".to_string());
+            app.logs_bot.push_back("BFB HA FATTO LA COMPERA".to_string());
             counter = 1;
         } else if counter == 1 {
-            app.logss.push_back("SOL HA FATTO LA VENDITA".to_string());
+            app.logs_bot.push_back("SOL HA FATTO LA VENDITA".to_string());
             counter = 2;
         } else {
-            app.logss.push_back("PARSE HA FATTO LA COMPERA".to_string());
+            app.logs_bot.push_back("PARSE HA FATTO LA COMPERA".to_string());
             counter = 0;
-        }
-    }
-
-    for elem in app.logss.iter() {
-        if elem.as_str().contains("BFB") {
-            app.bfb_logs.push_back(elem.to_string());
-        } else if elem.as_str().contains("SOL") {
-            app.sol_logs.push_back(elem.to_string());
-        } else {
-            app.parse_logs.push_back(elem.to_string());
         }
     }
 

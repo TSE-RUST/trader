@@ -56,31 +56,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
         ),
         Split::rows(
             Split::rows(
-                Split::columns(
-                    Split::columns(
-                        Split::rows(
-                            big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
-                            Scroll::new(
-                                List::new(|| Label::dynamic(|data, _| format!("{data}")))
-                                    .lens(TraderUi::bfb_logs)
-                            ).vertical(),
-                        ).split_point(0.10),
-                        Split::rows(
-                            big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
-                            Scroll::new(
-                                List::new(|| Label::dynamic(|data, _| format!("{data}")))
-                                    .lens(TraderUi::parse_logs)
-                            ).vertical(),
-                        ).split_point(0.10),
-                    ),
-                    Split::rows(
-                        big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
-                        Scroll::new(
-                            List::new(|| Label::dynamic(|data, _| format!("{data}")))
-                                .lens(TraderUi::sol_logs)
-                        ).vertical(),
-                    ).split_point(0.10),
-                ).split_point(0.66).border(Color::WHITE, 1.0),
+                build_safe_mode(),
                 Split::columns(
                     Flex::row()
                         .main_axis_alignment(druid::widget::MainAxisAlignment::Center)
@@ -116,4 +92,58 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
     ).split_point(0.07)
 }
 
-// label.background(Color::rgb(255.0,227.0,0.0)
+fn build_safe_mode() -> impl Widget<TraderUi> {
+    Split::columns(
+        Split::columns(
+            Split::rows(
+                big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::bfb_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+            Split::rows(
+                big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::parse_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+        ),
+        Split::rows(
+            big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
+            Scroll::new(
+                List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                    .lens(TraderUi::sol_logs_bot)
+            ).vertical(),
+        ).split_point(0.10),
+    ).split_point(0.66).border(Color::WHITE, 1.0)
+}
+
+fn build_unsafe_mode() -> impl Widget<TraderUi> {
+    Split::columns(
+        Split::columns(
+            Split::rows(
+                big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::bfb_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+            Split::rows(
+                big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::parse_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+        ),
+        Split::rows(
+            big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
+            Scroll::new(
+                List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                    .lens(TraderUi::sol_logs_bot)
+            ).vertical(),
+        ).split_point(0.10),
+    ).split_point(0.66).border(Color::WHITE, 1.0)
+}
