@@ -195,32 +195,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0);
 
-    // good buttons
-    // let button_eur = custom_button("EUR")
-    //     .on_click(|_ctx, data: &mut TraderUi, _| {
-    //         data.selected_good = "EUR".to_string();
-    //         println!("EUR button clicked");
-    //         data.quantity = max_qt(&data.markets,
-    //                                &data.trader.goods,
-    //                                &data.selected_method_of_trade,
-    //                                &data.selected_market,
-    //                                &data.selected_good,
-    //                                &data.bfb_quantities.clone(),
-    //                                &data.sol_quantities.clone(),
-    //                                &data.parse_quantities.clone());
-    //         println!("max quantity: {}", data.quantity);
-    //     });
-    //
-    // let eur_flex = Flex::column()
-    //     .with_child(button_eur)
-    //     .with_child(Label::new(|data: &TraderUi, _: &_| {
-    //         if data.selected_good == "EUR" {
-    //             format!("selected")
-    //         } else {
-    //             format!("")
-    //         }
-    //     }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
-
     let button_yen = custom_button("YEN")
         .on_click(|_ctx, data: &mut TraderUi, _| {
             data.selected_good = "YEN".to_string();
@@ -303,8 +277,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         }).with_text_color(Color::from_hex_str("#ffffff").unwrap()));
 
     let flex_buttons_goods = Flex::row()
-        // .with_child(eur_flex)
-        // .with_spacer(40.0)
         .with_child(yen_flex)
         .with_spacer(40.0)
         .with_child(usd_flex)
@@ -313,9 +285,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .cross_axis_alignment(CrossAxisAlignment::Start)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween)
         .padding(5.0);
-
-    // quantity textbox
-    // let textbox = TextBox::new().lens(TraderUi::quantity_str);
 
     // quantity slider
     let slider = Flex::row()
@@ -499,14 +468,6 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         Err(e) => { panic!("Error in sell in {}: {:?}", market_name.to_string(), e); }
                     };
                     data.trader.goods[0] += price;
-                    // data.trader.goods[
-                    //     match good {
-                    //         GoodKind::EUR => 0,
-                    //         GoodKind::YEN => 1,
-                    //         GoodKind::USD => 2,
-                    //         GoodKind::YUAN => 3,
-                    //     }
-                    //     ] -= decrease.get_qty();
                     println!("selling {} {} to {}", data.percentage_user * data.quantity as f64, data.selected_good, data.selected_market);
 
                     if data.selected_good == "EUR" {

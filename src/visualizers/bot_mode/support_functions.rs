@@ -1,14 +1,13 @@
 use druid::{Widget, Color, WidgetExt};
 use druid::im::Vector;
 use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider, CrossAxisAlignment, MainAxisAlignment};
-
-
 use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
 use crate::bots::bot_strategy::bot::bot;
-
-
 use crate::visualizers::datas::TraderUi;
 
+
+///this functon is used to create the labels that contain the names of the markets
+/// *Patrick Cerka*
 pub fn big_text(text: &str) -> impl Widget<TraderUi> {
     Label::new(text)
         .with_text_size(20.0)
@@ -17,6 +16,8 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
+///switches the header content between the safe mode and the unsafe mode
+/// *Patrick Cerka*
 pub fn switcher_header() -> impl Widget<TraderUi> {
     let switch = ViewSwitcher::new(
         |data: &TraderUi, _| data.safe_mode,
@@ -28,6 +29,8 @@ pub fn switcher_header() -> impl Widget<TraderUi> {
     switch
 }
 
+///this function is used to create the header of the application
+/// *Patrick Cerka*
 pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
 
     // trader header
@@ -165,7 +168,8 @@ pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
     header
 }
 
-
+/// The main widget
+/// *Patrick Cerka*
 pub fn view_switcher() -> impl Widget<TraderUi> {
     let view_switcher = ViewSwitcher::new(
         |data: &TraderUi, _env| data.safe_mode,

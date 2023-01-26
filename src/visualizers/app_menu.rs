@@ -30,8 +30,6 @@ pub fn make_menu(_window_id: Option<WindowId>, _app_state: &TraderUi, _env: &Env
     target_os = "openbsd"
     ))]
     {
-    // default menu (we want to personalize it, so we don't use it)
-    // base = base.entry(druid::platform_menus::win::file::default());
     create_menu(base)
     }
 }
