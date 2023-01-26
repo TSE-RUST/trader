@@ -29,6 +29,14 @@ fn merge_good(trader: &mut &mut TraderBot, good: Good) {
     }
 }
 
+/// When you want to invest some money in arbitrage you can create an arbitrager passing the 3 markets
+/// then call his main function "arbitrage" passing the eur you want to invest, and returns:
+/// 1. eur returned back (could be with 0 quantity)
+/// 2. optional good as rest as the arbitrage
+/// 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the
+/// second returned parameter is None
+///
+/// **Lorenzo Tinfena**
 pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<String> {
     //let mut resultsTuple: Vector<(String, String, String, String)> = Vector::new();
     let mut results: Vector<String> = Vector::new();

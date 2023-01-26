@@ -1,7 +1,6 @@
 // libraries dependencies
 use druid::{AppLauncher, WindowDesc};
 
-
 // local dependencies
 mod bots;
 mod visualizers;
