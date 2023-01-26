@@ -3,7 +3,7 @@ use druid::{Widget, Color, WidgetExt};
 use druid::im::Vector;
 use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider, CrossAxisAlignment, MainAxisAlignment};
 
-// local dependencies
+
 use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
 use crate::bots::bot_strategy::bot::bot;
 use crate::visualizers::datas::TraderUi;
@@ -32,8 +32,6 @@ pub fn switcher_header() -> impl Widget<TraderUi> {
     switch
 }
 
-///this function is used to create the header of the application
-/// *Patrick Cerka*
 pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
 
     // trader header
@@ -60,11 +58,11 @@ pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
             } else {
                 let money = money.unwrap();
                 let goods = money.split(" ").collect::<Vector<&str>>();
-                let string_money = format!("{}", goods[0]);
+                let string_money = format!("{:.1}", goods[0].parse::<f64>().unwrap());
                 if string_money == "0.0" {
-                    format!("{:.0}", string_money)
+                    format!("{:.0}", string_money.parse::<f64>().unwrap())
                 } else {
-                    format!("{}", string_money)
+                    format!("{:.2}", (string_money.parse::<f64>().unwrap()))
                 }
             }
         }).with_text_size(20.0).center())
@@ -87,11 +85,11 @@ pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
             } else {
                 let money = money.unwrap();
                 let goods = money.split(" ").collect::<Vector<&str>>();
-                let string_money = format!("{}", goods[1]);
+                let string_money = format!("{:.1}", goods[1].parse::<f64>().unwrap());
                 if string_money == "0.0" {
-                    format!("{:.0}", string_money)
+                    format!("{:.0}", string_money.parse::<f64>().unwrap())
                 } else {
-                    format!("{}", string_money)
+                    format!("{:.2}", string_money.parse::<f64>().unwrap())
                 }
             }
         }).with_text_size(20.0).center())
@@ -114,11 +112,11 @@ pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
             } else {
                 let money = money.unwrap();
                 let goods = money.split(" ").collect::<Vector<&str>>();
-                let string_money = format!("{}", goods[2]);
+                let string_money = format!("{:.1}", goods[2].parse::<f64>().unwrap());
                 if string_money == "0.0" {
-                    format!("{:.0}", string_money)
+                    format!("{:.0}", string_money.parse::<f64>().unwrap())
                 } else {
-                    format!("{}", string_money)
+                    format!("{:.2}", string_money.parse::<f64>().unwrap())
                 }
             }
         }).with_text_size(20.0).center())
@@ -141,11 +139,11 @@ pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
             } else {
                 let money = money.unwrap();
                 let goods = money.split(" ").collect::<Vector<&str>>();
-                let string_money = format!("{}", goods[3]);
+                let string_money = format!("{:.1}", goods[3].parse::<f64>().unwrap());
                 if string_money == "0.0" {
-                    format!("{:.0}", string_money)
+                    format!("{:.0}", string_money.parse::<f64>().unwrap())
                 } else {
-                    format!("{}", string_money)
+                    format!("{:.2}", string_money.parse::<f64>().unwrap())
                 }
             }
         }).with_text_size(20.0).center())
