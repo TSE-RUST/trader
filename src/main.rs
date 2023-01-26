@@ -28,7 +28,7 @@ use visualizers::datas::TraderUi;
 // use visualizers::user_mode::datas::initialize_quantities;
 
 // function to initialize the datas of the TraderUi struct
-use crate::visualizers::user_mode::support_functions::initialize_quantities;
+use crate::visualizers::datas::initialize_quantities;
 
 fn main() {
 

@@ -10,48 +10,6 @@ use unitn_market_2022::market::Market;
 // local dependencies
 use crate::visualizers::datas::TraderUi;
 
-
-/// SUPPORT FUNCTIONS FOR THE TraderUi STRUCT - initializer of the TraderUi
-/// struct. This function is called when the TraderUi is created and it
-/// initializes the TraderUi struct datas when the program starts
-///
-/// **Federico Brancasi**
-pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
-
-    // set values for bfb market
-    let (good_kinds_bfb, quantities_bfb, exchange_rate_buy_bfb, exchange_rate_sell_bfb) = get_market_info(&app.markets[0]);
-
-    app.bfb_kinds = good_kinds_bfb;
-    app.bfb_quantities = quantities_bfb;
-    app.bfb_exchange_rate_buy = exchange_rate_buy_bfb;
-    app.bfb_exchange_rate_sell = exchange_rate_sell_bfb;
-
-    // set values for sol market
-    let (good_kinds_sol, quantities_sol, exchange_rate_buy_sol, exchange_rate_sell_sol) = get_market_info(&app.markets[1]);
-
-    app.sol_kinds = good_kinds_sol;
-    app.sol_quantities = quantities_sol;
-    app.sol_exchange_rate_buy = exchange_rate_buy_sol;
-    app.sol_exchange_rate_sell = exchange_rate_sell_sol;
-
-    // set values for parse market
-    let (good_kinds_parse, quantities_parse, exchange_rate_buy_parse, exchange_rate_sell_parse) = get_market_info(&app.markets[2]);
-
-    app.parse_kinds = good_kinds_parse;
-    app.parse_quantities = quantities_parse;
-    app.parse_exchange_rate_buy = exchange_rate_buy_parse;
-    app.parse_exchange_rate_sell = exchange_rate_sell_parse;
-
-    app.trader.goods = vector![100000.0, 100000.0, 1000000.0, 0.0];
-
-    app.quantity = app.trader.goods[0];
-
-    app.string_best_profit_buy = get_best_buy_trade(&app.markets, app.trader.goods[0]);
-    app.string_best_profit_sell = get_best_sell_trade(&app.markets, &app.trader.goods);
-
-    app
-}
-
 /// SUPPORT FUNCTIONS FOR THE TraderUi STRUCT - The get_market_info function
 /// returns the market info in order to be used in the initialize_quantities
 /// function and sort the markets info in order to be displayed in the same

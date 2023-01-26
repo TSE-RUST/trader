@@ -12,7 +12,7 @@ use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
 // local dependencies
-use crate::bots::bot_strategy::bot::Trader;
+use crate::bots::bot_strategy::bot::TraderBot;
 
 ///initialize the goods for the trader
 ///
@@ -88,7 +88,7 @@ fn print_good_kind(market: &Rc<RefCell<dyn Market>>, kind: GoodKind) {
 /// GoodKind and the fluctuation prices in markets
 ///
 /// **Andrea Ballarini**
-fn test_buy_kind(kind: GoodKind, trader: &mut Trader) {
+fn test_buy_kind(kind: GoodKind, trader: &mut TraderBot) {
     //try the changes after buying all sol
     let mut count = 0;
     println!("\t\tAfter Buying All SOL");
@@ -165,7 +165,7 @@ fn test_buy_kind(kind: GoodKind, trader: &mut Trader) {
 ///testing the sell function for a specific GoodKind and the fluctuation prices in markets
 ///
 /// **Andrea Ballarini**
-fn test_sell_kind(kind: GoodKind, trader: &mut Trader) {
+fn test_sell_kind(kind: GoodKind, trader: &mut TraderBot) {
     //try the changes after selling all sol
     let mut count = 0;
     println!("\t\tAfter Selling All SOL");
