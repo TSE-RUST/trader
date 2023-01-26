@@ -105,7 +105,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 100.0 == 100.0)),
                             ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
-                                println!("{}", string_log(data.percentage_bot * 100.0));
+                                println!("{}", string_log(data));
                             })
                         ).split_point(0.8)
                         ).split_point(0.9),

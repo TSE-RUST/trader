@@ -17,8 +17,12 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
-pub fn string_log(hml: f64) -> String {
-    
-    (hml as i32).to_string()
+pub fn string_log(data: &TraderUi) -> String {
+    if data.safe_mode {
+        
+    } else {
+        //da implementare log per arbitrager
+    }
+    ((data.percentage_bot * 100.0) as i32).to_string()
 }
 
