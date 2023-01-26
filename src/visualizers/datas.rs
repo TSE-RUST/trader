@@ -174,36 +174,38 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     );
 
 
-    // app.logs_bot = bot(&mut traderbot, 100);
-    // app.logs_arb = arbitrage(&mut traderbot, 100);
+    app.logs_bot = bot(&mut traderbot, 1000);
 
-    // println!("\nlengt logs andrea: {}", app.logs_bot.len());
-    // for elem in app.logs_bot.iter() {
-    //     println!("elem: {:?}", elem);
-    // }
-    // println!("end logs andrea");
+    for elem in app.logs_bot.iter() {
+        println!("elem: {:?}", elem);
+    }
+    println!("\nlengt logs andrea: {}", app.logs_bot.len());
+    println!("end logs andrea");
 
-    // println!("\nlengt logs lorenzo: {}", app.logs_arb.len());
+
+    // app.logs_arb = arbitrage(&mut traderbot, 1000);
+
     // for elem in app.logs_arb.iter() {
     //     println!("elem: {:?}", elem);
     // }
+    // println!("\nlengt logs lorenzo: {}", app.logs_arb.len());
     // println!("end logs andrea");
 
 
     // CREAZIONE LOGS PER SAFE MODE
-    let mut counter = 0;
-    for i in 0..1000 {
-        if counter == 0 {
-            app.logs_bot.push_back("BFB HA FATTO LA COMPERA".to_string() + "    safe mode bro");
-            counter = 1;
-        } else if counter == 1 {
-            app.logs_bot.push_back("SOL HA FATTO LA VENDITA".to_string() + "    safe mode bro");
-            counter = 2;
-        } else {
-            app.logs_bot.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  safe mode bro");
-            counter = 0;
-        }
-    }
+    // let mut counter = 0;
+    // for i in 0..1000 {
+    //     if counter == 0 {
+    //         app.logs_bot.push_back("BFB HA FATTO LA COMPERA".to_string() + "    safe mode bro");
+    //         counter = 1;
+    //     } else if counter == 1 {
+    //         app.logs_bot.push_back("SOL HA FATTO LA VENDITA".to_string() + "    safe mode bro");
+    //         counter = 2;
+    //     } else {
+    //         app.logs_bot.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  safe mode bro");
+    //         counter = 0;
+    //     }
+    // }
 
     for elem in app.logs_bot.iter() {
         if elem.as_str().contains("BFB") {
