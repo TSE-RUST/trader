@@ -20,7 +20,7 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
-pub fn trader_quantities()-> impl Widget<TraderUi> {
+pub fn trader_quantities() -> impl Widget<TraderUi> {
 
     // trader header
     let label_trader = Flex::column()
@@ -146,8 +146,7 @@ pub fn trader_quantities()-> impl Widget<TraderUi> {
 }
 
 
-pub fn view_switcher()-> impl Widget<TraderUi> {
-
+pub fn view_switcher() -> impl Widget<TraderUi> {
     let view_switcher = ViewSwitcher::new(
         |data: &TraderUi, _env| data.safe_mode,
         |selector, _data, _env| match _data.safe_mode {
@@ -161,15 +160,15 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
-                                                format!("{data}")
+                                            format!("{data}")
                                         })).lens(TraderUi::bfb_logs_bot).center()
-                                    ).vertical()                            ,
+                                    ).vertical(),
                                 ).split_point(0.10),
                                 Split::rows(
                                     big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
-                                                format!("{data}")
+                                            format!("{data}")
                                         })).lens(TraderUi::parse_logs_bot).center()
                                     ).vertical(),
                                 ).split_point(0.10),
@@ -178,7 +177,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
                                 Scroll::new(
                                     List::new(|| Label::dynamic(|data: &String, _| {
-                                            format!("{data}")
+                                        format!("{data}")
                                     })).lens(TraderUi::sol_logs_bot).center()
                                 ).vertical(),
                             ).split_point(0.10),
@@ -209,7 +208,6 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
-
                                 data.logs_bot = bot(&mut data.trader_bot, (data.percentage_bot * 100.0) as i32);
                                 println!("start logs andrea\n");
                                 for elem in data.logs_bot.iter() {
@@ -227,7 +225,6 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         data.parse_logs_bot.push_front(elem.to_string());
                                     }
                                 }
-
                             }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0),
                         ).split_point(0.8),
                     ).split_point(0.9),
@@ -244,15 +241,15 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
-                                                format!("{data}")
+                                            format!("{data}")
                                         })).lens(TraderUi::bfb_logs_arb).center()
-                                    ).vertical()                            ,
+                                    ).vertical(),
                                 ).split_point(0.10),
                                 Split::rows(
                                     big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
-                                                format!("{data}")
+                                            format!("{data}")
                                         })).lens(TraderUi::parse_logs_arb).center()
                                     ).vertical(),
                                 ).split_point(0.10),
@@ -261,7 +258,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
                                 Scroll::new(
                                     List::new(|| Label::dynamic(|data: &String, _| {
-                                            format!("{data}")
+                                        format!("{data}")
                                     })).lens(TraderUi::sol_logs_arb).center()
                                 ).vertical(),
                             ).split_point(0.10),
@@ -292,7 +289,6 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
-
                                 data.logs_arb = arbitrage(&mut data.trader_arb, (data.percentage_bot * 100.0) as i32);
                                 println!("start logs lorenzo\n");
                                 for elem in data.logs_arb.iter() {
@@ -310,7 +306,6 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         data.parse_logs_bot.push_front(elem.to_string());
                                     }
                                 }
-
                             }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot == 0.0),
                         ).split_point(0.8),
                     ).split_point(0.9),
