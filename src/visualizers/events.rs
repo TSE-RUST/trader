@@ -45,6 +45,10 @@ impl<W: Widget<TraderUi>, F: Fn(&Event) -> bool> Controller<TraderUi, W> for Eve
                             data.events_number = 0;
                             println!("!!!current_view: {}", data.current_view);
                         }
+                    } else if to_log.mouse_button() == "Left" {
+                        if data.events_number > 0 {
+                            data.events_number -= 1;
+                        }
                     }
                 }
             }
@@ -107,7 +111,7 @@ impl LoggedEvent {
             .as_ref()
             .map(|m| {
                 match m.button {
-                    // MouseButton::Left => "Left",
+                    MouseButton::Left => "Left",
                     MouseButton::Right => "Right",
                     // MouseButton::X1 => "X1",
                     // MouseButton::X2 => "X2",
