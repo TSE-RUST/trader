@@ -1,54 +1,37 @@
-// libraries dependencies
-use std::cell::RefCell;
-use std::rc::Rc;
-
 // market dependencies
 use market_sol::SOLMarket as sol;
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::{Market, MarketGetterError};
 
-pub struct Arbitrager {
-    sol: Rc<RefCell<dyn Market>>,
-    bfb: Rc<RefCell<dyn Market>>,
-    parse: Rc<RefCell<dyn Market>>,
-    trader_name: String,
-}
+use crate::bots::bot_strategy::bot::TraderBot;
+use druid::im::Vector;
 
-pub struct ArbitrageResult {
-    pub eur_sent: f32,
-    pub alt_received: f32,
-    pub eur_received: f32,
-    pub buy_market_name: String,
-    pub sell_market_name: String,
-}
+pub fn arbitrage(trader: &mut TraderBot, max_arbitrages: i32) -> Vector<String> {
+    //let mut resultsTuple: Vector<(String, String, String, String)> = Vector::new();
+    let mut results: Vector<String> = Vector::new();
 
-impl Arbitrager {
-    ///the constructor for the Arbitrager
-    ///
-    /// **Lorenzo Tinfena**
-    pub fn new(
-        trader_name: String,
-        sol: &Rc<RefCell<dyn Market>>,
-        bfb: &Rc<RefCell<dyn Market>>,
-        parse: &Rc<RefCell<dyn Market>>,
-    ) -> Self {
-        Arbitrager {
-            trader_name,
-            sol: Rc::clone(sol),
-            bfb: Rc::clone(bfb),
-            parse: Rc::clone(parse),
+    let eur = &Good::new(GoodKind::EUR, trader.money);
+    let usd;
+    let yen;
+    let yuan;
+    for good in trader.goods {
+        match good.borrow().get_kind() {
+            GoodKind::EUR => unimplemented!(),
+            GoodKind::YEN => yen = &(*good.borrow_mut()),
+            GoodKind::USD => usd = &(*good.borrow_mut()),
+            GoodKind::YUAN => yuan = &(*good.borrow_mut()),
         }
     }
 
-    pub fn arbitrage(&self, mut eur: Good) -> (Good, Option<Good>, Option<ArbitrageResult>) {
+    for _ in 0..max_arbitrages {
         if eur.get_qty() <= 0. {
-            return (eur, None, None);
+            continue;
         }
 
         let good_kinds = vec![GoodKind::USD, GoodKind::YEN, GoodKind::YUAN];
 
-        let markets = vec![self.sol.clone(), self.bfb.clone(), self.parse.clone()];
+        let markets = vec![trader.sol.clone(), trader.bfb.clone(), trader.parse.clone()];
 
         // they are used to "hardcompute" stuff later
         const F32SMALL: f32 = 0.01;
@@ -168,7 +151,7 @@ impl Arbitrager {
 
         // Skip in there's no profit
         if best_profit <= 0. {
-            return (eur, None, None);
+            continue;
         }
 
         let mut alt_coin: Good;
@@ -182,7 +165,7 @@ impl Arbitrager {
                 best_kind_alt_to_receive,
                 best_alt_to_receive,
                 best_eur_to_send,
-                self.trader_name.clone(),
+                trader.name.clone(),
             ) {
                 Ok(token) => token,
                 Err(_) => unimplemented!(),
@@ -196,11 +179,13 @@ impl Arbitrager {
         let alt_coin_quantity_received = alt_coin.get_qty();
 
         if alt_coin_quantity_received <= 0. {
-            return (eur, None, None);
+            continue;
         }
 
         let rest: Option<Good>;
         let eur_received: Good;
+
+        let mut qty_to_send: f32;
 
         // Sell
         {
@@ -214,7 +199,7 @@ impl Arbitrager {
             }
 
             // Compute actual qty_to_send and offer
-            let mut qty_to_send = alt_coin.get_qty();
+            qty_to_send = alt_coin.get_qty();
             let mut offer = best_sell_market_deref
                 .get_sell_price(best_kind_alt_to_receive, qty_to_send)
                 .unwrap();
@@ -228,7 +213,7 @@ impl Arbitrager {
                 }
             }
             if offer <= F32SMALL {
-                return (eur, Some(alt_coin), None);
+                break;
             }
 
             // Split the rest and the good to actually send to sell_market
@@ -246,7 +231,7 @@ impl Arbitrager {
                 best_kind_alt_to_receive,
                 alt_coin_to_send.get_qty(),
                 offer,
-                self.trader_name.clone(),
+                trader.name.clone(),
             ) {
                 Ok(token) => token,
                 Err(_) => unimplemented!(),
@@ -259,19 +244,60 @@ impl Arbitrager {
 
         let eur_quantity_received = eur_received.get_qty();
 
-        // Merge with initial eur
+        // Merge goods with initial eur
         eur.merge(eur_received);
+        if rest.is_some() {
+            match rest.unwrap().get_kind() {
+                GoodKind::EUR => unimplemented!(),
+                GoodKind::YEN => yen.merge(rest.take().unwrap()),
+                GoodKind::USD => usd.merge(rest.take().unwrap()),
+                GoodKind::YUAN => yuan.merge(rest.take().unwrap()),
+            };
+        }
 
-        return (
-            eur,
-            rest,
-            Some(ArbitrageResult {
-                eur_sent: best_eur_to_send,
-                alt_received: alt_coin_quantity_received,
-                eur_received: eur_quantity_received,
-                buy_market_name: (*best_buy_market).borrow().get_name().to_string(),
-                sell_market_name: (*best_sell_market).borrow().get_name().to_string(),
-            }),
-        );
+        // support function
+        fn kind_to_string(gk: GoodKind) -> String {
+            match gk {
+                GoodKind::USD => "USD".to_string(),
+                GoodKind::YEN => "YEN".to_string(),
+                GoodKind::YUAN => "YUAN".to_string(),
+                GoodKind::EUR => "EUR".to_string(),
+            }
+        }
+
+        // Push results in results array
+        let mut market_name_tmp = (*best_buy_market).borrow().get_name().to_string();
+        if market_name_tmp != "SOL".to_string() && market_name_tmp != "Parse".to_string() {
+            market_name_tmp = "BFB".to_string();
+        }
+        /*results.push_back((
+            "BUY".to_string(),
+            kind_to_string(best_kind_alt_to_receive),
+            format!("{}", alt_coin_quantity_received),
+            market_name_tmp,
+        ));*/
+        results.push_back(format!(
+            "BUY {} {} {}",
+            kind_to_string(best_kind_alt_to_receive),
+            alt_coin_quantity_received,
+            market_name_tmp
+        ));
+        market_name_tmp = (*best_sell_market).borrow().get_name().to_string();
+        if market_name_tmp != "SOL".to_string() && market_name_tmp != "Parse".to_string() {
+            market_name_tmp = "BFB".to_string();
+        }
+        /*results.push_back((
+            "SELL".to_string(),
+            kind_to_string(best_kind_alt_to_receive),
+            format!("{}", qty_to_send),
+            market_name_tmp,
+        ));*/
+        results.push_back(format!(
+            "SELL {} {} {}",
+            kind_to_string(best_kind_alt_to_receive),
+            qty_to_send,
+            market_name_tmp
+        ));
     }
+    return results;
 }

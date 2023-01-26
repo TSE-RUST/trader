@@ -14,7 +14,7 @@ use bots::bot_strategy::bot::bot;
 // 1. eur returned back (could be with 0 quantity)
 // 2. optional good as rest as the arbitrage
 // 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the second returned parameter is None
-use bots::arbitrager_strategy::arbitrager::Arbitrager;
+use bots::arbitrager_strategy::arbitrager::arbitrage;
 
 mod visualizers;
 
