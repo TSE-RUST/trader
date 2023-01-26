@@ -17,15 +17,6 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
-pub fn string_log(data: &TraderUi) -> String {
-    if data.safe_mode {
-
-    } else {
-        //da implementare log per arbitrager
-    }
-    ((data.percentage_bot * 100.0) as i32).to_string()
-}
-
 pub fn view_switcher()-> impl Widget<TraderUi> {
     let view_switcher = ViewSwitcher::new(
         |data: &TraderUi, _env| data.safe_mode,
