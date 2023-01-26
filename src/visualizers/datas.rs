@@ -10,12 +10,9 @@ use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
-use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
-use crate::bots::bot_strategy::bot::bot;
 use crate::visualizers::events::{LoggedEvent};
 
 use crate::bots::bot_strategy::bot::TraderBot;
-use crate::bots::bot_strategy::market_functions::random_init;
 use crate::visualizers::user_mode::support_functions::{get_best_buy_trade, get_best_sell_trade, get_market_info};
 
 /// the TraderUi struct is the main struct which

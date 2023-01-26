@@ -7,8 +7,6 @@ use std::rc::Rc;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
-// local dependencies
-use crate::visualizers::datas::TraderUi;
 
 /// SUPPORT FUNCTIONS FOR THE TraderUi STRUCT - The get_market_info function
 /// returns the market info in order to be used in the initialize_quantities
@@ -369,7 +367,7 @@ pub fn get_best_buy_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, qty: f32) -
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market, yuan_quantity, yuan_price) = get_best_buy(markets, GoodKind::YUAN, qty);
         res = format!("buy {:.2} yuan from {} for {:.2} ", yuan_quantity, yuan_market, yuan_price);
-    } else if (average_yen < average_usd) {
+    } else if average_yen < average_usd {
         let (usd_market, usd_quantity, usd_price) = get_best_buy(markets, GoodKind::USD, qty);
         res = format!("buy {:.2} usd from {} for {:.2} ", usd_quantity, usd_market, usd_price);
     } else {
@@ -395,7 +393,7 @@ pub fn get_best_sell_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, goods: &Ve
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market, yuan_quantity, yuan_price) = get_best_sell(markets, GoodKind::YUAN, goods[3]);
         res = format!("sell {:.2} yuan to {} for {:.2} ", yuan_quantity, yuan_market, yuan_price);
-    } else if (average_yen < average_usd){
+    } else if average_yen < average_usd{
         let (usd_market, usd_quantity, usd_price) = get_best_sell(markets, GoodKind::USD, goods[2]);
         res = format!("sell {:.2} usd to {} for {:.2} ", usd_quantity, usd_market, usd_price);
     } else {

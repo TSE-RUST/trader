@@ -1,20 +1,11 @@
 // libraries dependencies
 use druid::{AppLauncher, WindowDesc};
-use gag::Gag;
+
 
 // market dependencies
 
 // local dependencies
 mod bots;
-
-// the function to run the simulation in the trader
-use bots::bot_strategy::bot::bot;
-// When you want to invest some money in arbitrage you can create an arbitrager passing the 3 markets
-// then call his main function "arbitrage" passing the eur you want to invest, and returns:
-// 1. eur returned back (could be with 0 quantity)
-// 2. optional good as rest as the arbitrage
-// 3. if there was an arbitrage, returns an ArbitrageResult, otherwise None. If None implies that the second returned parameter is None
-use bots::arbitrager_strategy::arbitrager::arbitrage;
 
 mod visualizers;
 

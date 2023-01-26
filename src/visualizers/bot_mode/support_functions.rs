@@ -1,16 +1,13 @@
-use std::cell::RefCell;
-use std::rc::Rc;
-
 use druid::{Widget, Color, WidgetExt};
 use druid::im::Vector;
 use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider, CrossAxisAlignment, MainAxisAlignment};
-use unitn_market_2022::good::good_kind::GoodKind;
-use unitn_market_2022::market::Market;
+
+
 use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
 use crate::bots::bot_strategy::bot::bot;
-use crate::visualizers::datas::trader_ui_derived_lenses::percentage_bot;
 
-use crate::visualizers::datas::{TraderUi, Trader};
+
+use crate::visualizers::datas::TraderUi;
 
 pub fn big_text(text: &str) -> impl Widget<TraderUi> {
     Label::new(text)
@@ -20,17 +17,18 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .center()
 }
 
-pub fn switcher_header()-> impl Widget<TraderUi> {
-    let switch= ViewSwitcher::new(
+pub fn switcher_header() -> impl Widget<TraderUi> {
+    let switch = ViewSwitcher::new(
         |data: &TraderUi, _| data.safe_mode,
-        |selector, data, _| match data.safe_mode {
-            true => Box::new(trader_quantities(Color::rgb(0.0,0.0,255.0),true)),
-            false=> Box::new(trader_quantities(Color::rgb(204.0,0.0,0.0),false)),
+        |_selector, data, _| match data.safe_mode {
+            true => Box::new(trader_quantities(Color::rgb(0.0, 0.0, 255.0), true)),
+            false => Box::new(trader_quantities(Color::rgb(204.0, 0.0, 0.0), false)),
         },
     );
     switch
 }
-pub fn trader_quantities(color: Color, safe:bool) -> impl Widget<TraderUi> {
+
+pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
 
     // trader header
     let label_trader = Flex::column()
@@ -171,7 +169,7 @@ pub fn trader_quantities(color: Color, safe:bool) -> impl Widget<TraderUi> {
 pub fn view_switcher() -> impl Widget<TraderUi> {
     let view_switcher = ViewSwitcher::new(
         |data: &TraderUi, _env| data.safe_mode,
-        |selector, _data, _env| match _data.safe_mode {
+        |_selector, _data, _env| match _data.safe_mode {
             // the bots side is the first view
             true => Box::new(
                 Split::rows(
@@ -226,10 +224,10 @@ pub fn view_switcher() -> impl Widget<TraderUi> {
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0))
                                         .with_spacer(4.0)
                                         .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                                            data.percentage_bot = (data.percentage_bot + 0.001);
+                                            data.percentage_bot = data.percentage_bot + 0.001;
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
-                            Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
+                            Button::new("ENTER").on_click(|_ctx, data: &mut TraderUi, _env| {
                                 data.logs_bot = bot(&mut data.trader_bot, (data.percentage_bot * 100.0) as i32);
                                 println!("start logs andrea\n");
                                 for elem in data.logs_bot.iter() {
@@ -243,8 +241,10 @@ pub fn view_switcher() -> impl Widget<TraderUi> {
                                         data.bfb_logs_bot.push_front(elem.to_string());
                                     } else if elem.as_str().contains("SOL") {
                                         data.sol_logs_bot.push_front(elem.to_string());
-                                    } else {
+                                    } else if elem.as_str().contains("PARSE") {
                                         data.parse_logs_bot.push_front(elem.to_string());
+                                    } else {
+                                        data.parse_logs_bot.push_back("".to_string());
                                     }
                                 }
                             }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0),
@@ -303,29 +303,31 @@ pub fn view_switcher() -> impl Widget<TraderUi> {
                                 .with_child(
                                     Flex::row()
                                         .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
-                                            data.percentage_bot = (data.percentage_bot - 0.001);
+                                            data.percentage_bot = data.percentage_bot - 0.001;
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0))
                                         .with_spacer(4.0)
                                         .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                                            data.percentage_bot = (data.percentage_bot + 0.001);
+                                            data.percentage_bot = data.percentage_bot + 0.001;
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
-                            Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
+                            Button::new("ENTER").on_click(|_ctx, data: &mut TraderUi, _env| {
                                 data.logs_arb = arbitrage(&mut data.trader_arb, (data.percentage_bot * 100.0) as i32);
                                 println!("start logs lorenzo\n");
                                 for elem in data.logs_arb.iter() {
                                     println!("elem: {:?}", elem);
                                 }
                                 println!("\nlengt logs lorenzo: {}", data.logs_arb.len());
-                                println!("end logs andrea\n");
+                                println!("end logs lorenzo\n");
 
-                                for elem in data.logs_bot.iter() {
+                                for elem in data.logs_arb.iter() {
                                     if elem.as_str().contains("BFB") {
-                                        data.bfb_logs_bot.push_front(elem.to_string());
+                                        data.bfb_logs_arb.push_front(elem.to_string());
                                     } else if elem.as_str().contains("SOL") {
-                                        data.sol_logs_bot.push_front(elem.to_string());
+                                        data.sol_logs_arb.push_front(elem.to_string());
+                                    } else if elem.as_str().contains("PARSE") {
+                                        data.parse_logs_arb.push_front(elem.to_string());
                                     } else {
-                                        data.parse_logs_bot.push_front(elem.to_string());
+                                        data.parse_logs_arb.push_back("".to_string());
                                     }
                                 }
                             }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot == 0.0),

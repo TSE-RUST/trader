@@ -28,7 +28,7 @@ pub(crate) fn initgoods(usd: f32, yen: f32, yuan: f32) -> Vector<Rc<RefCell<Good
 /// the initialization function randomly generated the initial quantity in the markets
 ///
 /// **Andrea Ballarini**
-pub(crate) fn random_init() -> (
+pub(crate) fn _random_init() -> (
     Rc<RefCell<dyn Market>>,
     Rc<RefCell<dyn Market>>,
     Rc<RefCell<dyn Market>>,
@@ -39,7 +39,7 @@ pub(crate) fn random_init() -> (
 ///the initialization function with the initial quantity in the markets
 ///
 /// **Andrea Ballarini**
-pub(crate) fn init_with_quantity(
+pub(crate) fn _init_with_quantity(
     eur: f32,
     yen: f32,
     usd: f32,
@@ -59,7 +59,7 @@ pub(crate) fn init_with_quantity(
 ///print the values in good labels for each market
 ///
 /// **Andrea Ballarini**
-pub(crate) fn print_values(market: &Rc<RefCell<dyn Market>>) {
+pub(crate) fn _print_values(market: &Rc<RefCell<dyn Market>>) {
     let market = market.borrow();
     let goods = market.get_goods();
 
@@ -72,7 +72,7 @@ pub(crate) fn print_values(market: &Rc<RefCell<dyn Market>>) {
 ///print the values in a specific good label kind
 ///
 /// **Andrea Ballarini**
-fn print_good_kind(market: &Rc<RefCell<dyn Market>>, kind: GoodKind) {
+fn _print_good_kind(market: &Rc<RefCell<dyn Market>>, kind: GoodKind) {
     let market = market.borrow();
     let goods = market.get_goods();
 
@@ -88,7 +88,7 @@ fn print_good_kind(market: &Rc<RefCell<dyn Market>>, kind: GoodKind) {
 /// GoodKind and the fluctuation prices in markets
 ///
 /// **Andrea Ballarini**
-fn test_buy_kind(kind: GoodKind, trader: &mut TraderBot) {
+fn _test_buy_kind(kind: GoodKind, trader: &mut TraderBot) {
     //try the changes after buying all sol
     let mut count = 0;
     println!("\t\tAfter Buying All SOL");
@@ -112,7 +112,7 @@ fn test_buy_kind(kind: GoodKind, trader: &mut TraderBot) {
         let _ = (*trader.sol)
             .borrow_mut()
             .buy(token, &mut Good::new(GoodKind::EUR, sol_price));
-        print_good_kind(&trader.sol, kind);
+        _print_good_kind(&trader.sol, kind);
         count += 1;
     }
 
@@ -136,7 +136,7 @@ fn test_buy_kind(kind: GoodKind, trader: &mut TraderBot) {
         let _ = (*trader.parse)
             .borrow_mut()
             .buy(token, &mut Good::new(GoodKind::EUR, parse_price));
-        print_good_kind(&trader.parse, kind);
+        _print_good_kind(&trader.parse, kind);
     }
 
     //try the changes after buying all BFB
@@ -158,14 +158,14 @@ fn test_buy_kind(kind: GoodKind, trader: &mut TraderBot) {
         let _ = (*trader.bfb)
             .borrow_mut()
             .buy(token, &mut Good::new(GoodKind::EUR, bfb_price));
-        print_good_kind(&trader.bfb, kind);
+        _print_good_kind(&trader.bfb, kind);
     }
 }
 
 ///testing the sell function for a specific GoodKind and the fluctuation prices in markets
 ///
 /// **Andrea Ballarini**
-fn test_sell_kind(kind: GoodKind, trader: &mut TraderBot) {
+fn _test_sell_kind(kind: GoodKind, trader: &mut TraderBot) {
     //try the changes after selling all sol
     let mut count = 0;
     println!("\t\tAfter Selling All SOL");
@@ -193,7 +193,7 @@ fn test_sell_kind(kind: GoodKind, trader: &mut TraderBot) {
             Ok(_) => (),
             Err(_) => break,
         };
-        print_good_kind(&trader.sol, kind);
+        _print_good_kind(&trader.sol, kind);
         count += 1;
     }
 
@@ -221,7 +221,7 @@ fn test_sell_kind(kind: GoodKind, trader: &mut TraderBot) {
             Ok(_) => (),
             Err(_) => break,
         };
-        print_good_kind(&trader.parse, kind);
+        _print_good_kind(&trader.parse, kind);
     }
 
     //try the changes after selling all BFB
@@ -247,6 +247,6 @@ fn test_sell_kind(kind: GoodKind, trader: &mut TraderBot) {
             Ok(_) => (),
             Err(_) => break,
         };
-        print_good_kind(&trader.bfb, kind);
+        _print_good_kind(&trader.bfb, kind);
     }
 }

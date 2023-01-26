@@ -1,7 +1,7 @@
 // use std::borrow::BorrowMut;
 // libraries dependencies
 use druid::im::Vector;
-use druid::tests::helpers::widget_ids;
+
 use druid::{Data, Lens};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -51,7 +51,7 @@ impl TraderBot {
 ///return a vector for iterating through the GoodKinds without the EUR
 ///
 /// **Andrea Ballarini**
-fn get_good_kinds() -> Vec<GoodKind> {
+fn _get_good_kinds() -> Vec<GoodKind> {
     vec![GoodKind::USD, GoodKind::YEN, GoodKind::YUAN]
 }
 
