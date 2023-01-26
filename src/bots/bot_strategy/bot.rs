@@ -18,8 +18,8 @@ use crate::bots::bot_strategy::market_functions::initgoods;
 #[derive(Clone, Data, Lens)]
 pub struct TraderBot {
     pub(crate) name: String,
-    _money: f32,
-    _goods: Vector<Rc<RefCell<Good>>>,
+    pub _money: f32,
+    pub _goods: Vector<Rc<RefCell<Good>>>,
     pub sol: Rc<RefCell<dyn Market>>,
     pub bfb: Rc<RefCell<dyn Market>>,
     pub parse: Rc<RefCell<dyn Market>>,
@@ -477,7 +477,9 @@ pub fn get_best_buy_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market
 /// # GET THE BEST SELL TRADE MARKET, GOODKIND AND QUANTITY/// get the best sell trade for a trader
 ///
 /// Andrea Ballarini
-pub fn get_best_sell_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
+pub fn get_best_sell_trade(
+    trader: &mut TraderBot,
+) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
     let yen_trader = get_trader_quantity(trader, GoodKind::YEN) / 3.;
     let (_, yen_quantity, yen_price) = get_best_sell_market(trader, GoodKind::YEN, yen_trader);
     let average_yen = yen_price / yen_quantity;
