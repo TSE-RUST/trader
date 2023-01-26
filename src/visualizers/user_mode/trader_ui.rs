@@ -292,23 +292,23 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             Slider::new()
                 .with_range(0.0, 1.0)
                 // .with_step(0.10)
-                .lens(TraderUi::percentage_bot)
+                .lens(TraderUi::percentage)
                 .fix_width(180.0)
                 .disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0),
         )
         .with_spacer(8.0)
         .with_child(Label::new(|data: &TraderUi, _: &_| {
-            format!("{:.2}", data.percentage_user * data.quantity as f64)
+            format!("{:.2}", data.percentage * data.quantity as f64)
         }).with_text_size(20.0))
         .with_spacer(8.0)
         .with_child(
             Flex::row()
                 .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
-                    data.percentage_user = (data.percentage_user - 0.005).max(0.0);
+                    data.percentage = (data.percentage - 0.005).max(0.0);
                 }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
                 .with_spacer(4.0)
                 .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                    data.percentage_user = (data.percentage_user + 0.005).min(1.0);
+                    data.percentage = (data.percentage + 0.005).min(1.0);
                 }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
         );
 
@@ -385,8 +385,8 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
         .with_child(custom_button_white("TRADE")
             .on_click(|_ctx, data: &mut TraderUi, _| {
                 println!("TRADE button clicked");
-                println!("selected percentage: {}", data.percentage_user);
-                println!("quantity: {}", data.percentage_user * data.quantity as f64);
+                println!("selected percentage: {}", data.percentage);
+                println!("quantity: {}", data.percentage * data.quantity as f64);
 
                 if data.selected_method_of_trade == "BUY" {
                     //DO A BUY - Andrea Ballarini
@@ -407,7 +407,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         "YUAN" => GoodKind::YUAN,
                         _ => GoodKind::EUR
                     };
-                    let quantity = data.quantity * data.percentage_user as f32;
+                    let quantity = data.quantity * data.percentage as f32;
                     let price = match market.get_buy_price(good, quantity)
                     {
                         Ok(price) => price,
@@ -431,7 +431,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                             GoodKind::YUAN => 3,
                         }
                         ] += increase.get_qty();
-                    println!("buying {} {} from {}", data.percentage_user * data.quantity as f64, data.selected_good, data.selected_market);
+                    println!("buying {} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
                 } else if data.selected_method_of_trade == "SELL" {
                     //DO A SELL - Andrea Ballarini
                     let trader_name = data.trader.name.clone();
@@ -452,7 +452,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         _ => GoodKind::EUR
                     };
                     println!("data quantity: {}", data.quantity);
-                    let quantity = data.quantity * data.percentage_user as f32;
+                    let quantity = data.quantity * data.percentage as f32;
                     let price = match market.get_sell_price(good, quantity)
                     {
                         Ok(price) => price,
@@ -468,7 +468,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                         Err(e) => { panic!("Error in sell in {}: {:?}", market_name.to_string(), e); }
                     };
                     data.trader.goods[0] += price;
-                    println!("selling {} {} to {}", data.percentage_user * data.quantity as f64, data.selected_good, data.selected_market);
+                    println!("selling {} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market);
 
                     if data.selected_good == "EUR" {
                         if quantity >= data.trader.goods[0] {
@@ -549,8 +549,8 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             }
 
             return ((data.quantity * 100.0) as i32) == 0 ||
-                data.percentage_user == 0.0 ||
-                (((data.quantity * 100.0) as i32) == 0 && data.percentage_user == 0.0) ||
+                data.percentage == 0.0 ||
+                (((data.quantity * 100.0) as i32) == 0 && data.percentage == 0.0) ||
                 quantity_eur_market_zero;
         }))
         .align_right();
@@ -576,15 +576,15 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             format!("The market has no money!")
         } else if data.quantity == 0.0 {
             format!("The quantity of the good selected is zero!")
-        } else if data.percentage_user == 0.0 {
+        } else if data.percentage == 0.0 {
             format!("The quantity of the good selected is zero!")
-        } else if data.quantity == 0.0 && data.percentage_user == 0.0 {
+        } else if data.quantity == 0.0 && data.percentage == 0.0 {
             format!("The quantity of the good selected is zero!")
         } else {
             if data.selected_method_of_trade == "SELL" {
-                format!("Sell {:.2} {} to {}", data.percentage_user * data.quantity as f64, data.selected_good, data.selected_market)
+                format!("Sell {:.2} {} to {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
             } else {
-                format!("Buy {:.2} {} from {}", data.percentage_user * data.quantity as f64, data.selected_good, data.selected_market)
+                format!("Buy {:.2} {} from {}", data.percentage * data.quantity as f64, data.selected_good, data.selected_market)
             }
         }
     }).with_text_size(28.0)
