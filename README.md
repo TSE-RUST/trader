@@ -88,7 +88,8 @@ It's similar to the first arbitrage strategy, but a little customized.
 # GUIs
 
 ## Manual TSE trader (Federico Brancasi)
-todo
+The GUI is used to manually trade on the markets. It allows to buy and sell goods on the markets, and to see the current market prices.
+It also displays the suggestions of the best trades.
 ## TSE gui for auto traders (Patrick Cerka)
 The "Bot_side", contrary to what "User_side" does, gives you the complete power and strategy of the 2 TSE trader bot by only giving the quantity of how many trades you wanna do. 
 What's the diff between the 2 traders? 

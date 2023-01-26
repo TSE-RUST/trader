@@ -14,8 +14,9 @@ use visualizers::datas::TraderUi;
 // function to initialize the datas of the TraderUi struct
 use crate::visualizers::datas::initialize_quantities;
 
-fn main() {
+#[doc= include_str!("../README.md")]
 
+fn main() {
     // for blocking the stdout of the application
     // no messages from the markets will be printed
     let _block_stdout = Gag::stdout().unwrap();
@@ -39,5 +40,4 @@ fn main() {
     AppLauncher::with_window(main_window)
         .launch(initial_data)
         .expect("Failed to launch application");
-
 }
