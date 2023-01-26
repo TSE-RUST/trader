@@ -11,7 +11,6 @@ use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use unitn_market_2022::wait_one_day;
-// use unitn_market_2022::wait_one_day;
 
 // local dependencies
 use crate::bots::bot_strategy::market_functions::initgoods;
@@ -705,5 +704,13 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
         // println!("Money: {}", trader.money);
         // }
     }
+    //add the final money and goods quantities
+    res_string.push_back(format!(
+        "{} {} {} {}",
+        trader.money,
+        get_trader_quantity(trader, GoodKind::YEN),
+        get_trader_quantity(trader, GoodKind::USD),
+        get_trader_quantity(trader, GoodKind::YUAN)
+    ));
     res_string
 }
