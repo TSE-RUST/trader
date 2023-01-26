@@ -78,7 +78,14 @@ In the case of buy_market max_price is lower than min_price, then max_price=min_
 It can be returned also a rest of good along with the EUR good, because in the first trade there can be the possibility that the goods or prices in the sell_market could change, so it tries to sell all goods at the maximum price as possible, and return the rest.
 
 ## Bot (Andrea Ballarini)
-todo
+It's similar to the first arbitrage strategy, but a little customized.
+
+1. Compute the for each market the "aproximize" buy price and sell price.
+2. Compute the 2 averages: one between all buy prices, and one between all sell prices
+3. For each good kind:
+   1. Buy a good sending 1/3 of the initial eur quantity on a market below the buy price average (preferably bfb)
+   2. Sell 1/3 of the good received on a market upon the sell price average
+4. Give back all the goods that has
 
 # GUIs
 

@@ -73,16 +73,18 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
                         ).split_point(0.10),
                         Split::rows(
                             big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
-                            Label::dynamic(move |data: &TraderUi, _| {
-                                format!("helo")
-                            }).center(),
+                            Scroll::new(
+                                List::new(|| Label::dynamic(|data, _| format!("List item: {:?}",data)))
+                                    .lens(TraderUi::logs)
+                            ).vertical(),
                         ).split_point(0.10),
                     ),
                     Split::rows(
                         big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
-                        Label::dynamic(move |data: &TraderUi, _| {
-                            format!("helo")
-                        }).center(),
+                        Scroll::new(
+                            List::new(|| Label::dynamic(|data, _| format!("List item: {data}")))
+                                .lens(TraderUi::buy_or_sell_string)
+                        ).vertical(),
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0),
                 Split::columns(
@@ -120,4 +122,4 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
     ).split_point(0.07)
 }
 
-// label.background(Color::rgb(255.0,227.0,0.0))
+// label.background(Color::rgb(255.0,227.0,0.0)
