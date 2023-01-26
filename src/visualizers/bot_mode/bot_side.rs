@@ -21,6 +21,8 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
     //declares the last label that will be displayed, used for let the user know which bot is running 
 
     Split::rows(
+        Split::rows(
+            trader_quantities(),
         Split::columns(
             //PULSANTE PER ATTIVARE BOT SAFE MODE
             Button::new("safe mode")
@@ -41,8 +43,10 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
                 .center()
                 .padding(10.0)
                 .background(Color::rgb(255.0, 0.0, 0.0)),
-        ),
+        )).split_point(0.6),
         view_switcher(),
-    ).split_point(0.07)
+
+
+    ).split_point(0.25)
 }
 

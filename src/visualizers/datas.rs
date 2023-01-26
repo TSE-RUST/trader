@@ -57,10 +57,12 @@ pub struct TraderUi {
     pub bfb_logs_bot: Vector<String>,
     pub sol_logs_bot: Vector<String>,
     pub parse_logs_bot: Vector<String>,
+    pub trader_bot: TraderBot,
     pub logs_arb: Vector<String>,
     pub bfb_logs_arb: Vector<String>,
     pub sol_logs_arb: Vector<String>,
     pub parse_logs_arb: Vector<String>,
+    pub trader_arb: TraderBot,
     pub percentage_bot: f64,
 }
 
@@ -115,10 +117,24 @@ impl TraderUi {
             bfb_logs_bot: vector![],
             sol_logs_bot: vector![],
             parse_logs_bot: vector![],
+            trader_bot: TraderBot::new(
+                "TSE TRADER".to_string(),
+                1000.00,
+                sol::new_random(),
+                bfb::new_random(),
+                parse::new_random(),
+            ),
             logs_arb: vector![],
             bfb_logs_arb: vector![],
             sol_logs_arb: vector![],
             parse_logs_arb: vector![],
+            trader_arb: TraderBot::new(
+                "TSE TRADER".to_string(),
+                1000.00,
+                sol::new_random(),
+                bfb::new_random(),
+                parse::new_random(),
+            ),
             percentage_bot: 1.0,
         }
     }
@@ -131,6 +147,7 @@ impl TraderUi {
 /// **Federico Brancasi**
 pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
 
+    // USER MODE
     // set values for bfb market
     let (good_kinds_bfb, quantities_bfb, exchange_rate_buy_bfb, exchange_rate_sell_bfb) = get_market_info(&app.markets[0]);
 
@@ -162,85 +179,87 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
     app.string_best_profit_buy = get_best_buy_trade(&app.markets, app.trader.goods[0]);
     app.string_best_profit_sell = get_best_sell_trade(&app.markets, &app.trader.goods);
 
-    let (mut sol, mut parse, mut bfb) = random_init();
 
-    //initialize the trader
-    let mut traderbot = TraderBot::new(
-        "TSE TRADER".to_string(),
-        1000.00,
-        sol.clone(),
-        bfb.clone(),
-        parse.clone(),
-    );
-
-
-    app.logs_bot = bot(&mut traderbot, 1000);
-    println!("start logs andrea\n");
-    for elem in app.logs_bot.iter() {
-        println!("elem: {:?}", elem);
-    }
-    println!("\nlengt logs andrea: {}", app.logs_bot.len());
-    println!("end logs andrea\n");
-
-
-    app.logs_arb = arbitrage(&mut traderbot, 1000);
-    println!("start logs lorenzo\n");
-    for elem in app.logs_arb.iter() {
-        println!("elem: {:?}", elem);
-    }
-    println!("\nlengt logs lorenzo: {}", app.logs_arb.len());
-    println!("end logs andrea\n");
-
-
-    // CREAZIONE LOGS PER SAFE MODE SE NON VA BOT ANDREA
-    // let mut counter = 0;
-    // for i in 0..1000 {
-    //     if counter == 0 {
-    //         app.logs_bot.push_back("BFB HA FATTO LA COMPERA".to_string() + "    safe mode bro");
-    //         counter = 1;
-    //     } else if counter == 1 {
-    //         app.logs_bot.push_back("SOL HA FATTO LA VENDITA".to_string() + "    safe mode bro");
-    //         counter = 2;
+    // BOT MODE
+    // let (mut sol, mut parse, mut bfb) = random_init();
+    //
+    // //initialize the trader
+    // let mut traderbot = TraderBot::new(
+    //     "TSE TRADER".to_string(),
+    //     1000.00,
+    //     sol.clone(),
+    //     bfb.clone(),
+    //     parse.clone(),
+    // );
+    //
+    //
+    // app.logs_bot = bot(&mut traderbot, 1000);
+    // println!("start logs andrea\n");
+    // for elem in app.logs_bot.iter() {
+    //     println!("elem: {:?}", elem);
+    // }
+    // println!("\nlengt logs andrea: {}", app.logs_bot.len());
+    // println!("end logs andrea\n");
+    //
+    //
+    // app.logs_arb = arbitrage(&mut traderbot, 1000);
+    // println!("start logs lorenzo\n");
+    // for elem in app.logs_arb.iter() {
+    //     println!("elem: {:?}", elem);
+    // }
+    // println!("\nlengt logs lorenzo: {}", app.logs_arb.len());
+    // println!("end logs andrea\n");
+    //
+    //
+    // // CREAZIONE LOGS PER SAFE MODE SE NON VA BOT ANDREA
+    // // let mut counter = 0;
+    // // for i in 0..1000 {
+    // //     if counter == 0 {
+    // //         app.logs_bot.push_back("BFB HA FATTO LA COMPERA".to_string() + "    safe mode bro");
+    // //         counter = 1;
+    // //     } else if counter == 1 {
+    // //         app.logs_bot.push_back("SOL HA FATTO LA VENDITA".to_string() + "    safe mode bro");
+    // //         counter = 2;
+    // //     } else {
+    // //         app.logs_bot.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  safe mode bro");
+    // //         counter = 0;
+    // //     }
+    // // }
+    //
+    // for elem in app.logs_bot.iter() {
+    //     if elem.as_str().contains("BFB") {
+    //         app.bfb_logs_bot.push_back(elem.to_string());
+    //     } else if elem.as_str().contains("SOL") {
+    //         app.sol_logs_bot.push_back(elem.to_string());
     //     } else {
-    //         app.logs_bot.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  safe mode bro");
-    //         counter = 0;
+    //         app.parse_logs_bot.push_back(elem.to_string());
     //     }
     // }
-
-    for elem in app.logs_bot.iter() {
-        if elem.as_str().contains("BFB") {
-            app.bfb_logs_bot.push_back(elem.to_string());
-        } else if elem.as_str().contains("SOL") {
-            app.sol_logs_bot.push_back(elem.to_string());
-        } else {
-            app.parse_logs_bot.push_back(elem.to_string());
-        }
-    }
-
-    // CREAZIONE LOGS PER UNSAFE MODE SE NON VA BOT LORENZO
-    // let mut counter = 0;
-    // for i in 0..1000 {
-    //     if counter == 0 {
-    //         app.logs_arb.push_back("BFB HA FATTO LA COMPERA".to_string() + "    unsafe mode bro");
-    //         counter = 1;
-    //     } else if counter == 1 {
-    //         app.logs_arb.push_back("SOL HA FATTO LA VENDITA".to_string() + "    unsafe mode bro");
-    //         counter = 2;
+    //
+    // // CREAZIONE LOGS PER UNSAFE MODE SE NON VA BOT LORENZO
+    // // let mut counter = 0;
+    // // for i in 0..1000 {
+    // //     if counter == 0 {
+    // //         app.logs_arb.push_back("BFB HA FATTO LA COMPERA".to_string() + "    unsafe mode bro");
+    // //         counter = 1;
+    // //     } else if counter == 1 {
+    // //         app.logs_arb.push_back("SOL HA FATTO LA VENDITA".to_string() + "    unsafe mode bro");
+    // //         counter = 2;
+    // //     } else {
+    // //         app.logs_arb.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  unsafe mode bro");
+    // //         counter = 0;
+    // //     }
+    // // }
+    //
+    // for elem in app.logs_arb.iter() {
+    //     if elem.as_str().contains("BFB") {
+    //         app.bfb_logs_arb.push_back(elem.to_string());
+    //     } else if elem.as_str().contains("SOL") {
+    //         app.sol_logs_arb.push_back(elem.to_string());
     //     } else {
-    //         app.logs_arb.push_back("PARSE HA FATTO LA COMPERA".to_string() + "  unsafe mode bro");
-    //         counter = 0;
+    //         app.parse_logs_arb.push_back(elem.to_string());
     //     }
     // }
-
-    for elem in app.logs_arb.iter() {
-        if elem.as_str().contains("BFB") {
-            app.bfb_logs_arb.push_back(elem.to_string());
-        } else if elem.as_str().contains("SOL") {
-            app.sol_logs_arb.push_back(elem.to_string());
-        } else {
-            app.parse_logs_arb.push_back(elem.to_string());
-        }
-    }
 
     app
 }

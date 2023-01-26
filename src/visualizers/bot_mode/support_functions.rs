@@ -3,9 +3,12 @@ use std::rc::Rc;
 
 use druid::{Widget, Color, WidgetExt};
 use druid::im::Vector;
-use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider};
+use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider, CrossAxisAlignment, MainAxisAlignment};
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
+use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
+use crate::bots::bot_strategy::bot::bot;
+use crate::visualizers::datas::trader_ui_derived_lenses::percentage_bot;
 
 use crate::visualizers::datas::TraderUi;
 
@@ -16,6 +19,132 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
         .background(Color::rgb(255.0, 255.0, 255.0))
         .center()
 }
+
+pub fn trader_quantities()-> impl Widget<TraderUi> {
+
+    // trader header
+    let label_trader = Flex::column()
+        .with_spacer(8.0)
+        .with_child(Label::new("Tokyo Stock Exchange Trader".to_string())
+            .with_text_color(Color::rgb(255.0, 255.0, 255.0))
+            .with_text_size(35.0));
+
+    let label_trader_eur = Flex::column()
+        .with_child(Label::new("EUR".to_string())
+            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_size(26.0)
+            .center())
+        .with_child(Label::new("1000.0")
+            .with_text_size(20.0).center())
+        .with_child(Label::dynamic(|data: &TraderUi, _| {
+            let money = data.logs_bot.last();
+            if money.is_none() {
+                return "0.0".to_string();
+            } else {
+                let money = money.unwrap();
+                let goods = money.split(" ").collect::<Vector<&str>>();
+                let string_money = format!("{}", goods[0]);
+                if string_money == "0.0" {
+                    format!("{:.0}", string_money)
+                } else {
+                    format!("{}", string_money)
+                }
+            }
+        }).with_text_size(20.0).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let label_trader_yen = Flex::column()
+        .with_child(Label::new("YEN".to_string())
+            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_size(26.0))
+        .with_child(Label::new("0.0")
+            .with_text_size(20.0).center())
+        .with_child(Label::dynamic(|data: &TraderUi, _| {
+            let money = data.logs_bot.last();
+            if money.is_none() {
+                return "0.0".to_string();
+            } else {
+                let money = money.unwrap();
+                let goods = money.split(" ").collect::<Vector<&str>>();
+                let string_money = format!("{}", goods[1]);
+                if string_money == "0.0" {
+                    format!("{:.0}", string_money)
+                } else {
+                    format!("{}", string_money)
+                }
+            }
+        }).with_text_size(20.0).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let label_trader_usd = Flex::column()
+        .with_child(Label::new("USD".to_string())
+            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_size(26.0))
+        .with_child(Label::new("0.0")
+            .with_text_size(20.0).center())
+        .with_child(Label::dynamic(|data: &TraderUi, _| {
+            let money = data.logs_bot.last();
+            if money.is_none() {
+                return "0.0".to_string();
+            } else {
+                let money = money.unwrap();
+                let goods = money.split(" ").collect::<Vector<&str>>();
+                let string_money = format!("{}", goods[2]);
+                if string_money == "0.0" {
+                    format!("{:.0}", string_money)
+                } else {
+                    format!("{}", string_money)
+                }
+            }
+        }).with_text_size(20.0).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+    let label_trader_yuan = Flex::column()
+        .with_child(Label::new("YUAN".to_string())
+            .with_text_color(Color::rgb(0.0, 0.0, 255.0))
+            .with_text_size(26.0))
+        .with_child(Label::new("0.0")
+            .with_text_size(20.0).center())
+        .with_child(Label::dynamic(|data: &TraderUi, _| {
+            let money = data.logs_bot.last();
+            if money.is_none() {
+                return "0.0".to_string();
+            } else {
+                let money = money.unwrap();
+                let goods = money.split(" ").collect::<Vector<&str>>();
+                let string_money = format!("{}", goods[3]);
+                if string_money == "0.0" {
+                    format!("{:.0}", string_money)
+                } else {
+                    format!("{}", string_money)
+                }
+            }
+        }).with_text_size(20.0).center())
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::SpaceBetween);
+
+
+    let header = Flex::row()
+        .with_child(label_trader)
+        .with_spacer(40.0)
+        .with_child(label_trader_eur)
+        .with_spacer(40.0)
+        .with_child(label_trader_yen)
+        .with_spacer(40.0)
+        .with_child(label_trader_usd)
+        .with_spacer(40.0)
+        .with_child(label_trader_yuan)
+        .cross_axis_alignment(CrossAxisAlignment::Center)
+        .main_axis_alignment(MainAxisAlignment::Center)
+        .padding(25.0)
+        .center();
+
+    header
+}
+
 
 pub fn view_switcher()-> impl Widget<TraderUi> {
 
@@ -33,7 +162,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
                                                 format!("{data}")
-                                        })).lens(TraderUi::bfb_logs_bot)
+                                        })).lens(TraderUi::bfb_logs_bot).center()
                                     ).vertical()                            ,
                                 ).split_point(0.10),
                                 Split::rows(
@@ -41,7 +170,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
                                                 format!("{data}")
-                                        })).lens(TraderUi::parse_logs_bot)
+                                        })).lens(TraderUi::parse_logs_bot).center()
                                     ).vertical(),
                                 ).split_point(0.10),
                             ),
@@ -50,7 +179,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 Scroll::new(
                                     List::new(|| Label::dynamic(|data: &String, _| {
                                             format!("{data}")
-                                    })).lens(TraderUi::sol_logs_bot)
+                                    })).lens(TraderUi::sol_logs_bot).center()
                                 ).vertical(),
                             ).split_point(0.10),
                         ).split_point(0.66).border(Color::WHITE, 1.0),
@@ -66,7 +195,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 )
                                 .with_spacer(8.0)
                                 .with_child(Label::new(|data: &TraderUi, _: &_| {
-                                    format!("{:.2}", (data.percentage_bot * 1000.0) as i32)
+                                    format!("{:.2}", (data.percentage_bot * 100.0) as i32)
                                 }).with_text_size(20.0))
                                 .with_spacer(8.0)
                                 .with_child(
@@ -80,7 +209,25 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
-                                println!("oooo");
+
+                                data.logs_bot = bot(&mut data.trader_bot, (data.percentage_bot * 100.0) as i32);
+                                println!("start logs andrea\n");
+                                for elem in data.logs_bot.iter() {
+                                    println!("elem: {:?}", elem);
+                                }
+                                println!("\nlengt logs andrea: {}", data.logs_bot.len());
+                                println!("end logs andrea\n");
+
+                                for elem in data.logs_bot.iter() {
+                                    if elem.as_str().contains("BFB") {
+                                        data.bfb_logs_bot.push_front(elem.to_string());
+                                    } else if elem.as_str().contains("SOL") {
+                                        data.sol_logs_bot.push_front(elem.to_string());
+                                    } else {
+                                        data.parse_logs_bot.push_front(elem.to_string());
+                                    }
+                                }
+
                             }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0),
                         ).split_point(0.8),
                     ).split_point(0.9),
@@ -98,7 +245,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
                                                 format!("{data}")
-                                        })).lens(TraderUi::bfb_logs_arb)
+                                        })).lens(TraderUi::bfb_logs_arb).center()
                                     ).vertical()                            ,
                                 ).split_point(0.10),
                                 Split::rows(
@@ -106,7 +253,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                     Scroll::new(
                                         List::new(|| Label::dynamic(|data: &String, _| {
                                                 format!("{data}")
-                                        })).lens(TraderUi::parse_logs_arb)
+                                        })).lens(TraderUi::parse_logs_arb).center()
                                     ).vertical(),
                                 ).split_point(0.10),
                             ),
@@ -115,7 +262,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 Scroll::new(
                                     List::new(|| Label::dynamic(|data: &String, _| {
                                             format!("{data}")
-                                    })).lens(TraderUi::sol_logs_arb)
+                                    })).lens(TraderUi::sol_logs_arb).center()
                                 ).vertical(),
                             ).split_point(0.10),
                         ).split_point(0.66).border(Color::WHITE, 1.0),
@@ -131,7 +278,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                 )
                                 .with_spacer(8.0)
                                 .with_child(Label::new(|data: &TraderUi, _: &_| {
-                                    format!("{:.2}", (data.percentage_bot * 1000.0) as i32)
+                                    format!("{:.2}", (data.percentage_bot * 100.0) as i32)
                                 }).with_text_size(20.0))
                                 .with_spacer(8.0)
                                 .with_child(
@@ -145,8 +292,26 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                                         }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 1000.0)),
                                 ),
                             Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
-                                println!("oooo");
-                            }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0),
+
+                                data.logs_arb = arbitrage(&mut data.trader_arb, (data.percentage_bot * 100.0) as i32);
+                                println!("start logs lorenzo\n");
+                                for elem in data.logs_arb.iter() {
+                                    println!("elem: {:?}", elem);
+                                }
+                                println!("\nlengt logs lorenzo: {}", data.logs_arb.len());
+                                println!("end logs andrea\n");
+
+                                for elem in data.logs_bot.iter() {
+                                    if elem.as_str().contains("BFB") {
+                                        data.bfb_logs_bot.push_front(elem.to_string());
+                                    } else if elem.as_str().contains("SOL") {
+                                        data.sol_logs_bot.push_front(elem.to_string());
+                                    } else {
+                                        data.parse_logs_bot.push_front(elem.to_string());
+                                    }
+                                }
+
+                            }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot == 0.0),
                         ).split_point(0.8),
                     ).split_point(0.9),
                     Label::new("Unsafe mode").center().background(Color::rgb(255.0, 0.0, 0.0)),
