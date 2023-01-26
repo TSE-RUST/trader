@@ -51,7 +51,7 @@ pub struct TraderUi {
     pub string_best_profit_buy: String,
     // BOT MODE
     pub safe_mode: bool,
-    pub logs: Vector<(String, String, String)>,
+    pub logs: Vector<Vector<(String, String, String)>>,
     pub buy_or_sell_string: Vector<String>,
     pub goodkinds_string: Vector<String>,
     pub quantity_string: Vector<String>,
@@ -162,14 +162,18 @@ pub(crate) fn initialize_quantities(app: &mut TraderUi) -> &mut TraderUi {
         parse.clone(),
     );
 
-    app.logs = bot(&mut traderbot, 1000);
+    app.logs.push_back(bot(&mut traderbot, 1000));
+    // app.logs.push_back(BOT_LORENZO);
 
     println!("lengt logs: {}", app.logs.len());
 
+    app.buy_or_sell_string.push_back("dicoanagliaunaBUY".to_string());
+    app.buy_or_sell_string.push_back("dicoanagliaunaSELL".to_string());
+
     for i in 0..app.logs.len() {
-        app.buy_or_sell_string.push_back(app.logs[i].0.clone());
-        app.goodkinds_string.push_back(app.logs[i].1.clone());
-        app.quantity_string.push_back(app.logs[i].2.clone());
+        app.buy_or_sell_string.push_back(app.logs[0][i].0.clone());
+        app.goodkinds_string.push_back(app.logs[0][i].1.clone());
+        app.quantity_string.push_back(app.logs[0][i].2.clone());
     }
 
     println!("logs: {:?}", app.logs);

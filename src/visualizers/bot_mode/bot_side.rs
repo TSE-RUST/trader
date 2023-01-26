@@ -7,6 +7,7 @@ use druid::widget::Split;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 use bfb::bfb_market::Bfb as bfb;
+use druid::kurbo::Shape;
 use market_sol::SOLMarket as sol;
 use parse_market::ParseMarket as parse;
 
@@ -60,7 +61,13 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
                         Split::rows(
                             big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
-                                List::new(|| Label::dynamic(|data, _| format!("List item: {data}")))
+                                List::new(|| Label::dynamic(|data: &String, _| {
+                                    if data.as_str().contains("BUY") {
+                                        format!("List item: {data}")
+                                    } else {
+                                        format!("NO BUY")
+                                    }
+                                }))
                                     .lens(TraderUi::buy_or_sell_string)
                             ).vertical()                            ,
                         ).split_point(0.10),
