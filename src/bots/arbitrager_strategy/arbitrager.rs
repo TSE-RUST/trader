@@ -189,12 +189,16 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
             }
 
             // Do actual trade
-            let buy_token = best_buy_market_deref.lock_buy(
+            let buy_token;
+            match best_buy_market_deref.lock_buy(
                 best_kind_alt_to_receive,
                 best_alt_to_receive,
                 best_eur_to_send,
                 trader.name.clone(),
-            ).unwrap();
+            ) {
+                Ok(token) => buy_token = token,
+                Err(_) => continue, // buy price is "not enough realistic"
+            }
 
             alt_coin = best_buy_market_deref
                 .buy(buy_token, &mut eur.split(best_eur_to_send).unwrap())
@@ -283,33 +287,18 @@ pub fn arbitrage(mut trader: &mut TraderBot, max_arbitrages: i32) -> Vector<Stri
                 .unwrap();
         }
 
-        //let eur_quantity_received = eur_received.get_qty();
-
         // Merge goods with initial eur
         let _ = eur.merge(eur_received);
         if rest.is_some() {
             merge_good(&mut trader, rest.take().unwrap());
         }
 
-        // Push results in results array
-        /*results.push_back((
-            "BUY".to_string(),
-            kind_to_string(best_kind_alt_to_receive),
-            format!("{}", alt_coin_quantity_received),
-            market_name_tmp,
-        ));*/
         results.push_back(format!(
             "BUY {} {} {}",
             kind_to_string(best_kind_alt_to_receive),
             alt_coin_quantity_received,
             buy_market_name
         ));
-        /*results.push_back((
-            "SELL".to_string(),
-            kind_to_string(best_kind_alt_to_receive),
-            format!("{}", qty_to_send),
-            market_name_tmp,
-        ));*/
         results.push_back(format!(
             "SELL {} {} {}",
             kind_to_string(best_kind_alt_to_receive),
