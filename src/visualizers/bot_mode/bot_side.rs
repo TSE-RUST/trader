@@ -20,7 +20,6 @@ use crate::visualizers::bot_mode::support_functions::*;
 pub(crate) fn bot_side() -> impl Widget<TraderUi>{
     //declares the last label that will be displayed, used for let the user know which bot is running 
 
-    let logs=bot_log::new();
 
     let label = Label::dynamic(move |data: &TraderUi, _| {
         if data.safe_mode{
@@ -63,20 +62,20 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                         Split::rows(
                             big_text("BFB").background(Color::rgb(255.0,255.0,255.0)),
                             Label::dynamic(move |data: &TraderUi, _| {
-                                format!("{}",logs.bfb_log)
+                                format!("helo")
                             }).center()
                         ).split_point(0.10),
                         Split::rows(
                             big_text("PARSE").background(Color::rgb(255.0,255.0,255.0)),
                             Label::dynamic(move |data: &TraderUi, _| {
-                                format!("{}",logs.parse_log)
+                                format!("helo")
                             }).center()
                         ).split_point(0.10),
                     ),
                     Split::rows(
                         big_text("SOL").background(Color::rgb(255.0,255.0,255.0)),
                         Label::dynamic(move |data: &TraderUi, _| {
-                            format!("{}",logs.sol_log)
+                            format!("helo")
                         }).center()
                     ).split_point(0.10),
                 ).split_point(0.66).border(Color::WHITE, 1.0),
@@ -86,22 +85,22 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi>{
                             Slider::new()
                             .with_range(0.0, 1.0)
                         // .with_step(0.10)
-                            .lens(TraderUi::percentage)
+                            .lens(TraderUi::percentage_bot)
                             .fix_width(700.0),
                     )
                     .with_spacer(8.0)
                     .with_child(Label::new(|data: &TraderUi, _: &_| {
-                        format!("{:.2}", data.percentage * data.quantity as f64)
+                        format!("{:.2}", data.percentage_bot * data.quantity as f64)
                     }).with_text_size(20.0))
                     .with_spacer(8.0)
                     .with_child(
                         Flex::row()
                             .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
-                                data.percentage = (data.percentage - 0.005).max(0.0);
+                                data.percentage_bot = (data.percentage_bot - 0.005).max(0.0);
                             }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
                         .with_spacer(4.0)
                         .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                            data.percentage = (data.percentage + 0.005).min(1.0);
+                            data.percentage_bot = (data.percentage_bot + 0.005).min(1.0);
                         }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
                             )
                         ).split_point(0.9),

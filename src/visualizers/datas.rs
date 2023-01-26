@@ -19,6 +19,7 @@ use crate::visualizers::events::{LoggedEvent};
 #[derive(Clone, Data, Lens)]
 pub struct TraderUi {
     pub current_view: u32,
+    // USER MODE
     pub bfb_kinds: Vector<String>,
     pub bfb_quantities: Vector<f32>,
     pub bfb_exchange_rate_buy: Vector<f32>,
@@ -34,9 +35,8 @@ pub struct TraderUi {
     pub markets: Vector<Rc<RefCell<dyn Market>>>,
     pub trader: Trader,
     pub quantity: f32,
-    pub percentage: f64,
+    pub percentage_user: f64,
     pub boolean: bool,
-    pub safe_mode: bool,
     pub selected_market: String,
     pub selected_good: String,
     pub selected_method_of_trade: String,
@@ -44,6 +44,13 @@ pub struct TraderUi {
     pub events_number: usize,
     pub string_best_profit_sell: String,
     pub string_best_profit_buy: String,
+    // BOT MODE
+    pub safe_mode: bool,
+    pub logs: Vector<(String, String, String, Vector<f32>)>,
+    pub buy_or_sell_string: Vector<String>,
+    pub goodkinds_string: Vector<String>,
+    pub quantity_string: Vector<String>,
+    pub percentage_bot: f64,
 }
 
 /// the SingleMarket struct is used to store the data of
@@ -65,6 +72,7 @@ impl TraderUi {
     pub fn new() -> Self {
         Self {
             current_view: 0,
+            // USER MODE
             bfb_kinds: vector![" ".to_string(), " ".to_string(), " ".to_string(), " ".to_string()],
             bfb_quantities: vector![0.0, 0.0, 0.0, 0.0],
             bfb_exchange_rate_buy: vector![0.0, 0.0, 0.0, 0.0],
@@ -80,9 +88,8 @@ impl TraderUi {
             markets: vector![bfb::new_random(), sol::new_random(), parse::new_random(),],
             trader: Trader { name: "TRADER TSE".to_string(), goods: vector![0.0, 0.0, 0.0, 0.0] },
             quantity: 0.0,
-            percentage: 1.0,
+            percentage_user: 1.0,
             boolean: false,
-            safe_mode: true,
             selected_market: "BFB".to_string(),
             selected_good: "YEN".to_string(),
             selected_method_of_trade: "SELL".to_string(),
@@ -90,6 +97,13 @@ impl TraderUi {
             events_number: 0,
             string_best_profit_sell: "sdrumpx morto".to_string(),
             string_best_profit_buy: "stypox figlio di puttana".to_string(),
+            // BOT MODE
+            safe_mode: false,
+            logs: vector![],
+            buy_or_sell_string: vector![],
+            goodkinds_string: vector![],
+            quantity_string: vector![],
+            percentage_bot: 1.0,
         }
     }
 }
