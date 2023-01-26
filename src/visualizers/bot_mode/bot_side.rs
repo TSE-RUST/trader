@@ -20,18 +20,6 @@ use crate::visualizers::bot_mode::support_functions::*;
 pub(crate) fn bot_side() -> impl Widget<TraderUi> {
     //declares the last label that will be displayed, used for let the user know which bot is running 
 
-
-    let label = Label::dynamic(move |data: &TraderUi, _| {
-        if data.safe_mode {
-            format!("safe mode attivo")
-        } else {
-            format!("safe mode disattivo(!) ")
-        }
-    })
-        .with_text_color(Color::rgb(0.0, 0.0, 0.0))
-        .background(Color::rgb(255.0, 227.0, 0.0))
-        .center();
-
     Split::rows(
         Split::columns(
             //PULSANTE PER ATTIVARE BOT SAFE MODE
@@ -54,41 +42,7 @@ pub(crate) fn bot_side() -> impl Widget<TraderUi> {
                 .padding(10.0)
                 .background(Color::rgb(255.0, 0.0, 0.0)),
         ),
-        Split::rows(
-            Split::rows(
-                view_switcher(),
-                Split::columns(
-                    Flex::row()
-                        .main_axis_alignment(druid::widget::MainAxisAlignment::Center)
-                        .with_child(
-                            Slider::new()
-                                .with_range(0.0, 1.0)
-                                // .with_step(0.10)
-                                .lens(TraderUi::percentage_bot)
-                                .fix_width(700.0),
-                        )
-                        .with_spacer(8.0)
-                        .with_child(Label::new(|data: &TraderUi, _: &_| {
-                            format!("{:.2}", (data.percentage_bot * 1000.0) as i32)
-                        }).with_text_size(20.0))
-                        .with_spacer(8.0)
-                        .with_child(
-                            Flex::row()
-                                .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
-                                    data.percentage_bot = (data.percentage_bot - 0.001);
-                                }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0))
-                                .with_spacer(4.0)
-                                .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
-                                    data.percentage_bot = (data.percentage_bot + 0.001);
-                                }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 100.0)),
-                        ),
-                    Button::new("ENTER").on_click(|ctx, data: &mut TraderUi, _env| {
-                        println!("oooo");
-                    }).disabled_if(|data: &TraderUi, _: &_| data.percentage_bot * 1000.0 == 0.0),
-                ).split_point(0.8),
-            ).split_point(0.9),
-            label.background(Color::rgb(255.0, 227.0, 0.0)),
-        ).split_point(0.95),
+        view_switcher(),
     ).split_point(0.07)
 }
 
