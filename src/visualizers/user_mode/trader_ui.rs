@@ -31,9 +31,9 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             .center())
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[0];
-            let string_money = format!("{:.1}", money);
-            if string_money == "0.0" {
-                format!("{:.0}", money)
+            // let string_money = format!("{:.1}", money);
+            if money as i32 == 0 {
+                format!("0")
             } else {
                 format!("{:.2}", money)
             }
@@ -49,7 +49,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             let money = data.goods[1];
             let string_money = format!("{:.1}", money);
             if string_money == "0.0" {
-                format!("{:.0}", money)
+                format!("0")
             } else {
                 format!("{:.2}", money)
             }
@@ -65,7 +65,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             let money = data.goods[2];
             let string_money = format!("{:.1}", money);
             if string_money == "0.0" {
-                format!("{:.0}", money)
+                format!("0")
             } else {
                 format!("{:.2}", money)
             }
@@ -81,7 +81,7 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             let money = data.goods[3];
             let string_money = format!("{:.1}", money);
             if string_money == "0.0" {
-                format!("{:.0}", money)
+                format!("0")
             } else {
                 format!("{:.2}", money)
             }
@@ -294,22 +294,36 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
                 // .with_step(0.10)
                 .lens(TraderUi::percentage)
                 .fix_width(180.0)
-                .disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0),
+                .disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 ||
+                    ((data.trader.goods[0] * 100.0) as i32 == 0) ||
+                    (data.selected_method_of_trade == "BUY" && data.trader.goods[0] as i32 == 0)),
         )
         .with_spacer(8.0)
         .with_child(Label::new(|data: &TraderUi, _: &_| {
-            format!("{:.2}", data.percentage * data.quantity as f64)
+            let money = data.percentage * data.quantity as f64;
+            let string_money = format!("{:.1}", money);
+            if data.selected_method_of_trade == "BUY" && data.trader.goods[0] as i32 == 0 {
+                format!("0")
+            } else if string_money == "0.0" {
+                format!("0")
+            } else {
+                format!("{:.2}", money)
+            }
         }).with_text_size(20.0))
         .with_spacer(8.0)
         .with_child(
             Flex::row()
                 .with_child(Button::new("<<").on_click(|_, data: &mut TraderUi, _| {
                     data.percentage = (data.percentage - 0.005).max(0.0);
-                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0))
+                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 ||
+                    ((data.trader.goods[0] * 100.0) as i32 == 0) ||
+                    (data.selected_method_of_trade == "BUY" && data.trader.goods[0] as i32 == 0)))
                 .with_spacer(4.0)
                 .with_child(Button::new(">>").on_click(|_, data: &mut TraderUi, _| {
                     data.percentage = (data.percentage + 0.005).min(1.0);
-                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0)),
+                }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 ||
+                    ((data.trader.goods[0] * 100.0) as i32 == 0) ||
+                    (data.selected_method_of_trade == "BUY" && data.trader.goods[0] as i32 == 0))),
         );
 
     // quantity progressbar
@@ -551,7 +565,9 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             return ((data.quantity * 100.0) as i32) == 0 ||
                 data.percentage == 0.0 ||
                 (((data.quantity * 100.0) as i32) == 0 && data.percentage == 0.0) ||
-                quantity_eur_market_zero;
+                quantity_eur_market_zero ||
+                (data.trader.goods[0] * 100.0) as i32 == 0 ||
+                (data.selected_method_of_trade == "BUY" && data.trader.goods[0] as i32 == 0);
         }))
         .align_right();
 
@@ -574,6 +590,9 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
 
         if quantity_eur_market_zero {
             format!("The market has no money!")
+        } else if (data.trader.goods[0] * 100.0) as i32 == 0 ||
+            (data.selected_method_of_trade == "BUY" && data.trader.goods[0] as i32 == 0) {
+            format!("The trader has no money!")
         } else if data.quantity == 0.0 {
             format!("The quantity of the good selected is zero!")
         } else if data.percentage == 0.0 {

@@ -63,18 +63,6 @@ pub fn get_market_info(market: &Rc<RefCell<dyn Market>>) -> (Vector<String>, Vec
     (good_kinds, quantities, buy_rates, sell_rates)
 }
 
-// /// SUPPORT FUNCTIONS FOR THE TraderUi STRUCT - the get_market_index function returns
-// /// the index of the market from the name
-// ///
-// /// **Federico Brancasi**
-// pub fn get_market_index(market_name: &str) -> usize {
-//     match market_name.to_lowercase().as_str() {
-//         "bfb" => 0,
-//         "sol" => 1,
-//         "parse" => 2,
-//         _ => panic!("Market not found"),
-//     }
-// }
 
 /// SUPPORT FUNCTION FOR THE APPLICATION - returns the max
 /// quantity of a given good that can be bought or sold
