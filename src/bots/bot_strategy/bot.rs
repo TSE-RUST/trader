@@ -1,6 +1,7 @@
 // use std::borrow::BorrowMut;
 // libraries dependencies
 use druid::im::Vector;
+use druid::tests::helpers::widget_ids;
 use druid::{Data, Lens};
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -9,6 +10,7 @@ use std::rc::Rc;
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
+use unitn_market_2022::wait_one_day;
 // use unitn_market_2022::wait_one_day;
 
 // local dependencies
@@ -455,16 +457,29 @@ pub fn get_best_sell_market(
 /// Andrea Ballarini
 pub fn get_best_buy_trade(trader: &mut TraderBot) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
     let (_, yen_quantity, yen_price) = get_best_buy_market(trader, GoodKind::YEN);
-    let average_yen = yen_quantity / yen_price;
+    let average_yen = if yen_quantity != 0. && yen_price != 0. {
+        yen_quantity / yen_price
+    } else {
+        0.
+    };
     let (_, usd_quantity, usd_price) = get_best_buy_market(trader, GoodKind::USD);
-    let average_usd = usd_quantity / usd_price;
+    let average_usd = if usd_quantity != 0. && usd_price != 0. {
+        usd_quantity / usd_price
+    } else {
+        0.
+    };
     let (_, yuan_quantity, yuan_price) = get_best_buy_market(trader, GoodKind::YUAN);
-    let average_yuan = yuan_quantity / yuan_price;
+    let average_yuan = if yuan_price != 0. && yuan_quantity != 0. {
+        yuan_quantity / yuan_price
+    } else {
+        0.0
+    };
+
     let res;
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market, yuan_quantity, _) = get_best_buy_market(trader, GoodKind::YUAN);
         res = (yuan_market, GoodKind::YUAN, yuan_quantity);
-    } else if (average_yen > average_usd) && (average_yen > average_yuan) {
+    } else if average_yen < average_usd {
         let (usd_market, usd_quantity, _) = get_best_buy_market(trader, GoodKind::USD);
         res = (usd_market, GoodKind::USD, usd_quantity);
     } else {
@@ -482,20 +497,32 @@ pub fn get_best_sell_trade(
 ) -> (&mut Rc<RefCell<dyn Market>>, GoodKind, f32) {
     let yen_trader = get_trader_quantity(trader, GoodKind::YEN) / 3.;
     let (_, yen_quantity, yen_price) = get_best_sell_market(trader, GoodKind::YEN, yen_trader);
-    let average_yen = yen_price / yen_quantity;
+    let average_yen = if yen_price != 0. && yen_quantity != 0. {
+        yen_price / yen_quantity
+    } else {
+        0.
+    };
     let usd_trader = get_trader_quantity(trader, GoodKind::USD) / 3.;
     let (_, usd_quantity, usd_price) = get_best_sell_market(trader, GoodKind::USD, usd_trader);
-    let average_usd = usd_price / usd_quantity;
+    let average_usd = if usd_price != 0. && usd_quantity != 0. {
+        usd_price / usd_quantity
+    } else {
+        0.
+    };
     let yuan_trader = get_trader_quantity(trader, GoodKind::YUAN) / 3.;
     let (_, yuan_quantity, yuan_price) = get_best_sell_market(trader, GoodKind::YUAN, yuan_trader);
-    let average_yuan = yuan_quantity / yuan_price;
+    let average_yuan = if yuan_price != 0. && yuan_quantity != 0. {
+        yuan_price / yuan_quantity
+    } else {
+        0.
+    };
 
     let res;
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market, yuan_quantity, _) =
             get_best_sell_market(trader, GoodKind::YUAN, yuan_trader);
         res = (yuan_market, GoodKind::YUAN, yuan_quantity);
-    } else if (average_yen > average_usd) && (average_yen > average_yuan) {
+    } else if average_yen < average_usd {
         let (usd_market, usd_quantity, _) = get_best_sell_market(trader, GoodKind::USD, usd_trader);
         res = (usd_market, GoodKind::USD, usd_quantity);
     } else {
@@ -659,6 +686,9 @@ pub fn bot(trader: &mut TraderBot, mut max: i32) -> Vector<String> {
             ));
             max -= 1;
         } else {
+            wait_one_day!(trader.sol);
+            wait_one_day!(trader.bfb);
+            wait_one_day!(trader.parse);
             //log of no sell action
             // println!("No quantity to sell");
         }
