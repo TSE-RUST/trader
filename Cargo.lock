@@ -960,9 +960,9 @@ dependencies = [
 
 [[package]]
 name = "market_sol"
-version = "1.0.5"
+version = "1.0.6"
 source = "registry+git://advancedprogramming.disi.unitn.it/index"
-checksum = "fe3f148f6378e27a9e1867d0b169ea1124834dcfcd8fa20b9904a0b04ed051b7"
+checksum = "0c572d8fb44ce973cbcdea7fbef051aa59d0bc70cef51df2ac6597414be080a2"
 dependencies = [
  "chrono",
  "probability",

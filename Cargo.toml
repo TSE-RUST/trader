@@ -9,7 +9,7 @@ edition = "2021"
 unitn_market_2022={version="1.0.10", registry="kellnr"}
 parse_market={version="1.0.3", registry="kellnr"}
 bfb={version="0.1.1", registry="kellnr"}
-market_sol={version="1.0.5", registry="kellnr"}
+market_sol={version="1.0.6", registry="kellnr"}
 gag = "1.0.0"
 colored = "2.0.0"
 wasm-bindgen = "0.2.83"
