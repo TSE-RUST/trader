@@ -96,8 +96,13 @@ fn main() {
     // initial data of the application
     let initial_data = app;
 
+    // for blocking the stdout of the application
+    // no messages from the markets will be printed
+    let _block_stdout = Gag::stdout().unwrap();
+
     // the launcher of the application
     AppLauncher::with_window(main_window)
         .launch(initial_data)
         .expect("Failed to launch application");
+
 }
