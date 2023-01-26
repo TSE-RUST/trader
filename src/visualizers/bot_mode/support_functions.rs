@@ -1,12 +1,11 @@
+// library dependencies
 use druid::{Widget, Color, WidgetExt};
 use druid::im::Vector;
 use druid::widget::{Label, Split, ViewSwitcher, Scroll, List, Button, Flex, Slider, CrossAxisAlignment, MainAxisAlignment};
 
-
+// local dependencies
 use crate::bots::arbitrager_strategy::arbitrager::arbitrage;
 use crate::bots::bot_strategy::bot::bot;
-
-
 use crate::visualizers::datas::TraderUi;
 
 pub fn big_text(text: &str) -> impl Widget<TraderUi> {
@@ -28,6 +27,9 @@ pub fn switcher_header() -> impl Widget<TraderUi> {
     switch
 }
 
+/// This function returns a widget that displays the quantities of the trader.
+///
+/// **Federico Brancasi**
 pub fn trader_quantities(color: Color, safe: bool) -> impl Widget<TraderUi> {
 
     // trader header

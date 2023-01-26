@@ -3,14 +3,6 @@ use druid::{Widget, WidgetExt, Color};
 use druid::widget::{Button};
 use druid::widget::Split;
 
-// market dependencies
-
-
-
-
-
-
-
 // local dependencies
 use crate::TraderUi;
 use crate::visualizers::bot_mode::support_functions::*;

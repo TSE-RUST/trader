@@ -1,11 +1,14 @@
+// library dependencies
+use druid::im::Vector;
+
 // market dependencies
 use market_sol::SOLMarket as sol;
 use unitn_market_2022::good::good::Good;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::{Market, MarketGetterError};
 
+// local dependencies
 use crate::bots::bot_strategy::bot::TraderBot;
-use druid::im::Vector;
 
 fn kind_to_string(gk: GoodKind) -> String {
     match gk {
