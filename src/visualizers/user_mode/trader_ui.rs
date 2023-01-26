@@ -31,7 +31,12 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             .center())
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[0];
-            format!("{money}")
+            let string_money = format!("{:.1}", money);
+            if string_money == "0.0" {
+                format!("{:.0}", money)
+            } else {
+                format!("{:.2}", money)
+            }
         }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
@@ -42,7 +47,12 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             .with_text_size(26.0))
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[1];
-            format!("{money}")
+            let string_money = format!("{:.1}", money);
+            if string_money == "0.0" {
+                format!("{:.0}", money)
+            } else {
+                format!("{:.2}", money)
+            }
         }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
@@ -53,7 +63,12 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             .with_text_size(26.0))
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[2];
-            format!("{money}")
+            let string_money = format!("{:.1}", money);
+            if string_money == "0.0" {
+                format!("{:.0}", money)
+            } else {
+                format!("{:.2}", money)
+            }
         }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
@@ -64,7 +79,12 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
             .with_text_size(26.0))
         .with_child(Label::dynamic(|data: &Trader, _| {
             let money = data.goods[3];
-            format!("{money}")
+            let string_money = format!("{:.1}", money);
+            if string_money == "0.0" {
+                format!("{:.0}", money)
+            } else {
+                format!("{:.2}", money)
+            }
         }).with_text_size(20.0).lens(TraderUi::trader).center())
         .cross_axis_alignment(CrossAxisAlignment::Center)
         .main_axis_alignment(MainAxisAlignment::SpaceBetween);
@@ -551,13 +571,49 @@ pub(crate) fn create_chart_trader() -> impl Widget<TraderUi> {
 
                 data.string_best_profit_buy = get_best_buy_trade(&data.markets, data.trader.goods[0]);
                 data.string_best_profit_sell = get_best_sell_trade(&data.markets, &data.trader.goods);
+            }).disabled_if(|data: &TraderUi, _: &_| {
+            let mut quantity_eur_market_zero = false;
+            if data.selected_market == "BFB" {
+                if data.bfb_quantities[0] as i32 == 0 {
+                    quantity_eur_market_zero = true;
+                }
+            } else if data.selected_market == "SOL" {
+                if data.sol_quantities[0] as i32 == 0 {
+                    quantity_eur_market_zero = true;
+                }
+            } else if data.selected_market == "PARSE" {
+                if data.parse_quantities[0] as i32 == 0 {
+                    quantity_eur_market_zero = true;
+                }
+            }
 
-            }).disabled_if(|data: &TraderUi, _: &_| data.quantity == 0.0 || data.percentage == 0.0 || (data.quantity == 0.0 && data.percentage == 0.0)))
+            return ((data.quantity * 100.0) as i32) == 0 ||
+                data.percentage == 0.0 ||
+                (((data.quantity * 100.0) as i32) == 0 && data.percentage == 0.0) ||
+                quantity_eur_market_zero;
+        }))
         .align_right();
 
     //recap label
     let recap_label = Label::new(|data: &TraderUi, _: &_| {
-        if data.quantity == 0.0 {
+        let mut quantity_eur_market_zero = false;
+        if data.selected_market == "BFB" {
+            if data.bfb_quantities[0] as i32 == 0 {
+                quantity_eur_market_zero = true;
+            }
+        } else if data.selected_market == "SOL" {
+            if data.sol_quantities[0] as i32 == 0 {
+                quantity_eur_market_zero = true;
+            }
+        } else if data.selected_market == "PARSE" {
+            if data.parse_quantities[0] as i32 == 0 {
+                quantity_eur_market_zero = true;
+            }
+        }
+
+        if quantity_eur_market_zero {
+            format!("The market has no money!")
+        } else if data.quantity == 0.0 {
             format!("The quantity of the good selected is zero!")
         } else if data.percentage == 0.0 {
             format!("The quantity of the good selected is zero!")

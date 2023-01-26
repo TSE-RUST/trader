@@ -25,17 +25,21 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
 
     let quantity1 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[0];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::bfb_quantities);
 
     let buy1 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[0];
-        format!("buy rate: {rate}")
+        format!("buy rate: {}", rate)
     }).lens(TraderUi::bfb_exchange_rate_buy);
 
     let sell1 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[0];
-        format!("sell rate: {rate}")
+        format!("sell rate: {}", rate)
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart1 = Flex::column()
@@ -61,17 +65,21 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
 
     let quantity2 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[1];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::bfb_quantities);
 
     let buy2 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[1];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::bfb_exchange_rate_buy);
 
     let sell2 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[1];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart2 = Flex::column()
@@ -97,17 +105,21 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
 
     let quantity3 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[2];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::bfb_quantities);
 
     let buy3 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[2];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::bfb_exchange_rate_buy);
 
     let sell3 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[2];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart3 = Flex::column()
@@ -133,17 +145,21 @@ pub(crate) fn create_chart_bfb() -> impl Widget<TraderUi> {
 
     let quantity4 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[3];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::bfb_quantities);
 
     let buy4 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[3];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::bfb_exchange_rate_buy);
 
     let sell4 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[3];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::bfb_exchange_rate_sell);
 
     let chart4 = Flex::column()
@@ -202,7 +218,11 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
 
     let quantity1 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[0];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::sol_quantities);
 
     let buy1 = Label::dynamic(|data: &Vector<f32>, _| {
@@ -238,17 +258,21 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
 
     let quantity2 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[1];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::sol_quantities);
 
     let buy2 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[1];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::sol_exchange_rate_buy);
 
     let sell2 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[1];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart2 = Flex::column()
@@ -274,17 +298,21 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
 
     let quantity3 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[2];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::sol_quantities);
 
     let buy3 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[2];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::sol_exchange_rate_buy);
 
     let sell3 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[2];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart3 = Flex::column()
@@ -310,17 +338,21 @@ pub(crate) fn create_chart_sol() -> impl Widget<TraderUi> {
 
     let quantity4 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[3];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::sol_quantities);
 
     let buy4 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[3];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::sol_exchange_rate_buy);
 
     let sell4 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[3];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::sol_exchange_rate_sell);
 
     let chart4 = Flex::column()
@@ -380,7 +412,11 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
 
     let quantity1 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[0];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::parse_quantities);
 
     let buy1 = Label::dynamic(|data: &Vector<f32>, _| {
@@ -416,17 +452,21 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
 
     let quantity2 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[1];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::parse_quantities);
 
     let buy2 = Label::dynamic(|data: &Vector<f32>, _| {
             let rate = data[1];
-            format!("buy rate: {rate}")
+            format!("buy rate: {:.8}", rate)
         }).lens(TraderUi::parse_exchange_rate_buy);
 
     let sell2 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[1];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart2 = Flex::column()
@@ -452,17 +492,21 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
 
     let quantity3 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[2];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::parse_quantities);
 
     let buy3 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[2];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::parse_exchange_rate_buy);
 
     let sell3 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[2];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart3 = Flex::column()
@@ -488,17 +532,21 @@ pub(crate) fn create_chart_parse() -> impl Widget<TraderUi> {
 
     let quantity4 = Label::dynamic(|data: &Vector<f32>, _| {
         let quantity = data[3];
-        format!("quantity: {quantity}")
+        if quantity as i32 == 0 {
+            format!("quantity: 0")
+        } else {
+            format!("quantity: {:.1}", quantity)
+        }
     }).lens(TraderUi::parse_quantities);
 
     let buy4 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[3];
-        format!("buy rate: {rate}")
+        format!("buy rate: {:.8}", rate)
     }).lens(TraderUi::parse_exchange_rate_buy);
 
     let sell4 = Label::dynamic(|data: &Vector<f32>, _| {
         let rate = data[3];
-        format!("sell rate: {rate}")
+        format!("sell rate: {:.8}", rate)
     }).lens(TraderUi::parse_exchange_rate_sell);
 
     let chart4 = Flex::column()

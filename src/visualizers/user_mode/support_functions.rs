@@ -410,13 +410,13 @@ pub fn get_best_buy_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, qty: f32) -
 
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market, yuan_quantity, yuan_price) = get_best_buy(markets, GoodKind::YUAN, qty);
-        res = format!("buy {} yuan from {} for {} ", yuan_quantity, yuan_market, yuan_price);
+        res = format!("buy {:.2} yuan from {} for {:.2} ", yuan_quantity, yuan_market, yuan_price);
     } else if (average_yen > average_usd) && (average_yen > average_yuan) {
         let (usd_market, usd_quantity, usd_price) = get_best_buy(markets, GoodKind::USD, qty);
-        res = format!("buy {} usd from {} for {} ", usd_quantity, usd_market, usd_price);
+        res = format!("buy {:.2} usd from {} for {:.2} ", usd_quantity, usd_market, usd_price);
     } else {
         let (yen_market, yen_quantity, yen_price) = get_best_buy(markets, GoodKind::YEN, qty);
-        res = format!("buy {} yen from {} for {} ", yen_quantity, yen_market, yen_price);
+        res = format!("buy {:.2} yen from {} for {:.2} ", yen_quantity, yen_market, yen_price);
     }
     res
 }
@@ -436,13 +436,13 @@ pub fn get_best_sell_trade(markets: &Vector<Rc<RefCell<dyn Market>>>, goods: &Ve
 
     if (average_yuan > average_yen) && (average_yuan > average_usd) {
         let (yuan_market, yuan_quantity, yuan_price) = get_best_sell(markets, GoodKind::YUAN, goods[3]);
-        res = format!("sell {} yuan to {} for {} ", yuan_quantity, yuan_market, yuan_price);
+        res = format!("sell {:.2} yuan to {} for {:.2} ", yuan_quantity, yuan_market, yuan_price);
     } else if (average_yen > average_usd) && (average_yen > average_yuan) {
         let (usd_market, usd_quantity, usd_price) = get_best_sell(markets, GoodKind::USD, goods[2]);
-        res = format!("sell {} usd to {} for {} ", usd_quantity, usd_market, usd_price);
+        res = format!("sell {:.2} usd to {} for {:.2} ", usd_quantity, usd_market, usd_price);
     } else {
         let (yen_market, yen_quantity, yen_price) = get_best_sell(markets, GoodKind::YEN, goods[1]);
-        res = format!("sell {} yen to {} for {} ", yen_quantity, yen_market, yen_price);
+        res = format!("sell {:.2} yen to {} for {:.2} ", yen_quantity, yen_market, yen_price);
     }
     res
 }
