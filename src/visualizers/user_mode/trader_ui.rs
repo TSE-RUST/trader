@@ -8,7 +8,7 @@ use unitn_market_2022::good::good_kind::GoodKind;
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::user_mode::datas::Trader;
+use crate::visualizers::datas::Trader;
 use crate::visualizers::custom_widgets::{custom_button, custom_button_white};
 use crate::visualizers::user_mode::support_functions::{get_best_buy_trade, get_best_sell_trade, get_market_info, max_qt};
 

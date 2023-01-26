@@ -5,7 +5,7 @@ use druid::widget::{Label, ViewSwitcher};
 // local dependencies
 use crate::visualizers::bot_mode::bot_side;
 use crate::visualizers::user_mode::user_side;
-use crate::visualizers::user_mode::datas::TraderUi;
+use crate::visualizers::datas::TraderUi;
 use crate::visualizers::events::EventLogger;
 
 /// the build_ui function creates the main ui of the application

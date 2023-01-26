@@ -7,7 +7,7 @@ use druid::widget::Label;
 use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
-use crate::visualizers::user_mode::datas::TraderUi;
+use crate::visualizers::datas::TraderUi;
 
 pub fn big_text(text: &str) -> impl Widget<TraderUi> {
     Label::new(text)

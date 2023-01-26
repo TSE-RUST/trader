@@ -13,7 +13,7 @@ use parse_market::ParseMarket as parse;
 
 // local dependencies
 use crate::TraderUi;
-use crate::visualizers::bot_mode::datas::*;
+use crate::visualizers::bot_mode::support_functions::*;
 
 /// This function builds the widget that will be displayed
 /// on the bots side of the application.

@@ -23,7 +23,7 @@ use visualizers::app_menu::make_menu;
 // function that creates the ui of the application
 use visualizers::build_ui::build_ui;
 // struct that contains the datas of the application
-use visualizers::user_mode::datas::TraderUi;
+use visualizers::datas::TraderUi;
 // function that initializes the datas inside the TraderUi struct
 // use visualizers::user_mode::datas::initialize_quantities;
 

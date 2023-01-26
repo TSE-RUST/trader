@@ -8,7 +8,7 @@ use unitn_market_2022::good::good_kind::GoodKind;
 use unitn_market_2022::market::Market;
 
 // local dependencies
-use crate::visualizers::user_mode::datas::TraderUi;
+use crate::visualizers::datas::TraderUi;
 
 
 /// SUPPORT FUNCTIONS FOR THE TraderUi STRUCT - initializer of the TraderUi
