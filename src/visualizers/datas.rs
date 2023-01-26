@@ -109,7 +109,7 @@ impl TraderUi {
             string_best_profit_sell: "".to_string(),
             string_best_profit_buy: "".to_string(),
             // BOT MODE
-            safe_mode: false,
+            safe_mode: true,
             logs: vector![],
             logs_bot: vector![],
             bfb_logs_bot: vector![],
