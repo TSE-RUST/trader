@@ -90,4 +90,15 @@ It's similar to the first arbitrage strategy, but a little customized.
 ## Manual TSE trader (Federico Brancasi)
 todo
 ## TSE gui for auto traders (Patrick Cerka)
-todo
+The "Bot_side", contrary to what "User_side" does, gives you the complete power and strategy of the 2 TSE trader bot by only giving the quantity of how many trades you wanna do. 
+What's the diff between the 2 traders? 
+
+In short, the first bot, safe mode, is programmed to make safe moves, thus by not risking too much. This let's you earn some money without having to risk it all.
+The second bot, arbitrager aka unsafe mode, is made for anyone who likes to risk it all, but also granting really big gainings if succeding in the "bet". Gamble!
+
+Talking about the graphics, the windows is made 4 label, disposed in rows: 
+-The first one with the 2 buttons used for selecting which bot mode you wanna use (safe or unsafe), with the last label being the indicator of which bot is selected at the moment;
+-The second one is made of 3 columns, each one for each market choosed by us (BFB,PARSE and SOL), each one respectively made of a title indicating which market is and a field where you can see the trade logs for every market;
+-The third one is used for selecting how much trades and is made of a slider from 0 to a 100, two buttons to also select how many trades you want and a "ENTER" button, used obviously for committing this value.
+
+This it all. Enjoy using our trader bot!!
