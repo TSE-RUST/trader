@@ -19,7 +19,7 @@ pub fn big_text(text: &str) -> impl Widget<TraderUi> {
 
 pub fn string_log(data: &TraderUi) -> String {
     if data.safe_mode {
-        
+
     } else {
         //da implementare log per arbitrager
     }
@@ -38,11 +38,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                             big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
                                 List::new(|| Label::dynamic(|data: &String, _| {
-                                    if data.as_str().contains("BUY") {
-                                        format!("List diocane item: {data}")
-                                    } else {
-                                        format!("NO BUY")
-                                    }
+                                        format!("{data}")
                                 })).lens(TraderUi::bfb_logs_bot)
                             ).vertical()                            ,
                         ).split_point(0.10),
@@ -50,11 +46,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                             big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
                                 List::new(|| Label::dynamic(|data: &String, _| {
-                                    if data.as_str().contains("BUY") {
-                                        format!("List item: {data}")
-                                    } else {
-                                        format!("NO BUY")
-                                    }
+                                        format!("{data}")
                                 })).lens(TraderUi::parse_logs_bot)
                             ).vertical(),
                         ).split_point(0.10),
@@ -63,11 +55,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                         big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
                         Scroll::new(
                             List::new(|| Label::dynamic(|data: &String, _| {
-                                if data.as_str().contains("BUY") {
-                                    format!("List item: {data}")
-                                } else {
-                                    format!("NO BUY")
-                                }
+                                    format!("{data}")
                             })).lens(TraderUi::sol_logs_bot)
                         ).vertical(),
                     ).split_point(0.10),
@@ -81,11 +69,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                             big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
                                 List::new(|| Label::dynamic(|data: &String, _| {
-                                    if data.as_str().contains("BUY") {
-                                        format!("List dio porco item: {data}")
-                                    } else {
-                                        format!("NO BUY")
-                                    }
+                                        format!("{data}")
                                 })).lens(TraderUi::bfb_logs_arb)
                             ).vertical()                            ,
                         ).split_point(0.10),
@@ -93,11 +77,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                             big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
                             Scroll::new(
                                 List::new(|| Label::dynamic(|data: &String, _| {
-                                    if data.as_str().contains("BUY") {
-                                        format!("List item: {data}")
-                                    } else {
-                                        format!("NO BUY")
-                                    }
+                                        format!("{data}")
                                 })).lens(TraderUi::parse_logs_arb)
                             ).vertical(),
                         ).split_point(0.10),
@@ -106,11 +86,7 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
                         big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
                         Scroll::new(
                             List::new(|| Label::dynamic(|data: &String, _| {
-                                if data.as_str().contains("BUY") {
-                                    format!("List item: {data}")
-                                } else {
-                                    format!("NO BUY")
-                                }
+                                    format!("{data}")
                             })).lens(TraderUi::sol_logs_arb)
                         ).vertical(),
                     ).split_point(0.10),
@@ -123,3 +99,58 @@ pub fn view_switcher()-> impl Widget<TraderUi> {
 }
 
 
+fn build_safe_mode() -> impl Widget<TraderUi> {
+    Split::columns(
+        Split::columns(
+            Split::rows(
+                big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::bfb_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+            Split::rows(
+                big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::parse_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+        ),
+        Split::rows(
+            big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
+            Scroll::new(
+                List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                    .lens(TraderUi::sol_logs_bot)
+            ).vertical(),
+        ).split_point(0.10),
+    ).split_point(0.66).border(Color::WHITE, 1.0)
+}
+
+fn build_unsafe_mode() -> impl Widget<TraderUi> {
+    Split::columns(
+        Split::columns(
+            Split::rows(
+                big_text("BFB").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::bfb_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+            Split::rows(
+                big_text("PARSE").background(Color::rgb(255.0, 255.0, 255.0)),
+                Scroll::new(
+                    List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                        .lens(TraderUi::parse_logs_bot)
+                ).vertical(),
+            ).split_point(0.10),
+        ),
+        Split::rows(
+            big_text("SOL").background(Color::rgb(255.0, 255.0, 255.0)),
+            Scroll::new(
+                List::new(|| Label::dynamic(|data, _| format!("{data}")))
+                    .lens(TraderUi::sol_logs_bot)
+            ).vertical(),
+        ).split_point(0.10),
+    ).split_point(0.66).border(Color::WHITE, 1.0)
+}
