@@ -100,8 +100,8 @@ impl TraderUi {
             selected_method_of_trade: "SELL".to_string(),
             events: Arc::new(Vec::new()),
             events_number: 0,
-            string_best_profit_sell: "sdrumpx morto".to_string(),
-            string_best_profit_buy: "stypox figlio di puttana".to_string(),
+            string_best_profit_sell: "".to_string(),
+            string_best_profit_buy: "".to_string(),
             // BOT MODE
             safe_mode: false,
             logs: vector![],

@@ -1,7 +1,7 @@
 
 // libraries dependencies
 use druid::{Widget, WidgetExt, Color};
-use druid::widget::{Label, Button, Container, Flex, Slider};
+use druid::widget::{Label, Button, Container, Flex, Slider, List, LensWrap};
 use druid::widget::Split;
 
 // market dependencies

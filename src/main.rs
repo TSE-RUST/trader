@@ -32,6 +32,10 @@ use crate::visualizers::datas::initialize_quantities;
 
 fn main() {
 
+    // for blocking the stdout of the application
+    // no messages from the markets will be printed
+    let _block_stdout = Gag::stdout().unwrap();
+
     // creation of the main window
     let main_window = WindowDesc::new(build_ui())
         .window_size((1400.0, 930.0))
@@ -46,10 +50,6 @@ fn main() {
 
     // initial data of the application
     let initial_data = app;
-
-    // for blocking the stdout of the application
-    // no messages from the markets will be printed
-    let _block_stdout = Gag::stdout().unwrap();
 
     // the launcher of the application
     AppLauncher::with_window(main_window)
