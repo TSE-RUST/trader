@@ -4,10 +4,10 @@
   - [Arbitrager bot](#arbitrager-bot)
     - [In detail](#in-detail)
     - [Some adaptations](#some-adaptations)
-  - [Bot (Andrea Ballarini)](#bot-andrea-ballarini)
+  - [Bot](#bot)
 - [GUIs](#guis)
-  - [Manual TSE trader (Federico Brancasi)](#manual-tse-trader-federico-brancasi)
-  - [TSE gui for auto traders (Patrick Cerka)](#tse-gui-for-auto-traders-patrick-cerka)
+  - [Manual TSE trader](#manual-tse-trader)
+  - [TSE gui for auto traders](#tse-gui-for-auto-traders)
 
 # Automatic traders
 Advanced Programming Project Trader
@@ -75,7 +75,7 @@ Let's say that im looking to buy (the good bought is not important here) from th
 In the case of buy_market max_price is lower than min_price, then max_price=min_price, the opposite in the case of sell_market, if this occours is an exploitation of the market. buy_market and sell_market in a trade could be the same, if this, is another exploitation.
 It can be returned also a rest of good along with the EUR good, because in the first trade there can be the possibility that the goods or prices in the sell_market could change, so it tries to sell all goods at the maximum price as possible, and return the rest.
 
-## Bot (Andrea Ballarini)
+## Bot 
 It's similar to the first arbitrage strategy, but a little customized.
 
 1. Compute the for each market the "aproximize" buy price and sell price.
@@ -87,10 +87,10 @@ It's similar to the first arbitrage strategy, but a little customized.
 
 # GUIs
 
-## Manual TSE trader (Federico Brancasi)
+## Manual TSE trader 
 The GUI is used to manually trade on the markets. It allows to buy and sell goods on the markets, and to see the current market prices.
 It also displays the suggestions of the best trades.
-## TSE gui for auto traders (Patrick Cerka)
+## TSE gui for auto traders 
 The "Bot_side", contrary to what "User_side" does, gives you the complete power and strategy of the 2 TSE trader bot by only giving the quantity of how many trades you wanna do. 
 What's the diff between the 2 traders? 
 
